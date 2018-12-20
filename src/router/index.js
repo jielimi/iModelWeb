@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+const Layout = () => import('@/pages/layout/layout');
+
 
 Vue.use(Router)
 
@@ -8,8 +9,24 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      component: Layout,
+      children: [
+        {
+          path: '/project',
+          name: 'project',
+          component: resolve => require(['@/pages/project/project'], resolve)
+        }
+      ]
+    },
+    // {
+    //   path: '/',
+    //   name: 'project',
+    //   component: resolve => require(['@/pages/project/project'], resolve)
+    // },
+    {
+      path: '/pages/version/:projectId',
+      name: 'version',
+      component: resolve => require(['@/pages/version/version'], resolve)
     }
   ]
 })
