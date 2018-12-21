@@ -42,7 +42,7 @@
     justify-content:space-between;
     align-items:center;
     box-sizing: border-box;
-    padding: 14px 100px 14px 100px;
+    padding: 14px 30px 14px 30px;
     height: 78px;
     width: 100%;
     background-color: @white;

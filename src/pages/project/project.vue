@@ -32,8 +32,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">Cancle</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">Confirm</el-button>
+          <el-button @click="cancle">Cancle</el-button>
+          <el-button type="primary" @click="confirm">Confirm</el-button>
         </div>
       </el-dialog>
 
@@ -56,31 +56,52 @@
             >
           </el-table-column>
           <el-table-column
-            prop="createTime"
-            label="Create Time"
-            >
-          </el-table-column>
-          <el-table-column
+            align="center"
             prop="thumbnail"
             label="image">
           </el-table-column>
           <el-table-column
-            fixed="right"
+            align="center"
+            prop="createTime"
+            label="Create Time"
+          >
+          </el-table-column>
+          <el-table-column
+            align="center"
             label="operate"
             width="200">
             <template slot-scope="scope">
               <el-button
-                size="mini"
+                type="primary"
                 @click="handleEdit(scope.$index, scope.row)">Modify</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+              <!--<el-button-->
+                <!--size="mini"-->
+                <!--type="danger"-->
+                <!--@click="handleDelete(scope.$index, scope.row)">Delete</el-button>-->
             </template>
           </el-table-column>
         </el-table>
+        </div>
+
+        <!--<div>-->
+          <!--<img src="../../assets/images/undefined.svg" style="margin: 90px;">-->
+        <!--</div>-->
+
+
+        <el-pagination v-if="paginationShow"
+                       background
+                       @size-change="handleSizeChange"
+                       @current-change="handleCurrentChange"
+                       :current-page="req.pageIndex"
+                       :page-sizes="[10, 20, 50, 100]"
+                       :page-size="req.pageSize"
+                       layout=" prev, pager, next,total,sizes"
+                       :total="totalResult">
+        </el-pagination>
+
+
       </div>
-    </div>
+
 </template>
 
 <script>
@@ -95,6 +116,12 @@
           projectName: '',
           projectDescription: ''
         },
+        req: {
+          pageIndex: 1,
+          pageSize: 10
+        },
+        totalResult: 0,
+        paginationShow: true,
         tableData: [{
           projectName: '项目一二三四五六七八九十项目一二三四五六七八九十',
           projectDescription: '项目1描述',
@@ -135,7 +162,24 @@
       },
       handleDelete () {
         console.log('hi');
+      },
+      handleSizeChange () {
+        console.log('hi');
+      },
+      handleCurrentChange () {
+        console.log('hi');
+      },
+      cancle () {
+        this.dialogFormVisible = false;
+      },
+      confirm () {
+        this.$message({
+          message: 'The Project has been created sucessfully!',
+          type: 'success'
+        });
+        this.dialogFormVisible = false;
       }
+
     }
   }
 </script>
@@ -166,6 +210,7 @@
       background-color: @whiteBGColor;
       width: 100%;
       height: auto;
+      margin-bottom: 30px;
     }
 
     .link{
