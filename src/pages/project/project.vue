@@ -14,8 +14,29 @@
             @click="">
           </i>
         </el-autocomplete>
-        <el-button type="primary">Create Project</el-button>
+        <el-button type="primary" @click="dialogFormVisible = true">Create Project</el-button>
       </div>
+
+      <el-dialog title="Create Project" :visible.sync="dialogFormVisible" center>
+        <el-form :model="form">
+          <el-form-item label="Project Name" :label-width="formLabelWidth">
+            <el-input v-model="form.projectName" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Project Description" :label-width="formLabelWidth">
+            <el-input
+              type="textarea"
+              :rows="3"
+              placeholder=""
+              v-model="form.projectDescription">
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">Cancle</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">Confirm</el-button>
+        </div>
+      </el-dialog>
+
       <div class="table-area">
         <el-table
           :data="tableData"
@@ -23,9 +44,11 @@
           stripe
           style="width: 100%">
           <el-table-column
-            prop="projectName"
             label="Project Name"
             >
+            <template slot-scope="scope">
+              <a class="link">{{ scope.row.projectName }}</a>
+            </template>
           </el-table-column>
           <el-table-column
             prop="projectDescription"
@@ -55,13 +78,9 @@
                 @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
             </template>
           </el-table-column>
-
         </el-table>
-
       </div>
-
     </div>
-
 </template>
 
 <script>
@@ -70,6 +89,12 @@
     data () {
       return {
         projectName: '',
+        dialogFormVisible: false,
+        formLabelWidth: '120px',
+        form: {
+          projectName: '',
+          projectDescription: ''
+        },
         tableData: [{
           projectName: '项目一二三四五六七八九十项目一二三四五六七八九十',
           projectDescription: '项目1描述',
@@ -141,6 +166,12 @@
       background-color: @whiteBGColor;
       width: 100%;
       height: auto;
+    }
+
+    .link{
+      color: #409EFF;
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
 
