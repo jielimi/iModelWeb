@@ -5,7 +5,7 @@
         <el-autocomplete
           v-model="projectName"
           :fetch-suggestions="querySearch"
-          placeholder=""
+          placeholder="project name"
           @select="handleSelect"
         >
           <i
@@ -25,16 +25,17 @@
           <el-table-column
             prop="projectName"
             label="Project Name"
-            width="180">
+            >
           </el-table-column>
           <el-table-column
             prop="projectDescription"
             label="Project Description"
-            width="180">
+            >
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="Create Time">
+            label="Create Time"
+            >
           </el-table-column>
           <el-table-column
             prop="thumbnail"
@@ -43,10 +44,15 @@
           <el-table-column
             fixed="right"
             label="operate"
-            width="100">
+            width="200">
             <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">modify</el-button>
-              <el-button type="text" size="small">del</el-button>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)">Modify</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
             </template>
           </el-table-column>
 
@@ -65,7 +71,7 @@
       return {
         projectName: '',
         tableData: [{
-          projectName: '项目1',
+          projectName: '项目一二三四五六七八九十项目一二三四五六七八九十',
           projectDescription: '项目1描述',
           createTime: '2016-05-02',
           thumbnail: '***'
@@ -99,7 +105,10 @@
       querySearch () {
         console.log('hi');
       },
-      handleClick () {
+      handleEdit () {
+        console.log('hi');
+      },
+      handleDelete () {
         console.log('hi');
       }
     }

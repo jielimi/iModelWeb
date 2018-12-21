@@ -9,7 +9,8 @@ import '@/assets/css/common.less';
 
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+// Vue.use(ElementUI)
+Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
 
 import {
   post,
