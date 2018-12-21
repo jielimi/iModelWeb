@@ -9,6 +9,7 @@ export default new Router({
   routes: [
     {
       path: '/',
+      redirect: '/project',//设置默认指向的路径
       component: Layout,
       children: [
         {
