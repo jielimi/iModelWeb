@@ -18,16 +18,16 @@
       </div>
 
       <el-dialog title="Create Project" :visible.sync="dialogFormVisible" center>
-        <el-form :model="form">
-          <el-form-item label="Project Name" :label-width="formLabelWidth">
-            <el-input v-model="form.projectName" autocomplete="off"></el-input>
+        <el-form :model="projectForm" :rules="rules" ref="projectForm">
+          <el-form-item label="Project Name" :label-width="formLabelWidth" required prop="projectName">
+            <el-input v-model="projectForm.projectName" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="Project Description" :label-width="formLabelWidth">
+          <el-form-item label="Project Description" :label-width="formLabelWidth" required prop="projectDescription">
             <el-input
               type="textarea"
               :rows="3"
               placeholder=""
-              v-model="form.projectDescription">
+              v-model="projectForm.projectDescription">
             </el-input>
           </el-form-item>
         </el-form>
@@ -112,9 +112,20 @@
         projectName: '',
         dialogFormVisible: false,
         formLabelWidth: '120px',
-        form: {
+        projectForm: {
           projectName: '',
           projectDescription: ''
+        },
+        rules: {
+          projectName: [
+            { require: true, message: 'please input the name of project', trigger: 'blur' },
+            { max: 30, message: 'within 30 characters please', trigger: 'blur'},
+            { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
+          ],
+          projectDescription:[
+            { require: true, message: 'please input the description of project' ,trigger: 'blur'}
+          ]
+
         },
         req: {
           pageIndex: 1,
