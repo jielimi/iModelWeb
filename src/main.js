@@ -6,11 +6,11 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/common.less';
-
+import locale from 'element-ui/lib/locale/lang/en';
 
 Vue.config.productionTip = false
-// Vue.use(ElementUI)
-Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
+
+Vue.use(ElementUI, { size: 'small', zIndex: 3000, locale });
 
 import {
   post,
