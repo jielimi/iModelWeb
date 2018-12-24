@@ -1,28 +1,24 @@
 <template>
     <div class="main">
       <h1>Project</h1>
-      <div class="oper-area">
-        <el-autocomplete
-          v-model="projectName"
-          :fetch-suggestions="querySearch"
-          placeholder="project name"
-          @select="handleSelect"
-        >
+      <div class="search-area">
+        <el-input v-model="queryWord" placeholder="project name">
           <i
             class="el-icon-search el-input__icon"
             slot="suffix"
             @click="">
           </i>
-        </el-autocomplete>
-        <el-button type="primary" @click="dialogFormVisible = true">Create Project</el-button>
+        </el-input>
+        <el-button type="primary" @click="search">Search</el-button>
+
       </div>
 
       <el-dialog title="Create Project" :visible.sync="dialogFormVisible" center>
         <el-form :model="projectForm" :rules="rules" ref="projectForm">
-          <el-form-item label="Project Name" :label-width="formLabelWidth" required prop="projectName">
+          <el-form-item label="Name" :label-width="formLabelWidth" required prop="projectName">
             <el-input v-model.trim="projectForm.projectName" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="Project Description" :label-width="formLabelWidth" required prop="projectDescription">
+          <el-form-item label="Description" :label-width="formLabelWidth" required prop="projectDescription">
             <el-input
               type="textarea"
               :rows="3"
@@ -38,6 +34,10 @@
       </el-dialog>
 
       <div class="table-area">
+        <div class="operate-area">
+          <el-button type="primary" @click="dialogFormVisible = true">Create Project</el-button>
+        </div>
+
         <el-table
           :data="tableData"
           border
@@ -96,7 +96,7 @@
                        :page-sizes="[10, 20, 50, 100]"
                        :page-size="req.pageSize"
                        layout=" prev, pager, next,total,sizes"
-                       :total="totalResult">
+                       :total="totalPages">
         </el-pagination>
 
 
@@ -108,8 +108,21 @@
   export default {
     name: 'project',
     data () {
+      const checkProjectName = (rule, value, callback) => {
+        let param = {
+          projectName: this.projectForm.projectName
+        };
+        this.$post('api/projectName', param).then(res => {
+          if (res.state !== 0) {
+            callback(new Error('the name is exist'));
+          } else {
+            callback();
+          }
+        });
+      };
       return {
-        projectName: '',
+        isLoading: false,
+        queryWord: '',
         dialogFormVisible: false,
         formLabelWidth: '120px',
         projectForm: {
@@ -120,18 +133,18 @@
           projectName: [
             { require: true, message: 'please input the name of project', trigger: 'blur' },
             { max: 30, message: 'within 30 characters please', trigger: 'blur'},
-            { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
+            { validator: checkProjectName, trigger: 'blur'}
+            // { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
-          projectDescription:[
-            { require: true, message: 'please input the description of project' , trigger: 'blur'}
+          projectDescription: [
+            { require: true, message: 'please input the description of project', trigger: 'blur'}
           ]
-
         },
         req: {
           pageIndex: 1,
           pageSize: 10
         },
-        totalResult: 0,
+        totalPages: 0,
         paginationShow: true,
         tableData: [{
           projectName: '项目一二三四五六七八九十项目一二三四五六七八九十',
@@ -161,9 +174,26 @@
         }]
       };
     },
+    created () {
+      this.getProjectList();
+    },
     methods: {
-      handleSelect () {
-        console.log('hi');
+      getProjectList (index, query) {
+        let param = {
+          query: query || '',
+          pageIndex: index || this.req.pageIndex,
+          pageSize: this.req.pageSize
+        };
+        this.isLoading = true;
+        this.$get('api/projectList', param).then(res => {
+          this.isLoading = false;
+          if (res.state !== 0) {
+            this.tableData = res.data;
+            this.req.pageSize = res.pagination.pageSize;
+            this.req.pageIndex = res.pagination.currentPage;
+            this.totalPages = res.pagination.totalPages;
+          }
+        });
       },
       querySearch () {
         console.log('hi');
@@ -174,11 +204,14 @@
       handleDelete () {
         console.log('hi');
       },
-      handleSizeChange () {
-        console.log('hi');
+      handleSizeChange (val) {
+        this.req.pageIndex = 1;
+        this.req.pageSize = val;
+        this.getProjectList();
       },
-      handleCurrentChange () {
-        console.log('hi');
+      handleCurrentChange (val) {
+        this.req.pageIndex = val;
+        this.getProjectList();
       },
       cancle () {
         this.$refs['projectForm'].resetFields();
@@ -220,18 +253,16 @@
   }
   .main{
     padding: 10px 30px 0px 30px;
-    .oper-area{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
+    .search-area{
+      text-align: left;
       box-sizing: border-box;
-      padding: 10px 30px;
+      padding: 20px 30px;
       background-color: @whiteBGColor;
-      height: 100px;
-      width: 100%;
       border:1px solid @defaultBorderColor;
       margin-bottom: 20px;
+      .el-input{
+        margin-right: 20px;
+      }
     }
 
     .table-area{
@@ -239,6 +270,10 @@
       width: 100%;
       height: auto;
       margin-bottom: 30px;
+      .operate-area{
+        text-align: left;
+        padding: 20px 30px;
+      }
     }
 
     .link{
