@@ -20,14 +20,14 @@
       <el-dialog title="Create Project" :visible.sync="dialogFormVisible" center>
         <el-form :model="projectForm" :rules="rules" ref="projectForm">
           <el-form-item label="Project Name" :label-width="formLabelWidth" required prop="projectName">
-            <el-input v-model="projectForm.projectName" autocomplete="off"></el-input>
+            <el-input v-model.trim="projectForm.projectName" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="Project Description" :label-width="formLabelWidth" required prop="projectDescription">
             <el-input
               type="textarea"
               :rows="3"
               placeholder=""
-              v-model="projectForm.projectDescription">
+              v-model.trim="projectForm.projectDescription">
             </el-input>
           </el-form-item>
         </el-form>
@@ -123,7 +123,7 @@
             { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
           projectDescription:[
-            { require: true, message: 'please input the description of project' ,trigger: 'blur'}
+            { require: true, message: 'please input the description of project' , trigger: 'blur'}
           ]
 
         },
@@ -181,16 +181,33 @@
         console.log('hi');
       },
       cancle () {
+        this.$refs['projectForm'].resetFields();
         this.dialogFormVisible = false;
       },
       confirm () {
-        this.$message({
-          message: 'The Project has been created sucessfully!',
-          type: 'success'
+        this.$refs['projectForm'].validate((valid) => {
+          if (valid) {
+            let param = {
+              projectName: this.projectForm.projectName,
+              projectDescription: this.projectForm.projectDescription
+            };
+            this.$post('api/project', param).then(res => {
+              if (res.state !== 0) {
+                this.$message({
+                  message: res.message,
+                  type: 'warning'
+                });
+              } else {
+                this.$message({
+                  message: 'The Project has been created sucessfully!',
+                  type: 'success'
+                });
+                this.dialogFormVisible = false;
+              }
+            });
+          }
         });
-        this.dialogFormVisible = false;
       }
-
     }
   }
 </script>
