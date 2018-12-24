@@ -2,14 +2,15 @@
     <div class="main">
       <h1>Project</h1>
       <div class="search-area">
-        <el-input v-model="queryWord" placeholder="project name">
+        <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="search">
           <i
             class="el-icon-search el-input__icon"
             slot="suffix"
-            @click="">
+            @click="search">
           </i>
         </el-input>
         <el-button type="primary" @click="search">Search</el-button>
+        <el-button @click="reset">Reset</el-button>
 
       </div>
 
@@ -109,6 +110,10 @@
     name: 'project',
     data () {
       const checkProjectName = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('please input the name of project'));
+          return;
+        }
         let param = {
           projectName: this.projectForm.projectName
         };
@@ -131,8 +136,7 @@
         },
         rules: {
           projectName: [
-            { require: true, message: 'please input the name of project', trigger: 'blur' },
-            { max: 30, message: 'within 30 characters please', trigger: 'blur'},
+            { max: 30, message: 'within 30 characters please', trigger: 'change'},
             { validator: checkProjectName, trigger: 'blur'}
             // { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
@@ -178,9 +182,9 @@
       this.getProjectList();
     },
     methods: {
-      getProjectList (index, query) {
+      getProjectList (index) {
         let param = {
-          query: query || '',
+          query: this.queryWord || '',
           pageIndex: index || this.req.pageIndex,
           pageSize: this.req.pageSize
         };
@@ -195,8 +199,13 @@
           }
         });
       },
-      querySearch () {
-        console.log('hi');
+      search () {
+        this.getProjectList();
+      },
+      reset () {
+        this.queryWord = '';
+        this.req.pageIndex = 1;
+        this.getProjectList();
       },
       handleEdit () {
         console.log('hi');
