@@ -156,7 +156,7 @@
         rules: {
           projectName: [
             {max: 30, message: 'within 30 characters please', trigger: 'change'},
-            {validator: checkProjectName, trigger: 'blur'}
+            // {validator: checkProjectName, trigger: 'blur'}blur
             // { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
           projectDescription: [
@@ -279,7 +279,10 @@
               projectName: this.projectForm.projectName,
               projectDescription: this.projectForm.projectDescription
             };
-            this.$post('api/project', param).then(res => {
+            // this.$post('http://139.217.11.93:3000/api/project', param).then(res => {
+            //   this.handleResult(res);
+            // });
+            this.$post('/api/project', param).then(res => {
               this.handleResult(res);
             });
           }
