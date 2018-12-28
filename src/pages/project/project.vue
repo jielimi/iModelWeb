@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" v-loading="isLoading">
     <h1>Project</h1>
     <div class="search-area">
       <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)">
@@ -16,19 +16,13 @@
 
     <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible" center>
       <el-form :model="projectForm" :rules="rules" ref="projectForm" @submit.native.prevent>
-        <div v-if="isNewProject">
-          <el-form-item label="Name:" :label-width="formLabelWidth" required prop="projectName">
+        <div>
+          <el-form-item label="Name:" :label-width="formLabelWidth"  prop="projectName">
             <el-input v-model.trim="projectForm.projectName" autocomplete="off"></el-input>
           </el-form-item>
         </div>
-        <div v-else>
-          <el-form-item label="Name:" :label-width="formLabelWidth" required prop="projectName">
-            <span>{{projectForm.projectName}}</span>
-          </el-form-item>
-        </div>
 
-
-        <el-form-item label="Description:" :label-width="formLabelWidth" required prop="projectDescription">
+        <el-form-item label="Description:" :label-width="formLabelWidth"  prop="projectDescription">
           <el-input
             type="textarea"
             :rows="3"
@@ -155,12 +149,14 @@
         },
         rules: {
           projectName: [
-            {max: 30, message: 'within 30 characters please', trigger: 'change'},
-            // {validator: checkProjectName, trigger: 'blur'}blur
-            // { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
+            // { required: true, message: 'please input the name of project', trigger: 'blur'},
+            { max: 30, message: 'within 30 characters please', trigger: 'change'},
+            { validator: checkProjectName, trigger: 'blur'},
+            { pattern: /^([\w\u4E00-\u9FA5_\-]+)+$/, message: 'only chinese character,letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
           projectDescription: [
-            {require: true, message: 'please input the description of project', trigger: 'blur'}
+            { required: true, message: 'please input the description of project', trigger: 'blur'},
+            { max: 200, message: 'within 200 characters please', trigger: 'change'},
           ]
         },
         req: {
@@ -169,33 +165,7 @@
         },
         totalPages: 10,
         paginationShow: true,
-        // tableData: []
-        tableData: [{
-          projectName: '项目一二三四五六七八九十项目一二三四五六七八九十',
-          projectDescription: '项目1描述',
-          createTime: '2016-05-02',
-          thumbnail: '***'
-        }, {
-          projectName: '项目2',
-          projectDescription: '项目1描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: '项目3',
-          projectDescription: '项目1描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: '项目4',
-          projectDescription: '项目1描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: '项目5',
-          projectDescription: '项目1描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: '项目6',
-          projectDescription: '项目1描述',
-          createTime: '2016-05-02'
-        }]
+        tableData: []
       };
     },
     created () {
@@ -211,11 +181,11 @@
         this.isLoading = true;
         this.$get('api/projectList', param).then(res => {
           this.isLoading = false;
-          if (res.state !== 0) {
-            this.tableData = res.data;
+          if (res.state === 0) {
+            this.tableData = res.data.projectList;
             this.req.pageSize = res.pagination.pageSize;
             this.req.pageIndex = res.pagination.currentPage;
-            this.totalPages = res.pagination.totalPages;
+            this.totalPages = res.pagination.totalPage;
           }
         });
       },
