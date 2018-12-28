@@ -2,11 +2,12 @@
   <div class="main" v-loading="isLoading">
     <h1>Project</h1>
     <div class="search-area">
-      <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)">
+      <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)" maxlength=30>
         <i
           class="el-icon-search el-input__icon"
           slot="suffix"
-          @click="getProjectList(1)">
+          @click="getProjectList(1)"
+          >
         </i>
       </el-input>
       <el-button type="primary" @click="getProjectList(1)">Search</el-button>
@@ -58,14 +59,15 @@
         >
         </el-table-column>
         <el-table-column
+          prop="name"
           label="Project Name"
         >
           <template slot-scope="scope">
-            <a class="link">{{ scope.row.projectName }}</a>
+            <a class="link">{{ scope.row.name }}</a>
           </template>
         </el-table-column>
         <el-table-column
-          prop="projectDescription"
+          prop="description"
           label="Project Description"
         >
         </el-table-column>
@@ -76,7 +78,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="createTime"
+          prop="created"
           label="Create Time"
         >
         </el-table-column>
@@ -109,7 +111,7 @@
                    :page-sizes="[10, 20, 50, 100]"
                    :page-size="req.pageSize"
                    layout=" prev, pager, next,total,sizes"
-                   :total="totalPages">
+                   :total="totalNum">
     </el-pagination>
 
 
@@ -127,10 +129,11 @@
           return;
         }
 
-        if(!isNewProject && this.oldProjectName == this.projectForm.projectName) {
+        if(!this.isNewProject && this.oldProjectName == this.projectForm.projectName) {
+          callback();
           return;
         }
-        
+
         let param = {
           projectName: this.projectForm.projectName
         };
@@ -149,13 +152,14 @@
         dialogFormVisible: false,
         formLabelWidth: '120px',
         projectForm: {
+          projectId:'',
           projectName: '',
           projectDescription: ''
         },
         oldProjectName:'',
         rules: {
           projectName: [
-            // { required: true, message: 'please input the name of project', trigger: 'blur'},
+            { required: true, message: 'please input the name of project', trigger: 'blur'},
             { max: 30, message: 'within 30 characters please', trigger: 'change'},
             { validator: checkProjectName, trigger: 'blur'},
             { pattern: /^([\w\u4E00-\u9FA5_\-]+)+$/, message: 'only chinese character,letters,numbers and underscore are allowed ', trigger: 'change'}
@@ -169,7 +173,7 @@
           pageIndex: 1,
           pageSize: 10
         },
-        totalPages: 10,
+        totalNum: 0,
         paginationShow: true,
         tableData: []
       };
@@ -180,23 +184,21 @@
     methods: {
       getProjectList (index) {
         
-        let query = this.queryWord || '';
-        let pageIndex = index || this.req.pageIndex;
-        let pageSize = this.req.pageSize;
+        var param ={
+          query:this.queryWord || '',
+          pageIndex:index || this.req.pageIndex,
+          pageSize:this.req.pageSize
+        }
         
-
-        let getUrl = `api/projectList?query=${query}&pageIndex=${pageIndex}&pageSize=${pageSize}`
-
         
         this.isLoading = true;
-        this.$get(getUrl).then(res => {
+        this.$get('api/projectList',{},param).then(res => {
           this.isLoading = false;
           if (res.state === 0) {
             this.tableData = res.data.projectList;
             this.req.pageSize = res.pagination.pageSize? res.pagination.pageSize:10;
             this.req.pageIndex = res.pagination.currentPage? res.pagination.currentPage:1;
-            this.totalPages = res.pagination.totalPage ? res.pagination.totalPage:0;
-            
+            this.totalNum = res.pagination.totalNum;
           }
         });;
       },
@@ -235,9 +237,10 @@
       modifyProject (row) {
         this.isNewProject = false;
         this.dialogFormVisible = true;
-        this.oldProjectName = row.projectName;
-        this.projectForm.projectName = row.projectName;
-        this.projectForm.projectDescription = row.projectDescription;
+        this.oldProjectName = row.name;
+        this.projectForm.projectName = row.name;
+        this.projectForm.projectDescription = row.description;
+        this.projectForm.projectId = row.uid;
       },
       handleResult (res) {
         if (res.state !== 0) {
@@ -250,6 +253,7 @@
             message: res.message,
             type: 'success'
           });
+          this.$refs['projectForm'].resetFields();
           this.dialogFormVisible = false;
           this.getProjectList(1);
         }
@@ -268,10 +272,11 @@
         });
       },
       modifyProjectConfirm () {
+        
         this.$refs['projectForm'].validate((valid) => {
           if (valid) {
             let param = {
-              projectId: this.projectForm.projectName,
+              projectId: this.projectForm.projectId,
               projectName: this.projectForm.projectName,
               projectDescription: this.projectForm.projectDescription
             };
