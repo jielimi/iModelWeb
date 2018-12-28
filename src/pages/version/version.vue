@@ -16,34 +16,34 @@
 
     </div>
 
-    <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible" center>
-      <el-form :model="projectForm" :rules="rules" ref="projectForm" @submit.native.prevent>
-        <div v-if="isNewProject">
-          <el-form-item label="Name:" :label-width="formLabelWidth" required prop="projectName">
-            <el-input v-model.trim="projectForm.projectName" autocomplete="off"></el-input>
+    <el-dialog title="Create Version" :visible.sync="dialogFormVisible" center>
+      <el-form :model="versionForm" :rules="rules" ref="versionForm" @submit.native.prevent>
+        <div v-if="isNewVersion">
+          <el-form-item label="Name:" :label-width="formLabelWidth" required prop="versionName">
+            <el-input v-model.trim="versionForm.versionName" autocomplete="off"></el-input>
           </el-form-item>
         </div>
         <div v-else>
-          <el-form-item label="Name:" :label-width="formLabelWidth" required prop="projectName">
-            <span>{{projectForm.projectName}}</span>
+          <el-form-item label="Name:" :label-width="formLabelWidth" required prop="versionName">
+            <span>{{versionForm.versionName}}</span>
           </el-form-item>
         </div>
 
 
-        <el-form-item label="Description:" :label-width="formLabelWidth" required prop="projectDescription">
+        <el-form-item label="Description:" :label-width="formLabelWidth" required prop="versionDescription">
           <el-input
             type="textarea"
             :rows="3"
             placeholder=""
-            v-model.trim="projectForm.projectDescription">
+            v-model.trim="versionForm.versionDescription">
           </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancle">Cancle</el-button>
 
-        <el-button v-if="isNewProject" type="primary" @click="createProjectConfirm()">Confirm</el-button>
-        <el-button v-else type="primary" @click="modifyProjectConfirm()">Confirm</el-button>
+        <el-button v-if="isNewVersion" type="primary" @click="createVersionConfirm()">Confirm</el-button>
+        <el-button v-else type="primary" @click="modifyVersionConfirm()">Confirm</el-button>
       </div>
     </el-dialog>
 
@@ -69,7 +69,7 @@
           label="Version Name"
         >
           <template slot-scope="scope">
-            <a class="link">{{ scope.row.projectName }}</a>
+            <a class="link">{{ scope.row.versionName }}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -129,15 +129,16 @@
   export default {
     name: 'project',
     data() {
-      const checkProjectName = (rule, value, callback) => {
+      const checkVersionName = (rule, value, callback) => {
         if (!value) {
-          callback(new Error('please input the name of project'));
+          callback(new Error('please input the name of version'));
           return;
         }
         let param = {
-          projectName: this.projectForm.projectName
+        	projectId: '1',
+          versionName: this.versionForm.versionName
         };
-        this.$post('api/projectName', param).then(res => {
+        this.$post('api/versionName', param).then(res => {
           if (res.state !== 0) {
             callback(new Error('the name is exist'));
           } else {
@@ -147,22 +148,22 @@
       };
       return {
         isLoading: false,
-        isNewProject: true,
+        isNewVersion: true,
         queryWord: '',
         dialogFormVisible: false,
         formLabelWidth: '120px',
         date: this.setDate(),
-        projectForm: {
-          projectName: '',
-          projectDescription: ''
+        versionForm: {
+          versionName: '',
+          versionDescription: ''
         },
         rules: {
-          projectName: [
+          versionName: [
             {max: 30, message: 'within 30 characters please', trigger: 'change'},
-            {validator: checkProjectName, trigger: 'blur'}
+            {validator: checkVersionName, trigger: 'blur'}
             // { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
-          projectDescription: [
+          versionDescription: [
             {require: true, message: 'please input the description of project', trigger: 'blur'}
           ]
         },
@@ -174,30 +175,10 @@
         paginationShow: true,
         // tableData: []
         tableData: [{
-          projectName: 'version 1.0',
-          projectDescription: 'version 1.0描述',
+          versionName: 'version 1.0',
+          versionDescription: 'version 1.0描述',
           createTime: '2016-05-02',
-          thumbnail: '***'
-        }, {
-          projectName: 'version 1.1',
-          projectDescription: 'version 1.1描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: 'version 1.2',
-          projectDescription: 'version 1.2描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: 'version 1.3',
-          projectDescription: 'version 1.3描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: 'version 1.4',
-          projectDescription: 'version 1.4描述',
-          createTime: '2016-05-02'
-        }, {
-          projectName: 'version 1.5',
-          projectDescription: 'version 1.5描述',
-          createTime: '2016-05-02'
+          thumbnail: '--'
         }]
       };
     },
@@ -212,15 +193,15 @@
           pageSize: this.req.pageSize
         };
         this.isLoading = true;
-        this.$get('api/versionList', param).then(res => {
-          // this.isLoading = false;
-          // if (res.state !== 0) {
-          //   this.tableData = res.data;
-          //   this.req.pageSize = res.pagination.pageSize;
-          //   this.req.pageIndex = res.pagination.currentPage;
-          //   this.totalPages = res.pagination.totalPages;
-          // }
-        });
+        // this.$get('api/versionList', param).then(res => {
+        //   this.isLoading = false;
+        //   if (res.state !== 0) {
+        //     this.tableData = res.data;
+        //     this.req.pageSize = res.pagination.pageSize;
+        //     this.req.pageIndex = res.pagination.currentPage;
+        //     this.totalPages = res.pagination.totalPages;
+        //   }
+        // });
       },
       setDate () {
 	      let today = new Date();
@@ -264,18 +245,18 @@
         return this.req.pageSize * (this.req.pageIndex - 1) + 1 + row.index;
       },
       cancle () {
-        this.$refs['projectForm'].resetFields();
+        this.$refs['versionForm'].resetFields();
         this.dialogFormVisible = false;
       },
       createProject () {
-        this.isNewProject = true;
+        this.isNewVersion = true;
         this.dialogFormVisible = true;
       },
       modifyProject (row) {
-        this.isNewProject = false;
+        this.isNewVersion = false;
         this.dialogFormVisible = true;
-        this.projectForm.projectName = row.projectName;
-        this.projectForm.projectDescription = row.projectDescription;
+        this.versionForm.versionName = row.versionName;
+        this.versionForm.versionDescription = row.versionDescription;
       },
       handleResult (res) {
         if (res.state !== 0) {
@@ -292,26 +273,27 @@
           this.getVersionList(1);
         }
       },
-      createProjectConfirm () {
-        this.$refs['projectForm'].validate((valid) => {
+      createVersionConfirm () {
+        this.$refs['versionForm'].validate((valid) => {
           if (valid) {
             let param = {
-              projectName: this.projectForm.projectName,
-              projectDescription: this.projectForm.projectDescription
+            	projectId: "214382de-ac0e-452b-8a94-485aef880989",
+              versionName: this.versionForm.versionName,
+              versionDescription: this.versionForm.versionDescription
             };
-            this.$post('api/project', param).then(res => {
+            this.$post('api/version', param).then(res => {
               this.handleResult(res);
             });
           }
         });
       },
-      modifyProjectConfirm () {
-        this.$refs['projectForm'].validate((valid) => {
+      modifyVersionConfirm () {
+        this.$refs['versionForm'].validate((valid) => {
           if (valid) {
             let param = {
-              projectId: this.projectForm.projectName,
-              projectName: this.projectForm.projectName,
-              projectDescription: this.projectForm.projectDescription
+              projectId: this.versionForm.versionName,
+              versionName: this.versionForm.versionName,
+              versionDescription: this.versionForm.versionDescription
             };
             this.$put('api/project', param).then(res => {
               this.handleResult(res);
