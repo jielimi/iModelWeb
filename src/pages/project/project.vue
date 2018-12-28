@@ -126,6 +126,11 @@
           callback(new Error('please input the name of project'));
           return;
         }
+
+        if(!isNewProject && this.oldProjectName == this.projectForm.projectName) {
+          return;
+        }
+        
         let param = {
           projectName: this.projectForm.projectName
         };
@@ -147,6 +152,7 @@
           projectName: '',
           projectDescription: ''
         },
+        oldProjectName:'',
         rules: {
           projectName: [
             // { required: true, message: 'please input the name of project', trigger: 'blur'},
@@ -173,21 +179,26 @@
     },
     methods: {
       getProjectList (index) {
-        let param = {
-          query: this.queryWord || '',
-          pageIndex: index || this.req.pageIndex,
-          pageSize: this.req.pageSize
-        };
+        
+        let query = this.queryWord || '';
+        let pageIndex = index || this.req.pageIndex;
+        let pageSize = this.req.pageSize;
+        
+
+        let getUrl = `api/projectList?query=${query}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+
+        
         this.isLoading = true;
-        this.$get('api/projectList', param).then(res => {
+        this.$get(getUrl).then(res => {
           this.isLoading = false;
           if (res.state === 0) {
             this.tableData = res.data.projectList;
-            this.req.pageSize = res.pagination.pageSize;
-            this.req.pageIndex = res.pagination.currentPage;
-            this.totalPages = res.pagination.totalPage;
+            this.req.pageSize = res.pagination.pageSize? res.pagination.pageSize:10;
+            this.req.pageIndex = res.pagination.currentPage? res.pagination.currentPage:1;
+            this.totalPages = res.pagination.totalPage ? res.pagination.totalPage:0;
+            
           }
-        });
+        });;
       },
       reset () {
         this.queryWord = '';
@@ -224,6 +235,7 @@
       modifyProject (row) {
         this.isNewProject = false;
         this.dialogFormVisible = true;
+        this.oldProjectName = row.projectName;
         this.projectForm.projectName = row.projectName;
         this.projectForm.projectDescription = row.projectDescription;
       },
@@ -249,9 +261,6 @@
               projectName: this.projectForm.projectName,
               projectDescription: this.projectForm.projectDescription
             };
-            // this.$post('http://139.217.11.93:3000/api/project', param).then(res => {
-            //   this.handleResult(res);
-            // });
             this.$post('/api/project', param).then(res => {
               this.handleResult(res);
             });
