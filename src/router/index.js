@@ -16,6 +16,11 @@ export default new Router({
           path: '/project',
           name: 'project',
           component: resolve => require(['@/pages/project/project'], resolve)
+        },
+        {
+          path: '/version',
+          name: 'version',
+          component: resolve => require(['@/pages/version/version'], resolve)
         }
       ]
     },
