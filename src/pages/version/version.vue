@@ -69,11 +69,11 @@
           label="Version Name"
         >
           <template slot-scope="scope">
-            <a class="link">{{ scope.row.versionName }}</a>
+            <a class="link">{{ scope.row.name }}</a>
           </template>
         </el-table-column>
         <el-table-column
-          prop="versionDescription"
+          prop="description"
           label="Version Description"
         >
         </el-table-column>
@@ -84,7 +84,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="createTime"
+          prop="created"
           label="Create Time"
         >
         </el-table-column>
@@ -135,7 +135,7 @@
           return;
         }
         let param = {
-        	projectId: '1',
+        	projectId: this.projectId,
           versionName: this.versionForm.versionName
         };
         this.$post('api/versionName', param).then(res => {
@@ -150,6 +150,7 @@
         isLoading: false,
         isNewVersion: true,
         queryWord: '',
+        projectId: this.$route.query.projectId,
         dialogFormVisible: false,
         formLabelWidth: '120px',
         date: this.setDate(),
@@ -173,13 +174,13 @@
         },
         totalPages: 10,
         paginationShow: true,
-        // tableData: []
-        tableData: [{
-          versionName: 'version 1.0',
-          versionDescription: 'version 1.0描述',
-          createTime: '2016-05-02',
-          thumbnail: '--'
-        }]
+        tableData: []
+        // tableData: [{
+        //   versionName: 'version 1.0',
+        //   versionDescription: 'version 1.0描述',
+        //   createTime: '2016-05-02',
+        //   thumbnail: '--'
+        // }]
       };
     },
     created () {
@@ -188,20 +189,21 @@
     methods: {
       getVersionList (index) {
         let param = {
-          query: this.queryWord || '',
+        	projectId: this.projectId,
+          query:(encodeURIComponent(this.queryWord)),
           pageIndex: index || this.req.pageIndex,
           pageSize: this.req.pageSize
         };
         this.isLoading = true;
-        // this.$get('api/versionList', param).then(res => {
-        //   this.isLoading = false;
-        //   if (res.state !== 0) {
-        //     this.tableData = res.data;
-        //     this.req.pageSize = res.pagination.pageSize;
-        //     this.req.pageIndex = res.pagination.currentPage;
-        //     this.totalPages = res.pagination.totalPages;
-        //   }
-        // });
+        this.$get('api/versionList',{}, param).then(res => {
+          this.isLoading = false;
+          if (res.state === 0) {
+            this.tableData = res.data.versionList;
+            this.req.pageSize = res.pagination.pageSize;
+            this.req.pageIndex = res.pagination.currentPage;
+            this.totalPages = res.pagination.totalPages;
+          }
+        });
       },
       setDate () {
 	      let today = new Date();
@@ -277,7 +279,7 @@
         this.$refs['versionForm'].validate((valid) => {
           if (valid) {
             let param = {
-            	projectId: "214382de-ac0e-452b-8a94-485aef880989",
+            	projectId: this.projectId,
               versionName: this.versionForm.versionName,
               versionDescription: this.versionForm.versionDescription
             };
@@ -291,7 +293,7 @@
         this.$refs['versionForm'].validate((valid) => {
           if (valid) {
             let param = {
-              projectId: this.versionForm.versionName,
+              projectId: this.projectId,
               versionName: this.versionForm.versionName,
               versionDescription: this.versionForm.versionDescription
             };
