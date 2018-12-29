@@ -63,7 +63,9 @@
           label="Project Name"
         >
           <template slot-scope="scope">
-            <a class="link">{{ scope.row.name }}</a>
+            <router-link :to="{path:'version',query:{projectId: scope.row.projectId}}">
+              <a class="link">{{ scope.row.name }}</a>
+            </router-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -240,7 +242,7 @@
         this.oldProjectName = row.name;
         this.projectForm.projectName = row.name;
         this.projectForm.projectDescription = row.description;
-        this.projectForm.projectId = row.uid;
+        this.projectForm.projectId = row.projectId;
       },
       handleResult (res) {
         if (res.state !== 0) {
