@@ -108,7 +108,7 @@
                    @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
                    :current-page="req.pageIndex"
-                   :page-sizes="[10, 20, 50, 100]"
+                   :page-sizes="[5, 10, 20, 50]"
                    :page-size="req.pageSize"
                    layout=" prev, pager, next,total,sizes"
                    :total="totalNum">
@@ -171,7 +171,7 @@
         },
         req: {
           pageIndex: 1,
-          pageSize: 10
+          pageSize: 5
         },
         totalNum: 0,
         paginationShow: true,
@@ -185,7 +185,7 @@
       getProjectList (index) {
         
         var param ={
-          query:this.queryWord || '',
+          query:(encodeURIComponent(this.queryWord)),
           pageIndex:index || this.req.pageIndex,
           pageSize:this.req.pageSize
         }
