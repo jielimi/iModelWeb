@@ -82,6 +82,7 @@
           align="center"
           prop="created"
           label="Create Time"
+          :formatter="dateFormat"
         >
         </el-table-column>
         <el-table-column
@@ -122,6 +123,7 @@
 </template>
 
 <script>
+  import { formatDate } from '@/utils/date';
   export default {
     name: 'project',
     data() {
@@ -287,6 +289,13 @@
             });
           }
         });
+      },
+      dateFormat(row, column, cellValue, index){
+        const  daterc= row[column.property];
+        if(daterc!=null){
+          const dateMat= new Date(daterc);
+          return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
+        }
       }
     }
   };
