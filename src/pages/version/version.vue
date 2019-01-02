@@ -79,11 +79,6 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="thumbnail"
-          label="Version files">
-        </el-table-column>
-        <el-table-column
-          align="center"
           prop="created"
           label="Create Time"
         >
@@ -91,11 +86,15 @@
         <el-table-column
           align="center"
           label="Operate"
-          width="200">
+          width="300">
           <template slot-scope="scope">
             <el-button
               type="primary"
-              @click="modifyProject(scope.row)">View
+              @click="modifyVersion(scope.row)">Modify
+            </el-button>
+            <el-button
+              type="primary"
+              @click="">Files
             </el-button>
             <el-button
             size="mini"
@@ -254,11 +253,11 @@
         this.isNewVersion = true;
         this.dialogFormVisible = true;
       },
-      modifyProject (row) {
+      modifyVersion (row) {
         this.isNewVersion = false;
         this.dialogFormVisible = true;
-        this.versionForm.versionName = row.versionName;
-        this.versionForm.versionDescription = row.versionDescription;
+        this.versionForm.versionName = row.name;
+        this.versionForm.versionDescription = row.description;
       },
       handleResult (res) {
         if (res.state !== 0) {
@@ -290,17 +289,13 @@
         });
       },
       modifyVersionConfirm () {
-        this.$refs['versionForm'].validate((valid) => {
-          if (valid) {
-            let param = {
-              projectId: this.projectId,
-              versionName: this.versionForm.versionName,
-              versionDescription: this.versionForm.versionDescription
-            };
-            this.$put('api/project', param).then(res => {
-              this.handleResult(res);
-            });
-          }
+        let param = {
+          projectId: this.projectId,
+          versionName: this.versionForm.versionName,
+          versionDescription: this.versionForm.versionDescription
+        };
+        this.$put('api/version', param).then(res => {
+          this.handleResult(res);
         });
       }
     }
