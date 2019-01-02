@@ -320,6 +320,9 @@
       height: auto;
       margin-bottom: 30px;
       .operate-area {
+        border-top: 1px solid #DDDDDD;
+        border-left: 1px solid #DDDDDD;
+        border-right: 1px solid #DDDDDD;
         text-align: left;
         padding: 20px 30px;
       }
