@@ -2,7 +2,7 @@
   <div class="main" v-loading="isLoading">
     <h1>Project</h1>
     <div class="search-area">
-      <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)" maxlength=30>
+      <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)" maxlength="30">
         <i
           class="el-icon-search el-input__icon"
           slot="suffix"
@@ -27,6 +27,7 @@
           <el-input
             type="textarea"
             :rows="3"
+            maxlength="200"
             placeholder=""
             v-model.trim="projectForm.projectDescription">
           </el-input>
@@ -169,8 +170,7 @@
             { pattern: /^([\w\u4E00-\u9FA5_\-]+)+$/, message: 'only chinese character,letters,numbers and underscore are allowed ', trigger: 'change'}
           ],
           projectDescription: [
-            { required: true, message: 'please input the description of project', trigger: 'blur'},
-            { max: 200, message: 'within 200 characters please', trigger: 'change'},
+            { required: true, message: 'please input the description of project', trigger: 'blur'}
           ]
         },
         req: {

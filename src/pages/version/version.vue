@@ -34,6 +34,7 @@
           <el-input
             type="textarea"
             :rows="3"
+            maxlength="200"
             placeholder=""
             v-model.trim="versionForm.versionDescription">
           </el-input>
@@ -50,6 +51,7 @@
     <div class="table-area">
       <div class="operate-area">
         <el-button type="primary" @click="createProject">Add Version</el-button>
+        <el-button type="success" @click="createProject">Generate</el-button>
       </div>
 
       <el-table
@@ -86,15 +88,22 @@
         <el-table-column
           align="center"
           label="Operate"
-          width="300">
+          width="450">
           <template slot-scope="scope">
             <el-button
               type="primary"
+              size="mini"
               @click="modifyVersion(scope.row)">Modify
             </el-button>
             <el-button
               type="primary"
+              size="mini"
               @click="">Files
+            </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="">Upload
             </el-button>
             <el-button
             size="mini"
@@ -159,12 +168,13 @@
         },
         rules: {
           versionName: [
-            {max: 30, message: 'within 30 characters please', trigger: 'change'},
-            {validator: checkVersionName, trigger: 'blur'}
-            // { pattern: /^[0-9a-zA-Z_]{1,}$/, message: 'only letters,numbers and underscore are allowed ', trigger: 'change'}
+          	{ required: true, message: 'please input the name of version', trigger: 'blur' },
+            { max: 30, message: 'within 30 characters please', trigger: 'change' },
+            { validator: checkVersionName, trigger: 'blur' },
+            { pattern: /^([\w\u4E00-\u9FA5_\-]+)+$/, message: 'only chinese character,letters,numbers and underscore are allowed ', trigger: 'change' }
           ],
           versionDescription: [
-            {require: true, message: 'please input the description of project', trigger: 'blur'}
+            { require: true, message: 'please input the description of project', trigger: 'blur' }
           ]
         },
         req: {
