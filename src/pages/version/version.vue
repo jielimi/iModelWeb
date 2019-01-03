@@ -99,20 +99,33 @@
             <el-button
               type="primary"
               size="mini"
-              @click="">Files
+              @click="getFiles(scope.row)">Files
             </el-button>
             <el-button
               type="primary"
               size="mini"
-              @click="">Upload
+              @click="uploadFiles(scope.row)">Upload
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!--<div>-->
-    <!--<img src="../../assets/images/undefined.svg" style="margin: 90px;">-->
-    <!--</div>-->
+
+    <el-dialog title="Upload Files" :visible.sync="uploadVisible" center>
+        <div class="file-upload">
+					<el-upload class="uploader" accept=".dgn"
+					  ref="upload"
+					  :show-file-list="false"
+					  :action="uploadParams.action"
+					  :data="uploadParams.data"
+					  :on-change="uploadOnChange"
+					  :on-success="uploadOnSuccess"
+					  :on-error="uploadOnError"
+					  :on-progress="uploadOnProgress">
+					  	<el-button type="primary">点击上传</el-button>
+					</el-upload>
+				</div>
+    </el-dialog>
     <el-pagination v-if="paginationShow"
                    background
                    @size-change="handleSizeChange"
@@ -157,6 +170,7 @@
         queryWord: '',
         projectId: this.$route.query.projectId,
         dialogFormVisible: false,
+        uploadVisible: false,
         formLabelWidth: '120px',
         date: this.setDate(),
         versionForm: {
@@ -180,13 +194,15 @@
         },
         totalPages: 10,
         paginationShow: true,
-        tableData: []
-        // tableData: [{
-        //   versionName: 'version 1.0',
-        //   versionDescription: 'version 1.0描述',
-        //   createTime: '2016-05-02',
-        //   thumbnail: '--'
-        // }]
+        tableData: [],
+        uploadParams: {
+					action: 'http://139.217.11.93:3000/api/version/upload',
+					data: {
+						type: '0',
+						projectId: '',
+						versionName: ''
+					}
+				}
       };
     },
     created () {
@@ -311,7 +327,50 @@
           const dateMat= new Date(daterc);
           return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
         }
-      }
+      },
+      uploadFiles (row) {
+      		this.uploadParams.data.projectId = this.projectId;
+      		this.uploadParams.data.versionName = row.name;
+      		this.uploadVisible = true;
+      },
+      uploadOnProgress(e,file){//开始上传
+				console.log(e.percent,file)
+				this.progress = Math.floor(e.percent)
+			},
+			uploadOnChange(file){
+				console.log("——————————change——————————")
+				// console.log(file)
+				if(file.status == 'ready'){
+					console.log("ready")
+					this.pass = null;
+					this.progress = 0;
+				}else if(file.status == 'fail'){
+					this.$message.error("上传出错，请重试！")
+				}
+			},
+			uploadOnSuccess(e,file){//上传附件
+				console.log("——————————success——————————")
+				this.pass = true;
+				this.$message.success("上传成功")
+				// this.imagelist.push({
+				// 	url: file.url,
+				// 	name: '新增图片'
+				// })
+			},
+			uploadOnError(e,file){
+				console.log("——————————error——————————")
+				console.log(e)
+				this.pass = false;
+			},
+			getFiles(row){
+				let param = {
+        	projectId: this.projectId,
+          versionName: row.name
+        };
+				this.$get('api/version/fileList',{}, param).then(res => {
+          
+        });
+			}
     }
   };
 </script>
