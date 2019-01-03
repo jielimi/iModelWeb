@@ -83,12 +83,13 @@
           align="center"
           prop="created"
           label="Create Time"
+          :formatter="dateFormat"
         >
         </el-table-column>
         <el-table-column
           align="center"
           label="Operate"
-          width="450">
+          width="300">
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -105,15 +106,10 @@
               size="mini"
               @click="">Upload
             </el-button>
-            <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-
     <!--<div>-->
     <!--<img src="../../assets/images/undefined.svg" style="margin: 90px;">-->
     <!--</div>-->
@@ -134,6 +130,7 @@
 </template>
 
 <script>
+	import { formatDate } from '@/utils/date';
   export default {
     name: 'project',
     data() {
@@ -307,6 +304,13 @@
         this.$put('api/version', param).then(res => {
           this.handleResult(res);
         });
+      },
+      dateFormat(row, column, cellValue, index){
+        const  daterc= row[column.property];
+        if(daterc!=null){
+          const dateMat= new Date(daterc);
+          return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
+        }
       }
     }
   };
