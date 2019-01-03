@@ -15,7 +15,7 @@
 
     </div>
 
-    <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible" center>
+    <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible"  :close-on-click-modal="false" center>
       <el-form :model="projectForm" :rules="rules" ref="projectForm" @submit.native.prevent>
         <div>
           <el-form-item label="Name:" :label-width="formLabelWidth"  prop="projectName">
