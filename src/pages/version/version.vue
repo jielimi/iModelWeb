@@ -16,7 +16,7 @@
 
     </div>
 
-    <el-dialog title="Create Version" :visible.sync="dialogFormVisible" center>
+    <el-dialog title="Create Version" :close-on-click-modal="false" :visible.sync="dialogFormVisible" center>
       <el-form :model="versionForm" :rules="rules" ref="versionForm" @submit.native.prevent>
         <div v-if="isNewVersion">
           <el-form-item label="Name:" :label-width="formLabelWidth" required prop="versionName">
@@ -111,20 +111,35 @@
       </el-table>
     </div>
 
-    <el-dialog title="Upload Files" :visible.sync="uploadVisible" center>
+    <el-dialog title="Upload Files" :close-on-click-modal="false" :visible.sync="uploadVisible" center>
         <div class="file-upload">
 					<el-upload class="uploader" accept=".dgn"
-					  ref="upload"
-					  :show-file-list="false"
+					  :show-file-list="true"
+					  :multiple="true"
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
 					  :on-change="uploadOnChange"
 					  :on-success="uploadOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress">
-					  	<el-button type="primary">点击上传</el-button>
+					  	<el-button @click="changeParam('0')" type="primary">Upload master file</el-button>
+					</el-upload>
+					<br />
+					<el-upload class="uploader" accept=".dgn"
+					  :show-file-list="true"
+					  :multiple="true"
+					  :action="uploadParams.action"
+					  :data="uploadParams.data"
+					  :on-change="uploadOnChange"
+					  :on-success="uploadOnSuccess"
+					  :on-error="uploadOnError"
+					  :on-progress="uploadOnProgress">
+					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
 					</el-upload>
 				</div>
+    </el-dialog>
+    <el-dialog title="File List" :close-on-click-modal="false" :visible.sync="dialogFileList" center>
+      
     </el-dialog>
     <el-pagination v-if="paginationShow"
                    background
@@ -136,8 +151,6 @@
                    layout=" prev, pager, next,total,sizes"
                    :total="totalPages">
     </el-pagination>
-
-
   </div>
 
 </template>
@@ -171,6 +184,7 @@
         projectId: this.$route.query.projectId,
         dialogFormVisible: false,
         uploadVisible: false,
+        dialogFileList: false,
         formLabelWidth: '120px',
         date: this.setDate(),
         versionForm: {
@@ -333,6 +347,9 @@
       		this.uploadParams.data.versionName = row.name;
       		this.uploadVisible = true;
       },
+      changeParam (type) {
+      	this.uploadParams.data.type = type;
+      },
       uploadOnProgress(e,file){//开始上传
 				console.log(e.percent,file)
 				this.progress = Math.floor(e.percent)
@@ -363,6 +380,7 @@
 				this.pass = false;
 			},
 			getFiles(row){
+				this.dialogFileList = true;
 				let param = {
         	projectId: this.projectId,
           versionName: row.name
