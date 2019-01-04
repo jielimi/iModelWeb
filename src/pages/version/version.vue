@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" v-loading="isLoading">
   	<el-breadcrumb separator-class="el-icon-arrow-right">
 		  <el-breadcrumb-item :to="{ path: '/' }">Project</el-breadcrumb-item>
 		  <el-breadcrumb-item>Version</el-breadcrumb-item>
@@ -138,8 +138,7 @@
 					  :on-change="uploadOnChange"
 					  :on-success="uploadOnSuccess"
 					  :on-error="uploadOnError"
-					  :on-progress="uploadOnProgress"
-					  :on-remove="removeFile()">
+					  :on-progress="uploadOnProgress">
 					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
 					</el-upload>
 				</div>
@@ -249,7 +248,6 @@
     },
     methods: {
       getVersionList (index) {
-        
         let param = {
         	projectId: this.projectId,
           versionName:(encodeURIComponent(this.queryWord)),
@@ -271,8 +269,7 @@
         }
       }
       removeProperty(param);
-
-        this.isLoading = true;
+      	this.isLoading = true;
         this.$get('api/versionList',{}, param).then(res => {
           this.isLoading = false;
           if (res.state === 0) {
@@ -342,6 +339,7 @@
             type: 'success'
           });
           this.dialogFormVisible = false;
+          this.reset();
           this.getVersionList(1);
           this.$refs['versionForm'].resetFields();
         }
@@ -413,8 +411,8 @@
 				console.log("——————————error——————————")
 				this.pass = false;
 			},
-			removeFile (){
-
+			removeFile (file){
+				console.log(file);
 			},
 			getFiles(row){
 				this.dialogFileList = true;
