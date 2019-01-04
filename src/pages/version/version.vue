@@ -232,7 +232,7 @@
         paginationShow: true,
         tableData: [],
         uploadParams: {
-					action: 'http://139.217.11.93:3000/api/version/upload',
+					action: 'http://10.232.49.29:3000/api/version/upload',
 					data: {
 						type: '0',
 						projectId: '',
@@ -253,8 +253,8 @@
         let param = {
         	projectId: this.projectId,
           versionName:(encodeURIComponent(this.queryWord)),
-          startTime:this.date?(this.date)[0]:'',
-          endTime:this.date?(this.date)[1]:'',
+          startTime:this.date?new Date((this.date)[0]).toISOString():'',
+          endTime:this.date?new Date((this.date)[1]).toISOString():'',
           pageIndex: index || this.req.pageIndex,
           pageSize: this.req.pageSize
         };
@@ -287,18 +287,9 @@
 	      let today = new Date();
 	      let start = new Date();
 	      start.setDate(start.getDate() - 30);
-	      today = this.formatDate(today);
-	      start = this.formatDate(start);
+	      today = formatDate(today, 'yyyy-MM-dd hh:mm:ss');
+	      start = formatDate(start, 'yyyy-MM-dd hh:mm:ss');
 	      return [start, today];
-	    },
-	    formatDate (date) {
-	      let year = date.getFullYear();
-	      let month =
-	        date.getMonth() + 1 < 10
-	          ? '0' + (date.getMonth() + 1)
-	          : date.getMonth() + 1;
-	      let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-	      return `${year}-${month}-${day}`;
 	    },
       reset () {
         this.date = this.setDate();
