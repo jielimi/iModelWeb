@@ -425,7 +425,7 @@
 				this.dialogFileList = true;
 				let param = {
         	projectId: this.projectId,
-          versionName: row.name
+          versionName: encodeURIComponent(row.name)
         };
         var that = this;
 				this.$get('api/version/fileList',{}, param).then(res => {
