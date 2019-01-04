@@ -1,6 +1,11 @@
 <template>
   <div class="main">
-    <h1>Project</h1>
+  	<el-breadcrumb separator-class="el-icon-arrow-right">
+		  <el-breadcrumb-item :to="{ path: '/' }">Project</el-breadcrumb-item>
+		  <el-breadcrumb-item>Version</el-breadcrumb-item>
+		</el-breadcrumb>
+		<br />
+    <h1 style="text-align:center;">{{ projectName }}</h1>
     <div class="search-area">
       <el-input v-model.trim="queryWord" placeholder="version name" @keyup.enter.native="getVersionList(1)">
         <i
@@ -133,23 +138,39 @@
 					  :on-change="uploadOnChange"
 					  :on-success="uploadOnSuccess"
 					  :on-error="uploadOnError"
-					  :on-progress="uploadOnProgress">
+					  :on-progress="uploadOnProgress"
+					  :on-remove="removeFile(file, fileList)">
 					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
 					</el-upload>
 				</div>
     </el-dialog>
     <el-dialog title="File List" :close-on-click-modal="false" :visible.sync="dialogFileList" center>
-      
+    	<el-tabs v-model="activeTab">
+		    <el-tab-pane label="Master file" name="master">
+		    	<ul>
+						<li v-for="file in masterFileList">
+						  <p>{{ file.name }}</p>
+						</li>
+					</ul>
+		    </el-tab-pane>
+		    <el-tab-pane label="Reference file" name="reference">
+		    	<ul>
+						<li v-for="file in referenceFileList">
+						  <p>{{ file.name }}</p>
+						</li>
+					</ul>
+		    </el-tab-pane>
+		  </el-tabs>
     </el-dialog>
     <el-pagination v-if="paginationShow"
                    background
                    @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
                    :current-page="req.pageIndex"
-                   :page-sizes="[10, 20, 50, 100]"
+                   :page-sizes="[5, 10, 20, 50]"
                    :page-size="req.pageSize"
                    layout=" prev, pager, next,total,sizes"
-                   :total="totalPages">
+                   :total="totalNum">
     </el-pagination>
   </div>
 
@@ -182,6 +203,7 @@
         isNewVersion: true,
         queryWord: '',
         projectId: this.$route.query.projectId,
+        projectName: this.$route.query.projectName,
         dialogFormVisible: false,
         uploadVisible: false,
         dialogFileList: false,
@@ -204,9 +226,9 @@
         },
         req: {
           pageIndex: 1,
-          pageSize: 10
+          pageSize: 5
         },
-        totalPages: 10,
+        totalNum: 0,
         paginationShow: true,
         tableData: [],
         uploadParams: {
@@ -216,7 +238,10 @@
 						projectId: '',
 						versionName: ''
 					}
-				}
+				},
+				activeTab: 'master',
+				masterFileList: [],
+				referenceFileList: []
       };
     },
     created () {
@@ -226,7 +251,9 @@
       getVersionList (index) {
         let param = {
         	projectId: this.projectId,
-          query:(encodeURIComponent(this.queryWord)),
+          versionName:(encodeURIComponent(this.queryWord)),
+          startTime:'',
+          endTime:'',
           pageIndex: index || this.req.pageIndex,
           pageSize: this.req.pageSize
         };
@@ -237,7 +264,7 @@
             this.tableData = res.data.versionList;
             this.req.pageSize = res.pagination.pageSize;
             this.req.pageIndex = res.pagination.currentPage;
-            this.totalPages = res.pagination.totalPages;
+            this.totalNum = res.pagination.totalNum;
           }
         });
       },
@@ -247,7 +274,7 @@
 	      tomorrow.setDate(tomorrow.getDate() + 1);
 	      today = this.formatDate(today);
 	      tomorrow = this.formatDate(tomorrow);
-	      return [today, tomorrow];
+	      return ['', ''];
 	    },
 	    formatDate (date) {
 	      let year = date.getFullYear();
@@ -309,6 +336,7 @@
           });
           this.dialogFormVisible = false;
           this.getVersionList(1);
+          this.$refs['versionForm'].resetFields();
         }
       },
       createVersionConfirm () {
@@ -371,13 +399,15 @@
 				this.$message.success("上传成功")
 				// this.imagelist.push({
 				// 	url: file.url,
-				// 	name: '新增图片'
+				// 	name: '新增'
 				// })
 			},
 			uploadOnError(e,file){
 				console.log("——————————error——————————")
-				console.log(e)
 				this.pass = false;
+			},
+			removeFile (file, fileList){
+
 			},
 			getFiles(row){
 				this.dialogFileList = true;
@@ -385,8 +415,17 @@
         	projectId: this.projectId,
           versionName: row.name
         };
+        var that = this;
 				this.$get('api/version/fileList',{}, param).then(res => {
-          
+					that.masterFileList = [];
+          that.referenceFileList = [];
+          res.data.fileList.forEach(function(value,index){
+          	if(value.type === 0){
+          		that.masterFileList.push(value);
+          	}else {
+          		that.referenceFileList.push(value);
+          	}
+          });
         });
 			}
     }

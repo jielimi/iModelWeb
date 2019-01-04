@@ -64,7 +64,7 @@
           label="Project Name"
         >
           <template slot-scope="scope">
-            <router-link :to="{path:'version',query:{projectId: scope.row.projectId}}">
+            <router-link :to="{path:'version',query:{projectId: scope.row.projectId,projectName: scope.row.name}}">
               <a class="link">{{ scope.row.name }}</a>
             </router-link>
           </template>
