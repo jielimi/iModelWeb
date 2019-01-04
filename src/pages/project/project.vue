@@ -231,6 +231,8 @@
         return this.req.pageSize * (this.req.pageIndex - 1) + 1 + row.index;
       },
       cancle () {
+        this.projectForm.projectName = '';
+        this.projectForm.projectDescription = '';
         this.$refs['projectForm'].resetFields();
         this.dialogFormVisible = false;
       },
