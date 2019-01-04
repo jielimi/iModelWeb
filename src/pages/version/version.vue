@@ -387,14 +387,14 @@
       	this.uploadParams.data.type = type;
       },
       uploadOnProgress(e,file){//开始上传
-				console.log(e.percent,file)
+				// console.log(e.percent,file)
 				this.progress = Math.floor(e.percent)
 			},
 			uploadOnChange(file){
-				console.log("——————————change——————————")
+				// console.log("——————————change——————————")
 				// console.log(file)
 				if(file.status == 'ready'){
-					console.log("ready")
+					// console.log("ready")
 					this.pass = null;
 					this.progress = 0;
 				}else if(file.status == 'fail'){
@@ -402,7 +402,7 @@
 				}
 			},
 			uploadOnSuccess(e,file){//上传附件
-				console.log("——————————success——————————")
+				// console.log("——————————success——————————")
 				this.pass = true;
 				this.$message.success("上传成功")
 				// this.imagelist.push({
@@ -411,7 +411,7 @@
 				// })
 			},
 			uploadOnError(e,file){
-				console.log("——————————error——————————")
+				// console.log("——————————error——————————")
 				this.pass = false;
 			},
 			removeFile (file){
@@ -420,6 +420,8 @@
     //     });
 			},
 			getFiles(row){
+				this.masterFileList = [];
+        this.referenceFileList = [];
 				this.dialogFileList = true;
 				let param = {
         	projectId: this.projectId,
@@ -427,8 +429,6 @@
         };
         var that = this;
 				this.$get('api/version/fileList',{}, param).then(res => {
-					that.masterFileList = [];
-          that.referenceFileList = [];
           res.data.fileList.forEach(function(value,index){
           	if(value.type === 0){
           		that.masterFileList.push(value);
