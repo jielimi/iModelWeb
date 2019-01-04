@@ -126,7 +126,8 @@
 					  :on-change="uploadOnChange"
 					  :on-success="uploadOnSuccess"
 					  :on-error="uploadOnError"
-					  :on-progress="uploadOnProgress">
+					  :on-progress="uploadOnProgress"
+					  :on-remove="removeFile">
 					  	<el-button @click="changeParam('0')" type="primary">Upload master file</el-button>
 					</el-upload>
 					<br />
@@ -315,6 +316,8 @@
       },
       cancle () {
         this.$refs['versionForm'].resetFields();
+        this.versionForm.versionName = '';
+        this.versionForm.versionDescription = '';
         this.dialogFormVisible = false;
       },
       createProject () {
@@ -412,7 +415,9 @@
 				this.pass = false;
 			},
 			removeFile (file){
-				console.log(file);
+				// this.$delete('api/version/file', param).then(res => {
+          
+    //     });
 			},
 			getFiles(row){
 				this.dialogFileList = true;
