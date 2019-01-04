@@ -249,14 +249,29 @@
     },
     methods: {
       getVersionList (index) {
+        
         let param = {
         	projectId: this.projectId,
           versionName:(encodeURIComponent(this.queryWord)),
-          startTime:(this.date)[0],
-          endTime:(this.date)[1],
+          startTime:this.date?(this.date)[0]:'',
+          endTime:this.date?(this.date)[1]:'',
           pageIndex: index || this.req.pageIndex,
           pageSize: this.req.pageSize
         };
+
+        function removeProperty (object) {
+        for (let prop in object) {
+          if (
+            object[prop] === '' ||
+            typeof object[prop] === 'undefined' ||
+            object[prop] === 'undefined'
+          ) {
+            delete object[prop];
+          }
+        }
+      }
+      removeProperty(param);
+
         this.isLoading = true;
         this.$get('api/versionList',{}, param).then(res => {
           this.isLoading = false;
@@ -283,9 +298,10 @@
 	          ? '0' + (date.getMonth() + 1)
 	          : date.getMonth() + 1;
 	      let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-	      return `${year}-${month}-${day} 00:00:00`;
+	      return `${year}-${month}-${day}`;
 	    },
       reset () {
+        this.date = this.setDate();
         this.queryWord = '';
         this.req.pageIndex = 1;
         this.getVersionList();
