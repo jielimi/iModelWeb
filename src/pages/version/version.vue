@@ -139,7 +139,7 @@
 					  :on-success="uploadOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress"
-					  :on-remove="removeFile(file, fileList)">
+					  :on-remove="removeFile()">
 					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
 					</el-upload>
 				</div>
@@ -252,8 +252,8 @@
         let param = {
         	projectId: this.projectId,
           versionName:(encodeURIComponent(this.queryWord)),
-          startTime:'',
-          endTime:'',
+          startTime:(this.date)[0],
+          endTime:(this.date)[1],
           pageIndex: index || this.req.pageIndex,
           pageSize: this.req.pageSize
         };
@@ -270,11 +270,11 @@
       },
       setDate () {
 	      let today = new Date();
-	      let tomorrow = new Date();
-	      tomorrow.setDate(tomorrow.getDate() + 1);
+	      let start = new Date();
+	      start.setDate(start.getDate() - 30);
 	      today = this.formatDate(today);
-	      tomorrow = this.formatDate(tomorrow);
-	      return ['', ''];
+	      start = this.formatDate(start);
+	      return [start, today];
 	    },
 	    formatDate (date) {
 	      let year = date.getFullYear();
@@ -406,7 +406,7 @@
 				console.log("——————————error——————————")
 				this.pass = false;
 			},
-			removeFile (file, fileList){
+			removeFile (){
 
 			},
 			getFiles(row){
