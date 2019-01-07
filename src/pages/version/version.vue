@@ -55,7 +55,7 @@
 
     <div class="table-area">
       <div class="operate-area">
-        <el-button type="primary" @click="createProject">Add Version</el-button>
+        <el-button type="primary" @click="createVersion">Add Version</el-button>
         <el-button type="success" @click="Generate">Generate</el-button>
       </div>
 
@@ -320,7 +320,7 @@
         this.versionForm.versionDescription = '';
         this.dialogFormVisible = false;
       },
-      createProject () {
+      createVersion () {
         this.isNewVersion = true;
         this.dialogFormVisible = true;
       },
@@ -425,7 +425,9 @@
         	projectId: this.projectId,
           versionName: 'yezi'
         };
+        this.isLoading = true;
         this.$post('api/version/gen',param).then(res=>{
+          this.isLoading = false;
           if(res.state != 0) {
             this.$message({
               message:res.message,

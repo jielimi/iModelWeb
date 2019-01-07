@@ -17,7 +17,8 @@ module.exports = {
         // pathRewrite:{
         //   '^/api':''    //这里理解为用api代替target中的地址
         // }
-      }
+      },
+      timeout:100000000
     },
 
     // Various Dev Server settings
