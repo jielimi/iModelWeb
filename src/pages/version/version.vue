@@ -232,7 +232,7 @@
         paginationShow: true,
         tableData: [],
         uploadParams: {
-					action: 'http://10.232.48.120:3000/api/version/upload',
+					action: 'http://127.0.0.1:3000/api/version/upload',
 					data: {
 						type: '0',
 						projectId: '',
@@ -423,7 +423,7 @@
       Generate(row) {
         let param = {
         	projectId: this.projectId,
-          versionName: 'yezi'
+          versionName: 'ver1'
         };
         this.isLoading = true;
         this.$post('api/version/gen',param).then(res=>{
