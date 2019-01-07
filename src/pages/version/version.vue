@@ -14,7 +14,7 @@
           @click="getVersionList(1)">
         </i>
       </el-input>
-			<el-date-picker :editable="true" v-model="date" type="datetimerange" range-separator="~" start-placeholder="create time start" end-placeholder="create time end" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" :unlink-panels="true">
+			<el-date-picker :editable="true" v-model="date" type="datetimerange" range-separator="~" start-placeholder="create time start" end-placeholder="create time end" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :unlink-panels="true">
 			</el-date-picker>
       <el-button type="primary" class="btn-search" @click="getVersionList(1)">Search</el-button>
       <el-button @click="reset">Reset</el-button>
