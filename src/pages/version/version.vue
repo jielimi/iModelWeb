@@ -56,7 +56,7 @@
     <div class="table-area">
       <div class="operate-area">
         <el-button type="primary" @click="createProject">Add Version</el-button>
-        <el-button type="success" @click="createProject">Generate</el-button>
+        <el-button type="success" @click="Generate">Generate</el-button>
       </div>
 
       <el-table
@@ -232,7 +232,7 @@
         paginationShow: true,
         tableData: [],
         uploadParams: {
-					action: 'http://10.232.49.29:3000/api/version/upload',
+					action: 'http://10.232.48.120:3000/api/version/upload',
 					data: {
 						type: '0',
 						projectId: '',
@@ -369,10 +369,11 @@
         };
         this.$put('api/version', param).then(res => {
           this.handleResult(res);
-        });
+        });""
       },
       dateFormat(row, column, cellValue, index){
         const  daterc= row[column.property];
+        // console.log(new Date("2019-01-04T07:58:24.927Z"));
         if(daterc!=null){
           const dateMat= new Date(daterc);
           return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
@@ -418,7 +419,26 @@
 				// this.$delete('api/version/file', param).then(res => {
           
     //     });
-			},
+      },
+      Generate(row) {
+        let param = {
+        	projectId: this.projectId,
+          versionName: 'yezi'
+        };
+        this.$post('api/version/gen',param).then(res=>{
+          if(res.state != 0) {
+            this.$message({
+              message:res.message,
+              type:'warning'
+            })
+          }else{
+            this.$message({
+              message:res.message,
+              type:'success'
+            })
+          }
+        })
+      },
 			getFiles(row){
 				this.masterFileList = [];
         this.referenceFileList = [];

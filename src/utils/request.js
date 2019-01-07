@@ -2,11 +2,12 @@ import axios from 'axios';
 import router from "../router/index";
 
 
-axios.defaults.timeout = 50000;
+axios.defaults.timeout = 100000;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
 
 // http request 拦截器
 const responseHandler = (response) => {
+  debugger;
   switch (response.data.errorCode) {
     case 404:
       router.push({ path: '/404' });
