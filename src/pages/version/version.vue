@@ -294,8 +294,8 @@
 	      let today = new Date();
 	      let start = new Date();
 	      start.setDate(start.getDate() - 30);
-	      today = formatDate(today, 'yyyy-MM-dd hh:mm:ss');
-	      start = formatDate(start, 'yyyy-MM-dd hh:mm:ss');
+	      today = formatDate(today, 'yyyy-MM-dd 23:59:59');
+	      start = formatDate(start, 'yyyy-MM-dd');
 	      return [start, today];
 	    },
       reset () {
