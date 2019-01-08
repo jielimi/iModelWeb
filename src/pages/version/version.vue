@@ -56,7 +56,7 @@
     <div class="table-area">
       <div class="operate-area">
         <el-button type="primary" @click="createVersion">Add Version</el-button>
-        <el-button type="success" @click="Generate">Generate</el-button>
+        <!-- <el-button type="success" @click="Generate">Generate</el-button> -->
       </div>
 
       <el-table
@@ -92,9 +92,8 @@
         >
         </el-table-column>
         <el-table-column
-          align="center"
           label="Operate"
-          width="300">
+          width="380">
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -111,15 +110,22 @@
               size="mini"
               @click="uploadFiles(scope.row)">Upload
             </el-button>
+            <el-button
+            	v-if="scope.row.generated===false"
+              type="success"
+              size="mini"
+              @click="Generate(scope.row)">Generate
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <el-dialog title="Upload Files" :close-on-click-modal="false" :visible.sync="uploadVisible" center>
+    <el-dialog title="Upload Files" :close-on-click-modal="false" @close="clearUploadList" :visible.sync="uploadVisible" center>
         <div class="file-upload">
 					<el-upload class="uploader" accept=".dgn"
 					  :show-file-list="true"
+					  :file-list="uploadPrimaryList"
 					  :multiple="true"
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
@@ -133,6 +139,7 @@
 					<br />
 					<el-upload class="uploader" accept=".dgn"
 					  :show-file-list="true"
+					  :file-list="uploadReferenceList"
 					  :multiple="true"
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
@@ -240,6 +247,8 @@
 					}
 				},
 				activeTab: 'master',
+				uploadPrimaryList:[],
+				uploadReferenceList:[],
 				masterFileList: [],
 				referenceFileList: []
       };
@@ -423,7 +432,7 @@
       Generate(row) {
         let param = {
         	projectId: this.projectId,
-          versionName: 'ver1'
+          versionName: row.name
         };
         this.isLoading = true;
         this.$post('api/version/gen',param).then(res=>{
@@ -459,6 +468,10 @@
           	}
           });
         });
+			},
+			clearUploadList(){
+				this.uploadPrimaryList = [];
+				this.uploadReferenceList = []
 			}
     }
   };
@@ -504,6 +517,10 @@
       color: #409EFF;
       text-decoration: underline;
       cursor: pointer;
+    }
+    .el-upload button {
+    	width: 142px;
+    	text-align: center;
     }
   }
 
