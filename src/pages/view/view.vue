@@ -14,7 +14,7 @@ import * as SimpleViewState_1 from "../view/dependency/SimpleViewState"
 
 import { AccessToken, UserProfile, IModelBankAccessContext } from "@bentley/imodeljs-clients";
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
-import { Config, DeploymentEnv } from "@bentley/imodeljs-clients/lib";
+// import { Config, DeploymentEnv } from "@bentley/imodeljs-clients/lib";
 
 // 下面这部分是sviModeApp的部分
 function stringToSnapMode(name) {
@@ -150,7 +150,7 @@ export default {
        let rpcConfiguration;
        rpcConfiguration = common_1.BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
         [common_1.IModelTileRpcInterface, common_1.StandaloneIModelRpcInterface, common_1.IModelReadRpcInterface]);
-        Config.devCorsProxyServer = "https://localhost:3001";
+        // Config.devCorsProxyServer = "https://localhost:3001";
 
         //这部分貌似也可以不要
         //console.log(rpcConfiguration.interfaces())
