@@ -21,18 +21,23 @@ export default new Router({
           path: '/version',
           name: 'version',
           component: resolve => require(['@/pages/version/version'], resolve)
+        },
+        {
+          path: '/view',
+          name: 'view',
+          component: resolve => require(['@/pages/view/view'], resolve)
         }
       ]
-    },
-    // {
-    //   path: '/',
-    //   name: 'project',
-    //   component: resolve => require(['@/pages/project/project'], resolve)
-    // },
-    {
-      path: '/pages/version/:projectId',
-      name: 'version',
-      component: resolve => require(['@/pages/version/version'], resolve)
     }
+    // {
+    //   path: '/view',
+    //   name: 'view',
+    //   component: resolve => require(['@/pages/view/view'], resolve)
+    // }
+    // {
+    //   path: '/pages/version/:projectId',
+    //   name: 'version',
+    //   component: resolve => require(['@/pages/version/version'], resolve)
+    // }
   ]
 })
