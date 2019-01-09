@@ -18,7 +18,6 @@
 			</el-date-picker>
       <el-button type="primary" class="btn-search" @click="getVersionList(1)">Search</el-button>
       <el-button @click="reset">Reset</el-button>
-
     </div>
 
     <el-dialog title="Create Version" :close-on-click-modal="false" :visible.sync="dialogFormVisible" center>
@@ -33,8 +32,6 @@
             <span>{{versionForm.versionName}}</span>
           </el-form-item>
         </div>
-
-
         <el-form-item label="Description:" :label-width="formLabelWidth" required prop="versionDescription">
           <el-input
             type="textarea"
@@ -47,7 +44,6 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancle">Cancle</el-button>
-
         <el-button v-if="isNewVersion" type="primary" @click="createVersionConfirm()">Confirm</el-button>
         <el-button v-else type="primary" @click="modifyVersionConfirm()">Confirm</el-button>
       </div>
@@ -58,7 +54,6 @@
         <el-button type="primary" @click="createVersion">Add Version</el-button>
         <!-- <el-button type="success" @click="Generate">Generate</el-button> -->
       </div>
-
       <el-table
         :data="tableData"
         border
@@ -69,30 +64,26 @@
           label="Index"
           width="60"
           align="center"
-          :formatter="formatter"
-        >
+          :formatter="formatter">
         </el-table-column>
         <el-table-column
-          label="Version Name"
-        >
+          label="Version Name">
           <template slot-scope="scope">
             <a class="link">{{ scope.row.name }}</a>
           </template>
         </el-table-column>
         <el-table-column
           prop="description"
-          label="Version Description"
-        >
+          label="Version Description">
         </el-table-column>
         <el-table-column
           align="center"
           prop="created"
-          label="Create Time"
-          :formatter="dateFormat"
-        >
+          label="Created"
+          :formatter="dateFormat">
         </el-table-column>
         <el-table-column
-          label="Operate"
+          label="Operations"
           width="380">
           <template slot-scope="scope">
             <el-button
@@ -396,7 +387,8 @@
       changeParam (type) {
       	this.uploadParams.data.type = type;
       },
-      uploadOnProgress(e,file){//开始上传
+      uploadOnProgress(e,file){
+      	//开始上传
 				// console.log(e.percent,file)
 				this.progress = Math.floor(e.percent)
 			},
@@ -408,13 +400,14 @@
 					this.pass = null;
 					this.progress = 0;
 				}else if(file.status == 'fail'){
-					this.$message.error("上传出错，请重试！")
+					this.$message.error("Uploaded error,please try again！")
 				}
 			},
-			uploadOnSuccess(e,file){//上传附件
+			uploadOnSuccess(e,file){
+				//上传附件
 				// console.log("——————————success——————————")
 				this.pass = true;
-				this.$message.success("上传成功")
+				this.$message.success("Successfully uploaded.")
 				// this.imagelist.push({
 				// 	url: file.url,
 				// 	name: '新增'
@@ -426,8 +419,7 @@
 			},
 			removeFile (file){
 				// this.$delete('api/version/file', param).then(res => {
-          
-    //     });
+        // });
       },
       Generate(row) {
         let param = {
@@ -447,6 +439,7 @@
               message:res.message,
               type:'success'
             })
+            row.generated = true;
           }
         })
       },
