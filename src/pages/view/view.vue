@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="tool-bar">toolbar</div>
+    <tool-bar-component></tool-bar-component>
     <canvas class="imodelview" id="imodelview">canvas</canvas>
 </div>
 </template>
@@ -14,6 +14,7 @@ import * as SimpleViewState_1 from "../view/dependency/SimpleViewState"
 
 import { AccessToken, UserProfile, IModelBankAccessContext } from "@bentley/imodeljs-clients";
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
+import toolBarComponent from './components/toolBar';
 // import { Config, DeploymentEnv } from "@bentley/imodeljs-clients/lib";
 
 // 下面这部分是sviModeApp的部分
@@ -71,11 +72,14 @@ export default {
                 "useIModelBank": true
             },
             iminfo:{
-                "url": "https://10.232.48.120:3001",
+                "url": "https://127.0.0.1:3003",
                 "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
                 "name": "ReadOnlyTest"
             }
         }
+    },
+    components:{
+        toolBarComponent
     },
     created(){
 
@@ -93,6 +97,7 @@ export default {
         const foreignAccessTokenWrapper = {};
         foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userProfile };
         state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
+        console.log("state=",state)
 
         // *** NON-CONNECT - ask the project mgr to let the user choose an iModel.
         const iModelId = "233e1f55-561d-42a4-8e80-d6f91743863e";
@@ -118,7 +123,9 @@ export default {
         state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
         state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
         // showStatus("opening iModel", state.project.name);
+        console.log("before open")
         state.iModelConnection = await IModelConnection.open(state.accessToken, imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1);
+        console.log("after open")
     },
     async  openView(state) {
         // find the canvas.
@@ -144,8 +151,10 @@ export default {
     },
     async main (){
        // step1: start the app 
+       
        SVTIModelApp.startup();
 
+       console.log(" SVTIModelApp.startup end")
        //step2:RPC start backend service on 3001
        let rpcConfiguration;
        rpcConfiguration = common_1.BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
@@ -168,7 +177,9 @@ export default {
         // const projectMgr = new NonConnectProject_1.NonConnectProject();
         // await projectMgr.loginAndOpenImodel(activeViewState);
         try{
+            console.log("loginAndOpenImodel start")
             await this.loginAndOpenImodel(activeViewState);
+            console.log("loginAndOpenImodel over")
         } catch (reason){
             console.log(reason);
             return;
@@ -178,7 +189,9 @@ export default {
         // await buildViewList(activeViewState, configuration);
 
         // step5 now connect the view to the canvas
+        console.log("open View Before")
         await openView(activeViewState);
+        console.log("open View End")
 
 
 

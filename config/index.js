@@ -11,13 +11,20 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
+      '*':{
         target: 'http://127.0.0.1:5566',
         changeOrigin:true,
         // pathRewrite:{
         //   '^/api':''    //这里理解为用api代替target中的地址
         // }
       },
+      // '/api':{
+      //   target: 'http://127.0.0.1:5566',
+      //   changeOrigin:true,
+      //   // pathRewrite:{
+      //   //   '^/api':''    //这里理解为用api代替target中的地址
+      //   // }
+      // },
       timeout:100000000
     },
 
