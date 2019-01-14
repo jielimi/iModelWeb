@@ -1,7 +1,8 @@
 <template>
 <div>
     <tool-bar-component></tool-bar-component>
-    <canvas class="imodelview" id="imodelview">canvas</canvas>
+    <!--<canvas class="imodelview" id="imodelview">canvas</canvas>-->
+    <div class="imodelview" id="imodelview">canvas</div>
 </div>
 </template>
 
@@ -12,7 +13,9 @@ import * as NonConnectProject_1 from "../view/dependency/NonConnectProject"
 import * as SimpleViewState_1 from "../view/dependency/SimpleViewState"
 //const SimpleViewState_1 = require("./SimpleViewState");
 
-import { AccessToken, UserProfile, IModelBankAccessContext } from "@bentley/imodeljs-clients";
+import { AccessToken, UserProfile } from "@bentley/imodeljs-clients";
+import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
+import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 // import { Config, DeploymentEnv } from "@bentley/imodeljs-clients/lib";
@@ -72,7 +75,7 @@ export default {
                 "useIModelBank": true
             },
             iminfo:{
-                "url": "https://127.0.0.1:3005",
+                "url": "https://127.0.0.1:3001",
                 "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
                 "name": "ReadOnlyTest"
             }
@@ -116,7 +119,7 @@ export default {
         // to work with that bank.
 
         // Tell IModelApp to use this IModelBank client
-        const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
+        const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv, new UrlFileHandler());
         IModelApp.iModelClient = imbcontext.client;
 
         // Open the iModel
@@ -131,11 +134,17 @@ export default {
         // find the canvas.
         const parent = document.getElementById("imodelview");
         if (parent) {
-            var htmlCanvas = parent.children[0];
+            //var htmlCanvas = parent.children[0];
             console.log("GET THE VIEWPORT 1")
-            if (!htmlCanvas) return;
-            theViewport = new frontend_1.Viewport(htmlCanvas, state.viewState);
+            //console.log(htmlCanvas)
+            //if (!htmlCanvas) return;
+            await this.buildViewList(state);
+            console.log(state.viewState)
+            let theViewport = frontend_1.ScreenViewport.create(parent, state.viewState); 
+            //new frontend_1.ScreenViewport(parent);
             console.log("GET THE VIEWPORT 2")
+            console.log(theViewport)
+            IModelApp.viewManager.addViewport(theViewport);
             // await _changeView(state.viewState);
             // theViewport.addFeatureOverrides = addFeatureOverrides;
             // theViewport.continuousRendering = document.getElementById("continuousRendering").checked;
@@ -148,6 +157,16 @@ export default {
         // await buildModelMenu(activeViewState);
         // await buildCategoryMenu(activeViewState);
         // updateRenderModeOptionsMap();
+    },
+    async buildViewList(state, configurations) {
+        const config = undefined !== configurations ? configurations : {};
+        const viewQueryParams = { wantPrivate: false };
+        const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
+        if (viewSpecs.length > 0){
+            let viewSpec = viewSpecs[viewSpecs.length-1];
+            const viewState = await state.iModelConnection.views.load(viewSpec.id);
+            state.viewState = viewState;
+        }
     },
     async main (){
        // step1: start the app 
@@ -190,7 +209,7 @@ export default {
 
         // step5 now connect the view to the canvas
         console.log("open View Before")
-        await openView(activeViewState);
+        await this.openView(activeViewState);
         console.log("open View End")
 
 
@@ -205,7 +224,7 @@ export default {
     .imodelview {
         position: relative;
         width: 98%;
-        height: 90%;
+        height: 1000px;
         border-color: black;
         border-style: solid;
         border-width: 1px;
