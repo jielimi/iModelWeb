@@ -15,10 +15,11 @@
   width: 35px;
   height: 35px;
   cursor: pointer;
+  color: #cdcdcd;
   -moz-osx-font-smoothing: grayscale;
 }
 .iconfont:hover{
-  color:#409eff;
+  color:white;
 }
 
 .icon-measure:before {

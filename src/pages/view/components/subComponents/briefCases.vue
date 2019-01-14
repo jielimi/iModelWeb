@@ -1,5 +1,5 @@
 <template>
-    <div>briefCases
+    <div>
         <i class="iconfont icon-briefcase-1"></i>
     </div>
 </template>

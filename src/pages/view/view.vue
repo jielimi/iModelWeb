@@ -75,7 +75,7 @@ export default {
                 "useIModelBank": true
             },
             iminfo:{
-                "url": "https://127.0.0.1:3001",
+                "url": "https://127.0.0.1:3008",
                 "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
                 "name": "ReadOnlyTest"
             }
