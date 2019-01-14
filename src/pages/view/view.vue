@@ -1,7 +1,6 @@
 <template>
 <div>
     <tool-bar-component></tool-bar-component>
-    <!--<canvas class="imodelview" id="imodelview">canvas</canvas>-->
     <div class="imodelview" id="imodelview">canvas</div>
 </div>
 </template>
@@ -9,61 +8,59 @@
 <script>
 import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 import * as common_1 from "@bentley/imodeljs-common/lib/common"
-import * as NonConnectProject_1 from "../view/dependency/NonConnectProject"
-import * as SimpleViewState_1 from "../view/dependency/SimpleViewState"
-//const SimpleViewState_1 = require("./SimpleViewState");
-
 import { AccessToken, UserProfile } from "@bentley/imodeljs-clients";
 import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
-// import { Config, DeploymentEnv } from "@bentley/imodeljs-clients/lib";
 
-// 下面这部分是sviModeApp的部分
-function stringToSnapMode(name) {
-    switch (name) {
-        case "Keypoint": return 2 /* NearestKeypoint */;
-        case "Nearest": return 1 /* Nearest */;
-        case "Center": return 8 /* Center */;
-        case "Origin": return 16 /* Origin */;
-        case "Intersection": return 64 /* Intersection */;
-        default: return 2 /* NearestKeypoint */;
-    }
-}
-class SVTAccuSnap extends frontend_1.AccuSnap {
-    getActiveSnapModes() {
-        const select = document.getElementById("snapModeList"); // 这个是工具栏第7个，杠铃下面有个钢琴那个，不知道什么意思，回头看,感觉是一个新增的工具才这么处理了
-        const snapMode = stringToSnapMode(select.value);
-        const snaps = [];
-        snaps.push(snapMode);
-        return snaps;
-    }
-}
 
-class MeasurePointsTool extends frontend_1.PrimitiveTool {
-    constructor() {
-        super(...arguments);
-        this.points = [];
-    }
-    requireWriteableTarget() { return false; }
-    onPostInstall() { super.onPostInstall(); frontend_1.IModelApp.accuSnap.enableSnap(true); }
-    onRestartTool() {
-        this.exitTool();
-    }
-}
+// function stringToSnapMode(name) {
+//     switch (name) {
+//         case "Keypoint": return 2 /* NearestKeypoint */;
+//         case "Nearest": return 1 /* Nearest */;
+//         case "Center": return 8 /* Center */;
+//         case "Origin": return 16 /* Origin */;
+//         case "Intersection": return 64 /* Intersection */;
+//         default: return 2 /* NearestKeypoint */;
+//     }
+// }
+// class SVTAccuSnap extends frontend_1.AccuSnap {
+//     getActiveSnapModes() {
+//         const select = document.getElementById("snapModeList"); // 这个是工具栏第7个，杠铃下面有个钢琴那个，不知道什么意思，回头看,感觉是一个新增的工具才这么处理了
+//         const snapMode = stringToSnapMode(select.value);
+//         const snaps = [];
+//         snaps.push(snapMode);
+//         return snaps;
+//     }
+// }
 
-MeasurePointsTool.toolId = "Measure.Points";
+// class MeasurePointsTool extends frontend_1.PrimitiveTool {
+//     constructor() {
+//         super(...arguments);
+//         this.points = [];
+//     }
+//     requireWriteableTarget() { return false; }
+//     onPostInstall() { super.onPostInstall(); frontend_1.IModelApp.accuSnap.enableSnap(true); }
+//     onRestartTool() {
+//         this.exitTool();
+//     }
+// }
 
-class SVTIModelApp extends frontend_1.IModelApp {
-    onStartup() {
-    //    console.log("yezi test")
-    // frontend_1.IModelApp.accuSnap = new SVTAccuSnap();
-    const svtToolNamespace = frontend_1.IModelApp.i18n.registerNamespace("SVTTools");
-    MeasurePointsTool.register(svtToolNamespace);
-  }
+// MeasurePointsTool.toolId = "Measure.Points";
+
+// class SVTIModelApp extends frontend_1.IModelApp {
+//     onStartup() {
+//     const svtToolNamespace = frontend_1.IModelApp.i18n.registerNamespace("SVTTools");
+//     MeasurePointsTool.register(svtToolNamespace);
+//   }
+// }
+
+class SimpleViewState {
+    constructor(){};
 }
-let activeViewState = new SimpleViewState_1.SimpleViewState();
+let activeViewState = new SimpleViewState();
+// let activeViewState = new SimpleViewState_1.SimpleViewState();
 // 上面这部分是sviModeApp的部分
 
 export default {
@@ -85,10 +82,15 @@ export default {
         toolBarComponent
     },
     created(){
-
     },
     mounted(){
      this.main();
+    },
+    beforeDestroy(){
+        if (activeViewState.iModelConnection !== undefined){
+            activeViewState.iModelConnection.close(activeViewState.accessToken);
+        }
+        // SVTIModelApp.shutdown();
     },
     methods:{
     async loginAndOpenImodel(state) {
@@ -106,15 +108,6 @@ export default {
         const iModelId = "233e1f55-561d-42a4-8e80-d6f91743863e";
 
         // *** NON-CONNECT - ask the deployment infrastructure for the iModelBank to use for this iModel
-        
-        //const iminfo = await this.getIModelbankFor(iModelId);
-        // let iminfo = {
-        //         "url": "https://10.232.48.120:3001",
-        // "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
-        // "name": "ReadOnlyTest"
-        // }
-        // assert(iminfo.iModelId === iModelId);
-
         // Now that we know what iModelBank to use, we can set up IModelApp
         // to work with that bank.
 
@@ -169,9 +162,8 @@ export default {
         }
     },
     async main (){
-       // step1: start the app 
-       
-       SVTIModelApp.startup();
+    
+       //SVTIModelApp.startup();
 
        console.log(" SVTIModelApp.startup end")
        //step2:RPC start backend service on 3001
@@ -211,8 +203,6 @@ export default {
         console.log("open View Before")
         await this.openView(activeViewState);
         console.log("open View End")
-
-
 
     }
 
