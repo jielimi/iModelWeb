@@ -1,7 +1,7 @@
 <template>
 <div>
     <tool-bar-component></tool-bar-component>
-    <div class="imodelview" id="imodelview">canvas</div>
+    <div class="imodelview" id="imodelview"></div>
 </div>
 </template>
 
@@ -62,7 +62,6 @@ class SimpleViewState {
 let activeViewState = new SimpleViewState();
 // let activeViewState = new SimpleViewState_1.SimpleViewState();
 // 上面这部分是sviModeApp的部分
-
 export default {
     name:'imodelviewer',
     data(){
@@ -72,7 +71,7 @@ export default {
                 "useIModelBank": true
             },
             iminfo:{
-                "url": "https://127.0.0.1:3008",
+                "url": "https://127.0.0.1:3001",
                 "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
                 "name": "ReadOnlyTest"
             }
@@ -87,6 +86,10 @@ export default {
      this.main();
     },
     beforeDestroy(){
+        if (this.viewport){
+            IModelApp.viewManager.dropViewport(this.viewport);
+        }
+
         if (activeViewState.iModelConnection !== undefined){
             activeViewState.iModelConnection.close(activeViewState.accessToken);
         }
@@ -133,11 +136,14 @@ export default {
             //if (!htmlCanvas) return;
             await this.buildViewList(state);
             console.log(state.viewState)
-            let theViewport = frontend_1.ScreenViewport.create(parent, state.viewState); 
+            if (!this.viewport){
+                this.viewport = frontend_1.ScreenViewport.create(parent, state.viewState); 
+            }
+
             //new frontend_1.ScreenViewport(parent);
             console.log("GET THE VIEWPORT 2")
-            console.log(theViewport)
-            IModelApp.viewManager.addViewport(theViewport);
+            console.log(this.viewport)
+            IModelApp.viewManager.addViewport(this.viewport);
             // await _changeView(state.viewState);
             // theViewport.addFeatureOverrides = addFeatureOverrides;
             // theViewport.continuousRendering = document.getElementById("continuousRendering").checked;
