@@ -69,9 +69,9 @@
         <el-table-column
           label="Version Name">
           <template slot-scope="scope">
-            <router-link :to="{path:'view',query:{projectId: scope.row.projectId,versionName: scope.row.name}}">
-              <a class="link" disabled="scope.row.ggenerated">{{ scope.row.name }}</a>
-            </router-link>
+            <a href="javascript:;" class="link" @click="skipToView(scope.row)" :class="{'link-disabled':!scope.row.generated}">
+              <span>{{ scope.row.name }}</span>
+            </a>
           </template>
         </el-table-column>
         <el-table-column
@@ -123,7 +123,7 @@
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
 					  :on-change="uploadOnChange"
-					  :on-success="uploadOnSuccess"
+					  :on-success="uploadMasterOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress"
 					  :on-remove="removeFile">
@@ -137,7 +137,7 @@
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
 					  :on-change="uploadOnChange"
-					  :on-success="uploadOnSuccess"
+					  :on-success="uploadReferenceOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress">
 					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
@@ -363,6 +363,12 @@
           }
         });
       },
+      skipToView(row){
+        if(row.generated === false){
+          return false;
+        }
+        this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name}});
+      },
       modifyVersionConfirm () {
         let param = {
           projectId: this.projectId,
@@ -399,25 +405,32 @@
 				// console.log(file)
 				if(file.status == 'ready'){
 					// console.log("ready")
-					this.pass = null;
+					// this.pass = null;
 					this.progress = 0;
 				}else if(file.status == 'fail'){
 					this.$message.error("Uploaded error,please try again！")
 				}
 			},
-			uploadOnSuccess(e,file){
-				//上传附件
-				// console.log("——————————success——————————")
-				this.pass = true;
-				this.$message.success("Successfully uploaded.")
-				// this.imagelist.push({
-				// 	url: file.url,
-				// 	name: '新增'
-				// })
-			},
+      uploadMasterOnSuccess(response, file, fileList){
+        if(response.state === 0){
+          this.$message.success("Successfully uploaded.");
+        }else {
+          this.uploadPrimaryList = [];
+          this.uploadReferenceList = [];
+          this.$message.error("Uploaded error！");
+        }
+      },
+      uploadReferenceOnSuccess(response, file, fileList){
+        if(response.state === 0){
+          this.$message.success("Successfully uploaded.");
+        }else {
+          this.uploadReferenceList = [];
+          this.$message.error("Uploaded error！");
+        }
+      },
 			uploadOnError(e,file){
 				// console.log("——————————error——————————")
-				this.pass = false;
+				// this.pass = false;
 			},
 			removeFile (file){
 				// this.$delete('api/version/file', param).then(res => {
@@ -466,7 +479,7 @@
 			},
 			clearUploadList(){
 				this.uploadPrimaryList = [];
-				this.uploadReferenceList = []
+				this.uploadReferenceList = [];
 			}
     }
   };
@@ -512,6 +525,11 @@
       color: #409EFF;
       text-decoration: underline;
       cursor: pointer;
+    }
+    .link-disabled {
+      color: #999;
+      text-decoration: none;
+      cursor: default;
     }
     .el-upload button {
     	width: 142px;
