@@ -16,10 +16,15 @@
   height: 35px;
   cursor: pointer;
   color: #cdcdcd;
+  border: 1px solid #cdcdcd;
+  padding: 4px;
+  border-radius: 6px;
   -moz-osx-font-smoothing: grayscale;
+  margin-left: 5px
 }
 .iconfont:hover{
-  color:white;
+  color:#409EFF;
+  border: 1px solid #409EFF;
 }
 
 .icon-measure:before {
@@ -78,7 +83,7 @@
   content: "\e7fb";
 }
 
-.icon-Gear-:before {
+.icon-Gear-4:before {
   content: "\e939";
 }
 

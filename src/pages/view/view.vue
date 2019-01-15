@@ -14,54 +14,11 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBan
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 
-
-// function stringToSnapMode(name) {
-//     switch (name) {
-//         case "Keypoint": return 2 /* NearestKeypoint */;
-//         case "Nearest": return 1 /* Nearest */;
-//         case "Center": return 8 /* Center */;
-//         case "Origin": return 16 /* Origin */;
-//         case "Intersection": return 64 /* Intersection */;
-//         default: return 2 /* NearestKeypoint */;
-//     }
-// }
-// class SVTAccuSnap extends frontend_1.AccuSnap {
-//     getActiveSnapModes() {
-//         const select = document.getElementById("snapModeList"); // 这个是工具栏第7个，杠铃下面有个钢琴那个，不知道什么意思，回头看,感觉是一个新增的工具才这么处理了
-//         const snapMode = stringToSnapMode(select.value);
-//         const snaps = [];
-//         snaps.push(snapMode);
-//         return snaps;
-//     }
-// }
-
-// class MeasurePointsTool extends frontend_1.PrimitiveTool {
-//     constructor() {
-//         super(...arguments);
-//         this.points = [];
-//     }
-//     requireWriteableTarget() { return false; }
-//     onPostInstall() { super.onPostInstall(); frontend_1.IModelApp.accuSnap.enableSnap(true); }
-//     onRestartTool() {
-//         this.exitTool();
-//     }
-// }
-
-// MeasurePointsTool.toolId = "Measure.Points";
-
-// class SVTIModelApp extends frontend_1.IModelApp {
-//     onStartup() {
-//     const svtToolNamespace = frontend_1.IModelApp.i18n.registerNamespace("SVTTools");
-//     MeasurePointsTool.register(svtToolNamespace);
-//   }
-// }
-
 class SimpleViewState {
     constructor(){};
 }
 let activeViewState = new SimpleViewState();
-// let activeViewState = new SimpleViewState_1.SimpleViewState();
-// 上面这部分是sviModeApp的部分
+
 export default {
     name:'imodelviewer',
     data(){
@@ -71,7 +28,7 @@ export default {
                 "useIModelBank": true
             },
             iminfo:{
-                "url": "https://127.0.0.1:3001",
+                "url": "https://127.0.0.1:3008",
                 "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
                 "name": "ReadOnlyTest"
             }
@@ -93,7 +50,6 @@ export default {
         if (activeViewState.iModelConnection !== undefined){
             activeViewState.iModelConnection.close(activeViewState.accessToken);
         }
-        // SVTIModelApp.shutdown();
     },
     methods:{
     async loginAndOpenImodel(state) {
@@ -126,6 +82,16 @@ export default {
         state.iModelConnection = await IModelConnection.open(state.accessToken, imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1);
         console.log("after open")
     },
+    async buildViewList(state, configurations) {
+        const config = undefined !== configurations ? configurations : {};
+        const viewQueryParams = { wantPrivate: false };
+        const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
+        if (viewSpecs.length > 0){
+            let viewSpec = viewSpecs[viewSpecs.length-1];
+            const viewState = await state.iModelConnection.views.load(viewSpec.id);
+            state.viewState = viewState;
+        }
+    },
     async  openView(state) {
         // find the canvas.
         const parent = document.getElementById("imodelview");
@@ -139,15 +105,10 @@ export default {
             if (!this.viewport){
                 this.viewport = frontend_1.ScreenViewport.create(parent, state.viewState); 
             }
-
             //new frontend_1.ScreenViewport(parent);
             console.log("GET THE VIEWPORT 2")
             console.log(this.viewport)
             IModelApp.viewManager.addViewport(this.viewport);
-            // await _changeView(state.viewState);
-            // theViewport.addFeatureOverrides = addFeatureOverrides;
-            // theViewport.continuousRendering = document.getElementById("continuousRendering").checked;
-            // frontend_1.IModelApp.viewManager.addViewport(theViewport);
         }
     },
     async  _changeView(view) {
@@ -157,28 +118,14 @@ export default {
         // await buildCategoryMenu(activeViewState);
         // updateRenderModeOptionsMap();
     },
-    async buildViewList(state, configurations) {
-        const config = undefined !== configurations ? configurations : {};
-        const viewQueryParams = { wantPrivate: false };
-        const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
-        if (viewSpecs.length > 0){
-            let viewSpec = viewSpecs[viewSpecs.length-1];
-            const viewState = await state.iModelConnection.views.load(viewSpec.id);
-            state.viewState = viewState;
-        }
-    },
     async main (){
-    
-       //SVTIModelApp.startup();
-
-       console.log(" SVTIModelApp.startup end")
-       //step2:RPC start backend service on 3001
+        
        let rpcConfiguration;
        rpcConfiguration = common_1.BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
         [common_1.IModelTileRpcInterface, common_1.StandaloneIModelRpcInterface, common_1.IModelReadRpcInterface]);
         // Config.devCorsProxyServer = "https://localhost:3001";
 
-        //这部分貌似也可以不要
+        
         //console.log(rpcConfiguration.interfaces())
         for (const definition of rpcConfiguration.interfaces()){
             common_1.RpcOperation.forEach(definition,
@@ -186,13 +133,9 @@ export default {
         }
 
         //转圈先不管
-
-        // step3:loginAndOpenImdel
         frontend_1.IModelApp.hubDeploymentEnv = this.configuration.environment || "QA";
-        // 直接这里loginAndOpenImodel
-        // 下面的是old写法，先保留,后续如果通过，删除
-        // const projectMgr = new NonConnectProject_1.NonConnectProject();
-        // await projectMgr.loginAndOpenImodel(activeViewState);
+        
+        // step3:loginAndOpenImdel
         try{
             console.log("loginAndOpenImodel start")
             await this.loginAndOpenImodel(activeViewState);
@@ -202,14 +145,9 @@ export default {
             return;
         }
 
-        // step 4 菜单部分，这部分要重写，先不管 
-        // await buildViewList(activeViewState, configuration);
-
-        // step5 now connect the view to the canvas
         console.log("open View Before")
         await this.openView(activeViewState);
         console.log("open View End")
-
     }
 
     }
