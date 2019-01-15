@@ -1,6 +1,6 @@
 <template>
 <div>
-    <tool-bar-component :viewOption=viewList></tool-bar-component>
+    <tool-bar-component></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
 </div>
 </template>
@@ -18,6 +18,7 @@ class SimpleViewState {
     constructor(){};
 }
 let activeViewState = new SimpleViewState();
+const viewMap = new Map();
 
 export default {
     name:'imodelviewer',
@@ -39,6 +40,7 @@ export default {
         toolBarComponent
     },
     created(){
+        window.eventHub.$on('categories_viewList_change',this.changeView);
     },
     mounted(){
      this.main();
@@ -53,6 +55,21 @@ export default {
         }
     },
     methods:{
+     async _changeView(view) {
+        await theViewport.changeView(view);
+        activeViewState.viewState = view;
+        // await buildModelMenu(activeViewState);
+        // await buildCategoryMenu(activeViewState);
+        // updateRenderModeOptionsMap();
+    },
+    async changeView (viewInfo) {
+        let view = viewMap.get(viewInfo.name);
+        if (!(view instanceof frontend_1.ViewState)) {
+            view = await activeViewState.iModelConnection.views.load(viewInfo.id);
+            viewMap.set(viewInfo.name, view);
+        }
+        await this._changeView(view.clone());
+    },
     async loginAndOpenImodel(state) {
         // This is where the app's frontend must be written to work with the
         // surrounding project, user, and deployment infrastructure.
@@ -89,7 +106,7 @@ export default {
         const viewQueryParams = { wantPrivate: false };
         const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
 
-        window.eventHub.$emit('categories_viewList_in', viewSpecs);
+        window.eventHub.$emit('categories_viewList_init', viewSpecs);
         
         if (viewSpecs.length > 0){
             let viewSpec = viewSpecs[viewSpecs.length-1];

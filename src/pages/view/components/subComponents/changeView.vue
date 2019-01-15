@@ -5,7 +5,7 @@
             v-for="item in options"
             :key="item.id"
             :label="item.name"
-            :value="item.id">
+            :value="item">
             </el-option>
         </el-select>
     </div>
@@ -24,16 +24,15 @@ export default {
         
     },
     created () {
-        window.eventHub.$on('categories_viewList_in',this.getViewList);
+        window.eventHub.$on('categories_viewList_init',this.getViewList);
     },
     methods: {
         getViewList(viewList){
             this.options = viewList;
             this.value = this.options[0].name
         },
-        selectChange(name){
-        //    window.eventHub.$emit('categories_viewList_out',this.getViewList);
-
+        selectChange(item){
+           window.eventHub.$emit('categories_viewList_change',item);
         }
     }
     
