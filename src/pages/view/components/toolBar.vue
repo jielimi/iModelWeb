@@ -15,6 +15,7 @@
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
         <syncComponent></syncComponent>
+        {{viewList}}
     </div>
 </template>
 <script>
@@ -41,6 +42,7 @@ export default {
         return {
         };
     },
+    props:[''],
     components: {
         briefCasesComponent,
         changeViewComponent,
@@ -59,6 +61,9 @@ export default {
         syncComponent
     },
     created () {},
+    mounted () {
+        
+    },
     methods: {
     }
     

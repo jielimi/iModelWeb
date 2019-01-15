@@ -1,6 +1,6 @@
 <template>
 <div>
-    <tool-bar-component></tool-bar-component>
+    <tool-bar-component :viewOption=viewList></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
 </div>
 </template>
@@ -88,6 +88,9 @@ export default {
         const config = undefined !== configurations ? configurations : {};
         const viewQueryParams = { wantPrivate: false };
         const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
+
+        window.eventHub.$emit('categories_viewList_in', viewSpecs);
+        
         if (viewSpecs.length > 0){
             let viewSpec = viewSpecs[viewSpecs.length-1];
             const viewState = await state.iModelConnection.views.load(viewSpec.id);

@@ -9,13 +9,20 @@ export default {
     name: 'briefCases',
     data () {
         return {
+            options:[]
         };
     },
     components: {
         
     },
-    created () {},
+    created () {
+       
+    },
+    mounted(){
+       
+    },
     methods: {
+        
     }
     
 }

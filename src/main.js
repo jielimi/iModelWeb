@@ -34,6 +34,8 @@ new Vue({
   template: '<App/>'
 })
 
+window.eventHub = new Vue();
+
 
 function stringToSnapMode(name) {
   switch (name) {

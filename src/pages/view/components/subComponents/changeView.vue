@@ -1,11 +1,11 @@
 <template>
     <div class="change-view">
-        <el-select v-model="value" placeholder="Select">
+        <el-select v-model="value" placeholder="Select" @change="selectChange">
             <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
             </el-option>
         </el-select>
     </div>
@@ -16,30 +16,25 @@ export default {
     name: 'changeView',
     data () {
         return {
-            options: [{
-          value: 'Option1',
-          label: 'Option1'
-        }, {
-          value: 'Option2',
-          label: 'Option2'
-        }, {
-          value: 'Option3',
-          label: 'Option3'
-        }, {
-          value: 'Option4',
-          label: 'Option4'
-        }, {
-          value: 'Option5',
-          label: 'Option5'
-        }],
-        value: ''
+            options: [],
+            value: ''
         };
     },
     components: {
         
     },
-    created () {},
+    created () {
+        window.eventHub.$on('categories_viewList_in',this.getViewList);
+    },
     methods: {
+        getViewList(viewList){
+            this.options = viewList;
+            this.value = this.options[0].name
+        },
+        selectChange(name){
+        //    window.eventHub.$emit('categories_viewList_out',this.getViewList);
+
+        }
     }
     
 }
