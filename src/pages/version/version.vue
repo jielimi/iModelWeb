@@ -69,7 +69,9 @@
         <el-table-column
           label="Version Name">
           <template slot-scope="scope">
-            <a class="link">{{ scope.row.name }}</a>
+            <router-link :to="{path:'view',query:{projectId: scope.row.projectId,versionName: scope.row.name}}">
+              <a class="link" disabled="scope.row.ggenerated">{{ scope.row.name }}</a>
+            </router-link>
           </template>
         </el-table-column>
         <el-table-column

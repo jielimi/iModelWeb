@@ -30,7 +30,8 @@ export default {
             iminfo:{
                 "url": "https://127.0.0.1:3008",
                 "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
-                "name": "ReadOnlyTest"
+                "name": "ReadOnlyTest",
+                "versionName":""
             }
         }
     },
@@ -79,7 +80,8 @@ export default {
         state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
         // showStatus("opening iModel", state.project.name);
         console.log("before open")
-        state.iModelConnection = await IModelConnection.open(state.accessToken, imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1);
+        state.iModelConnection = await IModelConnection.open(state.accessToken, 
+        imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1);
         console.log("after open")
     },
     async buildViewList(state, configurations) {
