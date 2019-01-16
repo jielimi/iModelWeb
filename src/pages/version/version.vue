@@ -367,7 +367,7 @@
         if(row.generated === false){
           return false;
         }
-        this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name}});
+        this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name,url:row.url}});
       },
       modifyVersionConfirm () {
         let param = {

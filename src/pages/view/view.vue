@@ -28,16 +28,17 @@ export default {
             configuration:{
                 "useIModelBank": true
             },
+            // iminfo:{
+            //     "url": "https://127.0.0.1:3008",
+            //     "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
+            //     "name": "ReadOnlyTest",
+            //     "versionName":""
+            // },
             iminfo:{
-                "url": "https://127.0.0.1:3008",
-                "iModelId": "233e1f55-561d-42a4-8e80-d6f91743863e",
-                "name": "ReadOnlyTest",
-                "versionName":""
-            },
-            iminfo1:{
-                "url": "https://127.0.0.1:3008",
+                "url": this.$route.query.url,
                 "iModelId": this.$route.query.projectId,
-                "versionName":this.$route.query.name
+                "versionName":this.$route.query.name,
+                "name": "ReadOnlyTest",
             },
         }
     },
@@ -94,6 +95,7 @@ export default {
         // to work with that bank.
 
         // Tell IModelApp to use this IModelBank client
+        
         const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv, new UrlFileHandler());
         IModelApp.iModelClient = imbcontext.client;
 
@@ -103,7 +105,7 @@ export default {
         // showStatus("opening iModel", state.project.name);
         console.log("before open")
         state.iModelConnection = await IModelConnection.open(state.accessToken, 
-        imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1);
+        imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
         console.log("after open")
     },
     async buildViewList(state, configurations) {
