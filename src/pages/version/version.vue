@@ -454,7 +454,7 @@
 				// console.log("——————————error——————————")
 				// this.pass = false;
 			},
-			removeMasterFile (file){
+			removeMasterFile (file,fileList){
         let param = {
           type: '0',
           projectId: this.projectId,
@@ -464,10 +464,21 @@
         this.isLoading = true;
 				this.$del('api/version/file', param).then(res => {
           this.isLoading = false;
-          console.log(res);
+          if(res.state != 0) {
+            fileList.push(file);
+            this.$message({
+              message:res.message,
+              type:'warning'
+            })
+          }else{
+            this.$message({
+              message:res.message,
+              type:'success'
+            })
+          }
         });
       },
-      removeReferenceFile (file){
+      removeReferenceFile (file,fileList){
         let param = {
           type: '1',
           projectId: this.projectId,
@@ -477,7 +488,18 @@
         this.isLoading = true;
         this.$del('api/version/file', param).then(res => {
           this.isLoading = false;
-          console.log(res);
+          if(res.state != 0) {
+            fileList.push(file);
+            this.$message({
+              message:res.message,
+              type:'warning'
+            })
+          }else{
+            this.$message({
+              message:res.message,
+              type:'success'
+            })
+          }
         });
       },
       Generate(row) {
@@ -567,6 +589,7 @@
           position: absolute;
           right: 0;
           top: 0;
+          border: none;
           color: #fff;
       }
     }
