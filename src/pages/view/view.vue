@@ -49,6 +49,7 @@ export default {
     created(){
         window.eventHub.$on('categories_viewList_change',this.changeView);
         window.eventHub.$on('fitToView',this.fitToView)
+        window.eventHub.$on('windowArea',this.windowArea)
     },
     mounted(){
      this.main();
@@ -66,7 +67,10 @@ export default {
     fitToView(){
         IModelApp.tools.run("View.Fit", this.viewport, true);
     },
-     async _changeView(view) {
+    windowArea() {
+        IModelApp.tools.run("View.WindowArea", this.viewport);
+    },
+    async _changeView(view) {
         await theViewport.changeView(view);
         activeViewState.viewState = view;
         // await buildModelMenu(activeViewState);

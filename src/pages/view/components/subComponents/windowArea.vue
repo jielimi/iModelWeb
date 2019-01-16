@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-search2"></i>
+        <i class="iconfont icon-search2" @click="windowArea"></i>
     </div>
 </template>
 
@@ -16,6 +16,9 @@ export default {
     },
     created () {},
     methods: {
+        windowArea() {
+            window.eventHub.$emit('windowArea');
+        }
     }
     
 }
