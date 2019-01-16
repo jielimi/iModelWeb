@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @click="startfit">
         <i class="iconfont icon-iostoggleoutline1"></i>
     </div>
 </template>
@@ -16,6 +16,9 @@ export default {
     },
     created () {},
     methods: {
+        startfit(){
+            window.eventHub.$emit('fitToView');
+        }
     }
     
 }

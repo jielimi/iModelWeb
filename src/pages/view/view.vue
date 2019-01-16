@@ -25,6 +25,7 @@ export default {
     data(){
         return{
             isLoading:false,
+            viewport:undefined,
             configuration:{
                 "useIModelBank": true
             },
@@ -47,6 +48,7 @@ export default {
     },
     created(){
         window.eventHub.$on('categories_viewList_change',this.changeView);
+        window.eventHub.$on('fitToView',this.fitToView)
     },
     mounted(){
      this.main();
@@ -61,6 +63,9 @@ export default {
         }
     },
     methods:{
+    fitToView(){
+        IModelApp.tools.run("View.Fit", this.viewport, true);
+    },
      async _changeView(view) {
         await theViewport.changeView(view);
         activeViewState.viewState = view;

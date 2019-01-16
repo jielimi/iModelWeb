@@ -15,7 +15,6 @@
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
         <syncComponent></syncComponent>
-        {{viewList}}
     </div>
 </template>
 <script>
