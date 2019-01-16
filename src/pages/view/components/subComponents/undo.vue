@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-iosundooutline"></i>
+        <i class="iconfont icon-iosundooutline" @click="undo"></i>
     </div>
 </template>
 
@@ -16,6 +16,9 @@ export default {
     },
     created () {},
     methods: {
+        undo(){
+            window.eventHub.$emit('undo');
+        }
     }
     
 }

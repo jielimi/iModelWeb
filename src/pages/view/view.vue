@@ -48,8 +48,9 @@ export default {
     },
     created(){
         window.eventHub.$on('categories_viewList_change',this.changeView);
-        window.eventHub.$on('fitToView',this.fitToView)
-        window.eventHub.$on('windowArea',this.windowArea)
+        window.eventHub.$on('fitToView',this.fitToView);
+        window.eventHub.$on('windowArea',this.windowArea);
+        window.eventHub.$on('undo',this.undo);
     },
     mounted(){
      this.main();
@@ -69,6 +70,9 @@ export default {
     },
     windowArea() {
         IModelApp.tools.run("View.WindowArea", this.viewport);
+    },
+    undo(){
+        IModelApp.tools.run("View.Undo", this.viewport);
     },
     async _changeView(view) {
         await theViewport.changeView(view);
