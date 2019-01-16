@@ -79,7 +79,7 @@
           prop="thumbnail"
           label="Thumbnail">
           <template slot-scope="scope">
-            <img v-if="scope.row.thumbnail" class="thumbnail" :src="scope.row.thumbnail"/>
+            <img v-if="scope.row.thumbnail" class="thumbnail" :src="scope.row.thumbnail" @click="expandThumbNail(scope.row.thumbnail)"/>
             <img v-else class="thumbnail" src="../../assets/images/default.png"/>
           </template>
         </el-table-column>
@@ -122,6 +122,14 @@
                    :total="totalNum">
     </el-pagination>
 
+    <el-dialog
+      title="Thumbnail"
+      :visible.sync="dialogVisible"
+      width="100%"
+    >
+    <img :src='thumbnailSrc' width="500px" height="500px"/>
+    </el-dialog>
+
 
   </div>
 
@@ -155,6 +163,8 @@
         });
       };
       return {
+        dialogVisible:false,
+        thumbnailSrc:'',
         isLoading: false,
         isNewProject: true,
         queryWord: '',
@@ -302,6 +312,11 @@
           const dateMat= new Date(daterc);
           return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
         }
+      },
+      expandThumbNail(base64src){
+        this.dialogVisible = true;
+        this.thumbnailSrc = base64src;
+
       }
     }
   };
@@ -349,6 +364,7 @@
       cursor: pointer;
     }
     .thumbnail{
+      cursor: pointer;
       vertical-align: middle;
       width: 45px;
       height: 45px;
