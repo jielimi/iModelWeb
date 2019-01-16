@@ -1,5 +1,5 @@
 <template>
-<div class="view">
+<div class="view" v-loading="isLoading">
     <tool-bar-component></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
 </div>
@@ -148,7 +148,7 @@ export default {
         // updateRenderModeOptionsMap();
     },
     async main (){
-        
+       this.isLoading = true; 
        let rpcConfiguration;
        rpcConfiguration = common_1.BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
         [common_1.IModelTileRpcInterface, common_1.StandaloneIModelRpcInterface, common_1.IModelReadRpcInterface]);
@@ -161,7 +161,6 @@ export default {
             (operation) => operation.policy.token = (_request) => new common_1.IModelToken("test", "test", "test", "test"));
         }
 
-        //转圈先不管
         frontend_1.IModelApp.hubDeploymentEnv = this.configuration.environment || "QA";
         
         // step3:loginAndOpenImdel
@@ -170,6 +169,7 @@ export default {
             await this.loginAndOpenImodel(activeViewState);
             console.log("loginAndOpenImodel over")
         } catch (reason){
+            this.isLoading = false; 
             console.log(reason);
             return;
         }
@@ -177,6 +177,9 @@ export default {
         console.log("open View Before")
         await this.openView(activeViewState);
         console.log("open View End")
+
+       this.isLoading = false; 
+
     }
 
     }
@@ -185,13 +188,21 @@ export default {
 
 <style lang="less" scoped>
     .view{
-        position: relative;
+        position: absolute;
+        top:0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         
     }
     .imodelview {
         position: absolute;
-        width: 98%;
-        height: 1000px;
+        top:60px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        // width: 98%;
+        // height: 1000px;
         border-color: black;
         border-style: solid;
         border-width: 1px;
