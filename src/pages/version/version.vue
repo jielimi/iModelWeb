@@ -439,7 +439,7 @@
         }else {
           this.uploadPrimaryList = [];
           this.uploadReferenceList = [];
-          this.$message.error("Uploaded error！");
+          this.$message.error(response.message);
         }
       },
       uploadReferenceOnSuccess(response, file, fileList){
@@ -447,7 +447,7 @@
           this.$message.success("Successfully uploaded.");
         }else {
           this.uploadReferenceList = [];
-          this.$message.error("Uploaded error！");
+          this.$message.error(response.message);
         }
       },
 			uploadOnError(e,file){
@@ -520,7 +520,7 @@
               message:res.message,
               type:'success'
             })
-            row.generated = true;
+            this.getVersionList();
           }
         })
       },
