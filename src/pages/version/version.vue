@@ -571,7 +571,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     opacity: 1;
-    z-index: 10000;
+    z-index: 998;
     left: 0;
     top: 0;
     .img-wrap {
@@ -583,13 +583,17 @@
       transform:translate(-50%,-50%);
       i {
           display: inline-block;
-          width: 40px;
-          height: 40px;
-          font-size: 40px;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          font-size: 30px;
           position: absolute;
-          right: 0;
-          top: 0;
+          z-index: 999;
+          right: -20px;
+          top: -20px;
           border: none;
+          background-color: rgba(0,0,0,.5);
+          cursor: pointer;
           color: #fff;
       }
     }
