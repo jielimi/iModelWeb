@@ -80,6 +80,15 @@
         </el-table-column>
         <el-table-column
           align="center"
+          prop="thumbnail"
+          label="Thumbnail">
+          <template slot-scope="scope">
+            <img v-if="scope.row.thumbnail" class="thumbnail" :src="scope.row.thumbnail" @click="expandThumbNail(scope.row.thumbnail)"/>
+            <img v-else class="thumbnail" src="../../assets/images/default.png"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           prop="created"
           label="Created"
           :formatter="dateFormat">
@@ -99,6 +108,7 @@
               @click="getFiles(scope.row)">Files
             </el-button>
             <el-button
+              v-if="scope.row.generated===false"
               type="primary"
               size="mini"
               @click="uploadFiles(scope.row)">Upload
@@ -126,7 +136,7 @@
 					  :on-success="uploadMasterOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress"
-					  :on-remove="removeFile">
+					  :on-remove="removeMasterFile">
 					  	<el-button @click="changeParam('0')" type="primary">Upload master file</el-button>
 					</el-upload>
 					<br />
@@ -139,7 +149,8 @@
 					  :on-change="uploadOnChange"
 					  :on-success="uploadReferenceOnSuccess"
 					  :on-error="uploadOnError"
-					  :on-progress="uploadOnProgress">
+					  :on-progress="uploadOnProgress"
+            :on-remove="removeReferenceFile">
 					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
 					</el-upload>
 				</div>
@@ -172,6 +183,13 @@
                    layout=" prev, pager, next,total,sizes"
                    :total="totalNum">
     </el-pagination>
+
+    <div class="cover" v-if="dialogVisible">
+      <div class="img-wrap">
+        <i class="iconfont icon-close" @click="closeCover"></i>
+        <img :src='thumbnailSrc' width="500px" height="500px"/>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -199,6 +217,8 @@
         });
       };
       return {
+        dialogVisible:false,
+        thumbnailSrc:'',
         isLoading: false,
         isNewVersion: true,
         queryWord: '',
@@ -367,7 +387,9 @@
         if(row.generated === false){
           return false;
         }
-        this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name,url:row.url}});
+        // this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name,url:row.url}});
+        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,url: row.url}});
+        window.open(routeData.href, '_blank'); 
       },
       modifyVersionConfirm () {
         let param = {
@@ -432,9 +454,31 @@
 				// console.log("——————————error——————————")
 				// this.pass = false;
 			},
-			removeFile (file){
-				// this.$delete('api/version/file', param).then(res => {
-        // });
+			removeMasterFile (file){
+        let param = {
+          type: '0',
+          projectId: this.projectId,
+          versionName: this.uploadParams.data.versionName,
+          fileName: file.name
+        };
+        this.isLoading = true;
+				this.$del('api/version/file', param).then(res => {
+          this.isLoading = false;
+          console.log(res);
+        });
+      },
+      removeReferenceFile (file){
+        let param = {
+          type: '1',
+          projectId: this.projectId,
+          versionName: this.uploadParams.data.versionName,
+          fileName: file.name
+        };
+        this.isLoading = true;
+        this.$del('api/version/file', param).then(res => {
+          this.isLoading = false;
+          console.log(res);
+        });
       },
       Generate(row) {
         let param = {
@@ -480,7 +524,14 @@
 			clearUploadList(){
 				this.uploadPrimaryList = [];
 				this.uploadReferenceList = [];
-			}
+			},
+      expandThumbNail(base64src){
+        this.dialogVisible = true;
+        this.thumbnailSrc = base64src;
+      },
+      closeCover(){
+        this.dialogVisible = false;
+      }
     }
   };
 </script>
@@ -491,6 +542,34 @@
   h1 {
     text-align: left;
     font-size: 20px;
+  }
+  .cover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    .img-wrap {
+      position:absolute;
+      top:50%;
+      left:50%;
+      -webkit-transform: translate(-50%,-50%);
+      -moz-transform: translate(-50%,-50%);
+      transform:translate(-50%,-50%);
+      i {
+          display: inline-block;
+          width: 40px;
+          height: 40px;
+          font-size: 40px;
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: #fff;
+      }
+    }
   }
 
   .main {
@@ -534,6 +613,12 @@
     .el-upload button {
     	width: 142px;
     	text-align: center;
+    }
+    .thumbnail{
+      cursor: pointer;
+      vertical-align: middle;
+      width: 45px;
+      height: 45px;
     }
   }
 

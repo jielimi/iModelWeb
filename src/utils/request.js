@@ -126,7 +126,7 @@ export function put(url, data = {}) {
 
 export function del(url, data = {}) {
   return new Promise((resolve, reject) => {
-    axios.delete(url, data)
+    axios.delete(url, {'data': data})
       .then(response => {
         resolve(response.data);
       }, err => {

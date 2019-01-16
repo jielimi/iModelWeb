@@ -18,13 +18,15 @@ import {
   post,
   get,
   patch,
-  put
+  put,
+  del
 } from './utils/request'
 
 Vue.prototype.$post = post;
 Vue.prototype.$get = get;
 Vue.prototype.$patch = patch;
 Vue.prototype.$put = put;
+Vue.prototype.$del = del;
 
 /* eslint-disable no-new */
 new Vue({

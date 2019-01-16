@@ -122,14 +122,12 @@
                    :total="totalNum">
     </el-pagination>
 
-    <el-dialog
-      title="Thumbnail"
-      :visible.sync="dialogVisible"
-      width="100%"
-    >
-    <img :src='thumbnailSrc' width="500px" height="500px"/>
-    </el-dialog>
-
+    <div class="cover" v-if="dialogVisible">
+      <div class="img-wrap">
+        <i class="iconfont icon-close" @click="closeCover"></i>
+        <img :src='thumbnailSrc' width="500px" height="500px"/>
+      </div>
+    </div>
 
   </div>
 
@@ -316,7 +314,9 @@
       expandThumbNail(base64src){
         this.dialogVisible = true;
         this.thumbnailSrc = base64src;
-
+      },
+      closeCover(){
+        this.dialogVisible = false;
       }
     }
   };
@@ -328,6 +328,35 @@
   h1 {
     text-align: left;
     font-size: 20px;
+  }
+  .cover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    .img-wrap {
+      position:absolute;
+      top:50%;
+      left:50%;
+      -webkit-transform: translate(-50%,-50%);
+      -moz-transform: translate(-50%,-50%);
+      transform:translate(-50%,-50%);
+      i {
+          display: inline-block;
+          width: 40px;
+          height: 40px;
+          font-size: 40px;
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: #fff;
+      }
+    }
+    
   }
 
   .main {
