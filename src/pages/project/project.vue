@@ -53,7 +53,7 @@
         style="width: 100%"
         :row-class-name="tableRowClassName">
         <el-table-column
-          label="index"
+          label="Index"
           width="60"
           align="center"
           :formatter="formatter"
@@ -77,18 +77,22 @@
         <el-table-column
           align="center"
           prop="thumbnail"
-          label="image">
+          label="Thumbnail">
+          <template slot-scope="scope">
+            <img v-if="scope.row.thumbnail" class="thumbnail" :src="scope.row.thumbnail"/>
+            <img v-else class="thumbnail" src="../../assets/images/default.png"/>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
           prop="created"
-          label="Create Time"
+          label="Created"
           :formatter="dateFormat"
         >
         </el-table-column>
         <el-table-column
           align="center"
-          label="operate"
+          label="Operations"
           width="200">
           <template slot-scope="scope">
             <el-button
@@ -343,6 +347,11 @@
       color: #409EFF;
       text-decoration: underline;
       cursor: pointer;
+    }
+    .thumbnail{
+      vertical-align: middle;
+      width: 45px;
+      height: 45px;
     }
   }
 
