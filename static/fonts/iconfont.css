@@ -7,22 +7,15 @@
   url('iconfont.svg?t=1547609389553#iconfont') format('svg'); /* iOS 4.1- */
 }
 
-/* .iconfont {
+.iconfont {
   font-family: "iconfont" !important;
   font-size: 32px;
   padding: 5px;
-  color: #cdcdcd;
-  border:1px solid #cdcdcd;
   font-style: normal;
-  margin-left: 5px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.iconfont:hover{
-  color:#409EFF;
-  border:1px solid #409EFF;
-} */
 
 .icon-measure:before {
   content: "\e960";
