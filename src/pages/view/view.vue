@@ -201,8 +201,6 @@ export default {
         left: 5px;
         right: 5px;
         bottom: 5px;
-        // width: 98%;
-        // height: 1000px;
         border-color: black;
         border-style: solid;
         border-width: 1px;
