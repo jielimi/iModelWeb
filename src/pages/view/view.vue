@@ -116,7 +116,7 @@ export default {
         window.eventHub.$emit('categories_viewList_init', viewSpecs);
         
         if (viewSpecs.length > 0){
-            let viewSpec = viewSpecs[viewSpecs.length-1];
+            let viewSpec = viewSpecs[0];
             const viewState = await state.iModelConnection.views.load(viewSpec.id);
             state.viewState = viewState;
         }
