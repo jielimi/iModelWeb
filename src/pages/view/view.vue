@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="view">
     <tool-bar-component></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
 </div>
@@ -184,8 +184,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    .imodelview {
+    .view{
         position: relative;
+        
+    }
+    .imodelview {
+        position: absolute;
         width: 98%;
         height: 1000px;
         border-color: black;
