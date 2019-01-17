@@ -26,7 +26,7 @@ export default {
     data(){
         return{
             isLoading:false,
-            viewport:undefined,
+            theViewPort:undefined,
             configuration:{
                 "useIModelBank": true
             },
@@ -42,12 +42,12 @@ export default {
         toolBarComponent
     },
     created(){
-        // Tools.toolsRegister(this.viewport);
+        // Tools.toolsRegister(this.theViewPort);
         window.eventHub.$on('categories_viewList_change',this.changeView);
 
         let that = this;
         window.eventHub.$on('fitToView',function(){
-            IModelApp.tools.run("View.Fit", that.viewport, true);
+            IModelApp.tools.run("View.Fit", that.theViewPort, true);
         });
         //Tools.toolsRegister();
     
@@ -56,8 +56,8 @@ export default {
      this.main();
     },
     beforeDestroy(){
-        if (this.viewport){
-            IModelApp.viewManager.dropViewport(this.viewport);
+        if (this.theViewPort){
+            IModelApp.viewManager.dropViewport(this.theViewPort);
         }
 
         if (activeViewState.iModelConnection !== undefined){
@@ -66,28 +66,28 @@ export default {
     },
     methods:{
         test() {
-             IModelApp.tools.run("View.Fit", viewport, true);
+             IModelApp.tools.run("View.Fit", theViewPort, true);
         },
 
     fitToView(){
-        IModelApp.tools.run("View.Fit", this.viewport, true);
+        IModelApp.tools.run("View.Fit", this.theViewPort, true);
     },
     windowArea() {
-        IModelApp.tools.run("View.WindowArea", this.viewport);
+        IModelApp.tools.run("View.WindowArea", this.theViewPort);
     },
     undo(){
-        IModelApp.tools.run("View.Undo", this.viewport);
+        IModelApp.tools.run("View.Undo", this.theViewPort);
     },
     updateRenderModeOptionsMap() {
         let skybox = false;
         let groundplane = false;
-        if (this.viewport.view.is3d()) {
-            const view = this.viewport.view;
+        if (this.theViewPort.view.is3d()) {
+            const view = this.theViewPort.view;
             const env = view.getDisplayStyle3d().getEnvironment();
             skybox = env.sky.display;
             groundplane = env.ground.display;
         }
-        const viewflags = this.viewport.view.viewFlags;
+        const viewflags = this.theViewPort.view.viewFlags;
         const lights = viewflags.showSourceLights() || viewflags.showSolarLight() || viewflags.showCameraLights();
         debugger
         updateRenderModeOption("skybox", skybox, renderModeOptions.flags);
@@ -109,7 +109,7 @@ export default {
         //document.getElementById("renderModeList").value = renderModeToString(viewflags.getRenderMode());
     },
     async test(view) {
-        await this.viewport.changeView(view);
+        await this.theViewPort.changeView(view);
         activeViewState.viewState = view;
         // await buildModelMenu(activeViewState);
         // await buildCategoryMenu(activeViewState);
@@ -177,13 +177,13 @@ export default {
             //if (!htmlCanvas) return;
             await this.buildViewList(state);
             console.log(state.viewState)
-            if (!this.viewport){
-                this.viewport = frontend_1.ScreenViewport.create(parent, state.viewState); 
+            if (!this.theViewPort){
+                this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
             }
             //new frontend_1.ScreenViewport(parent);
             console.log("GET THE VIEWPORT 2")
-            console.log(this.viewport)
-            IModelApp.viewManager.addViewport(this.viewport);
+            console.log(this.theViewPort)
+            IModelApp.viewManager.addViewport(this.theViewPort);
         }
     },
     async  _changeView(view) {
