@@ -33,6 +33,7 @@ export default {
         },
         selectChange(item){
            window.eventHub.$emit('categories_viewList_change',item);
+           this.value = item.name;
         }
     }
     
