@@ -582,19 +582,19 @@
       -moz-transform: translate(-50%,-50%);
       transform:translate(-50%,-50%);
       i {
-          display: inline-block;
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          font-size: 30px;
-          position: absolute;
-          z-index: 999;
-          right: -20px;
-          top: -20px;
-          border: none;
-          background-color: rgba(0,0,0,.5);
-          cursor: pointer;
-          color: #fff;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 30px;
+        position: absolute;
+        z-index: 999;
+        right: -20px;
+        top: -20px;
+        border: none;
+        background-color: rgba(0,0,0,.5);
+        cursor: pointer;
+        color: #fff;
       }
     }
   }
