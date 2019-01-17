@@ -1,6 +1,6 @@
 <template>
     <div class="tool-bar">
-        <brief-cases-component></brief-cases-component>
+        <!-- <brief-cases-component></brief-cases-component> -->
         <change-view-component></change-view-component>
         <color-picker-component></color-picker-component>
         <categories-component></categories-component>

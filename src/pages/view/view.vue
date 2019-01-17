@@ -11,7 +11,7 @@ import * as common_1 from "@bentley/imodeljs-common/lib/common"
 import { AccessToken, UserProfile } from "@bentley/imodeljs-clients";
 import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
-import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import Tools from './dependency/tools';
 
@@ -19,7 +19,7 @@ class SimpleViewState {
     constructor(){};
 }
 let activeViewState = new SimpleViewState();
-const viewMap = new Map();
+
 
 export default {
     name:'imodelviewer',
@@ -42,9 +42,8 @@ export default {
         toolBarComponent
     },
     created(){
-        
         // Tools.toolsRegister(this.viewport);
-        // window.eventHub.$on('categories_viewList_change',this.changeView);
+        window.eventHub.$on('categories_viewList_change',this.changeView);
 
         let that = this;
         window.eventHub.$on('fitToView',function(){
@@ -79,20 +78,49 @@ export default {
     undo(){
         IModelApp.tools.run("View.Undo", this.viewport);
     },
-    async _changeView(view) {
-        await theViewport.changeView(view);
+    updateRenderModeOptionsMap() {
+        let skybox = false;
+        let groundplane = false;
+        if (this.viewport.view.is3d()) {
+            const view = this.viewport.view;
+            const env = view.getDisplayStyle3d().getEnvironment();
+            skybox = env.sky.display;
+            groundplane = env.ground.display;
+        }
+        const viewflags = this.viewport.view.viewFlags;
+        const lights = viewflags.showSourceLights() || viewflags.showSolarLight() || viewflags.showCameraLights();
+        debugger
+        updateRenderModeOption("skybox", skybox, renderModeOptions.flags);
+        updateRenderModeOption("groundplane", groundplane, renderModeOptions.flags);
+        updateRenderModeOption("ACSTriad", viewflags.showAcsTriad(), renderModeOptions.flags);
+        updateRenderModeOption("fill", viewflags.showFill(), renderModeOptions.flags);
+        updateRenderModeOption("grid", viewflags.showGrid(), renderModeOptions.flags);
+        updateRenderModeOption("textures", viewflags.showTextures(), renderModeOptions.flags);
+        updateRenderModeOption("visibleEdges", viewflags.showVisibleEdges(), renderModeOptions.flags);
+        updateRenderModeOption("hiddenEdges", viewflags.showHiddenEdges(), renderModeOptions.flags);
+        updateRenderModeOption("materials", viewflags.showMaterials(), renderModeOptions.flags);
+        updateRenderModeOption("lights", lights, renderModeOptions.flags);
+        updateRenderModeOption("monochrome", viewflags.isMonochrome(), renderModeOptions.flags);
+        updateRenderModeOption("constructions", viewflags.showConstructions(), renderModeOptions.flags);
+        updateRenderModeOption("weights", viewflags.showWeights(), renderModeOptions.flags);
+        updateRenderModeOption("styles", viewflags.showStyles(), renderModeOptions.flags);
+        updateRenderModeOption("transparency", viewflags.showTransparency(), renderModeOptions.flags);
+        renderModeOptions.mode = viewflags.getRenderMode();
+        //document.getElementById("renderModeList").value = renderModeToString(viewflags.getRenderMode());
+    },
+    async test(view) {
+        await this.viewport.changeView(view);
         activeViewState.viewState = view;
         // await buildModelMenu(activeViewState);
         // await buildCategoryMenu(activeViewState);
-        // updateRenderModeOptionsMap();
+        //updateRenderModeOptionsMap();
     },
-    async changeView (viewInfo) {
-        let view = viewMap.get(viewInfo.name);
-        if (!(view instanceof frontend_1.ViewState)) {
-            view = await activeViewState.iModelConnection.views.load(viewInfo.id);
-            viewMap.set(viewInfo.name, view);
+    async changeView (view) {
+        if (!(view instanceof ViewState)) {
+            view = await activeViewState.iModelConnection.views.load(view.id);
+            //viewMap.set(viewName, view);别忘了
         }
-        await this._changeView(view.clone());
+        await this.test(view.clone());
     },
     async loginAndOpenImodel(state) {
         // This is where the app's frontend must be written to work with the
