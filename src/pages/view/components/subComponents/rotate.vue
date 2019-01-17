@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-rotate_left"></i>
+        <i class="iconfont icon-rotate_left" @click="rotate"></i>
     </div>
 </template>
 
@@ -16,6 +16,9 @@ export default {
     },
     created () {},
     methods: {
+        rotate(){
+            window.eventHub.$emit('Rotate');
+        }
     }
     
 }

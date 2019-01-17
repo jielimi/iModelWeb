@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-walk"></i>
+        <i class="iconfont icon-walk" @click="walk"></i>
     </div>
 </template>
 
@@ -16,6 +16,9 @@ export default {
     },
     created () {},
     methods: {
+        walk(){
+            window.eventHub.$emit('Walk');
+        }
     }
     
 }

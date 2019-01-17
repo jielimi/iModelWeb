@@ -17,7 +17,7 @@ export default {
     created () {},
     methods: {
         undo(){
-            window.eventHub.$emit('undo');
+            window.eventHub.$emit('Undo');
         }
     }
     

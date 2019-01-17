@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-iosredooutline"></i>
+        <i class="iconfont icon-iosredooutline" @click="redo"></i>
     </div>
 </template>
 
@@ -16,6 +16,9 @@ export default {
     },
     created () {},
     methods: {
+        redo(){
+            window.eventHub.$emit('Redo');
+        }
     }
     
 }

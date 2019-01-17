@@ -42,14 +42,28 @@ export default {
         toolBarComponent
     },
     created(){
-        // Tools.toolsRegister(this.theViewPort);
         window.eventHub.$on('categories_viewList_change',this.changeView);
 
         let that = this;
         window.eventHub.$on('fitToView',function(){
             IModelApp.tools.run("View.Fit", that.theViewPort, true);
         });
-        //Tools.toolsRegister();
+        window.eventHub.$on('windowArea',function(){
+            IModelApp.tools.run("View.WindowArea", that.theViewPort);
+        });
+        window.eventHub.$on('Undo',function(){
+            IModelApp.tools.run("View.Undo", that.theViewPort);
+        });
+        window.eventHub.$on('Redo',function(){
+            IModelApp.tools.run("View.Redo", that.theViewPort);
+        });
+        window.eventHub.$on('Rotate',function(){
+            IModelApp.tools.run("View.Rotate", that.theViewPort);
+        });
+        window.eventHub.$on('Walk',function(){
+            IModelApp.tools.run("View.Walk", that.theViewPort);
+        });
+
     
     },
     mounted(){
@@ -65,50 +79,37 @@ export default {
         }
     },
     methods:{
-        test() {
-             IModelApp.tools.run("View.Fit", theViewPort, true);
-        },
-
-    fitToView(){
-        IModelApp.tools.run("View.Fit", this.theViewPort, true);
-    },
-    windowArea() {
-        IModelApp.tools.run("View.WindowArea", this.theViewPort);
-    },
-    undo(){
-        IModelApp.tools.run("View.Undo", this.theViewPort);
-    },
-    updateRenderModeOptionsMap() {
-        let skybox = false;
-        let groundplane = false;
-        if (this.theViewPort.view.is3d()) {
-            const view = this.theViewPort.view;
-            const env = view.getDisplayStyle3d().getEnvironment();
-            skybox = env.sky.display;
-            groundplane = env.ground.display;
-        }
-        const viewflags = this.theViewPort.view.viewFlags;
-        const lights = viewflags.showSourceLights() || viewflags.showSolarLight() || viewflags.showCameraLights();
-        debugger
-        updateRenderModeOption("skybox", skybox, renderModeOptions.flags);
-        updateRenderModeOption("groundplane", groundplane, renderModeOptions.flags);
-        updateRenderModeOption("ACSTriad", viewflags.showAcsTriad(), renderModeOptions.flags);
-        updateRenderModeOption("fill", viewflags.showFill(), renderModeOptions.flags);
-        updateRenderModeOption("grid", viewflags.showGrid(), renderModeOptions.flags);
-        updateRenderModeOption("textures", viewflags.showTextures(), renderModeOptions.flags);
-        updateRenderModeOption("visibleEdges", viewflags.showVisibleEdges(), renderModeOptions.flags);
-        updateRenderModeOption("hiddenEdges", viewflags.showHiddenEdges(), renderModeOptions.flags);
-        updateRenderModeOption("materials", viewflags.showMaterials(), renderModeOptions.flags);
-        updateRenderModeOption("lights", lights, renderModeOptions.flags);
-        updateRenderModeOption("monochrome", viewflags.isMonochrome(), renderModeOptions.flags);
-        updateRenderModeOption("constructions", viewflags.showConstructions(), renderModeOptions.flags);
-        updateRenderModeOption("weights", viewflags.showWeights(), renderModeOptions.flags);
-        updateRenderModeOption("styles", viewflags.showStyles(), renderModeOptions.flags);
-        updateRenderModeOption("transparency", viewflags.showTransparency(), renderModeOptions.flags);
-        renderModeOptions.mode = viewflags.getRenderMode();
-        //document.getElementById("renderModeList").value = renderModeToString(viewflags.getRenderMode());
-    },
-    async test(view) {
+    // updateRenderModeOptionsMap() {
+    //     let skybox = false;
+    //     let groundplane = false;
+    //     if (this.theViewPort.view.is3d()) {
+    //         const view = this.theViewPort.view;
+    //         const env = view.getDisplayStyle3d().getEnvironment();
+    //         skybox = env.sky.display;
+    //         groundplane = env.ground.display;
+    //     }
+    //     const viewflags = this.theViewPort.view.viewFlags;
+    //     const lights = viewflags.showSourceLights() || viewflags.showSolarLight() || viewflags.showCameraLights();
+        
+    //     updateRenderModeOption("skybox", skybox, renderModeOptions.flags);
+    //     updateRenderModeOption("groundplane", groundplane, renderModeOptions.flags);
+    //     updateRenderModeOption("ACSTriad", viewflags.showAcsTriad(), renderModeOptions.flags);
+    //     updateRenderModeOption("fill", viewflags.showFill(), renderModeOptions.flags);
+    //     updateRenderModeOption("grid", viewflags.showGrid(), renderModeOptions.flags);
+    //     updateRenderModeOption("textures", viewflags.showTextures(), renderModeOptions.flags);
+    //     updateRenderModeOption("visibleEdges", viewflags.showVisibleEdges(), renderModeOptions.flags);
+    //     updateRenderModeOption("hiddenEdges", viewflags.showHiddenEdges(), renderModeOptions.flags);
+    //     updateRenderModeOption("materials", viewflags.showMaterials(), renderModeOptions.flags);
+    //     updateRenderModeOption("lights", lights, renderModeOptions.flags);
+    //     updateRenderModeOption("monochrome", viewflags.isMonochrome(), renderModeOptions.flags);
+    //     updateRenderModeOption("constructions", viewflags.showConstructions(), renderModeOptions.flags);
+    //     updateRenderModeOption("weights", viewflags.showWeights(), renderModeOptions.flags);
+    //     updateRenderModeOption("styles", viewflags.showStyles(), renderModeOptions.flags);
+    //     updateRenderModeOption("transparency", viewflags.showTransparency(), renderModeOptions.flags);
+    //     renderModeOptions.mode = viewflags.getRenderMode();
+    //     //document.getElementById("renderModeList").value = renderModeToString(viewflags.getRenderMode());
+    // },
+    async _changeView(view) {
         await this.theViewPort.changeView(view);
         activeViewState.viewState = view;
         // await buildModelMenu(activeViewState);
@@ -120,7 +121,7 @@ export default {
             view = await activeViewState.iModelConnection.views.load(view.id);
             //viewMap.set(viewName, view);别忘了
         }
-        await this.test(view.clone());
+        await this._changeView(view.clone());
     },
     async loginAndOpenImodel(state) {
         // This is where the app's frontend must be written to work with the
@@ -185,13 +186,6 @@ export default {
             console.log(this.theViewPort)
             IModelApp.viewManager.addViewport(this.theViewPort);
         }
-    },
-    async  _changeView(view) {
-        // await theViewport.changeView(view);
-        // activeViewState.viewState = view;
-        // await buildModelMenu(activeViewState);
-        // await buildCategoryMenu(activeViewState);
-        // updateRenderModeOptionsMap();
     },
     async main (){
        this.isLoading = true; 
