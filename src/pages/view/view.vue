@@ -13,6 +13,7 @@ import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
+import Tools from './dependency/tools';
 
 class SimpleViewState {
     constructor(){};
@@ -32,7 +33,7 @@ export default {
             iminfo:{
                 "url": this.$route.query.url,
                 "iModelId": this.$route.query.projectId,
-                "versionName":this.$route.query.name,
+                "versionName":this.$route.query.versionName,
                 "name": "ReadOnlyTest",
             },
         }
@@ -41,10 +42,16 @@ export default {
         toolBarComponent
     },
     created(){
-        window.eventHub.$on('categories_viewList_change',this.changeView);
-        window.eventHub.$on('fitToView',this.fitToView);
-        window.eventHub.$on('windowArea',this.windowArea);
-        window.eventHub.$on('undo',this.undo);
+        
+        // Tools.toolsRegister(this.viewport);
+        // window.eventHub.$on('categories_viewList_change',this.changeView);
+
+        let that = this;
+        window.eventHub.$on('fitToView',function(){
+            IModelApp.tools.run("View.Fit", that.viewport, true);
+        });
+        //Tools.toolsRegister();
+    
     },
     mounted(){
      this.main();
@@ -59,6 +66,10 @@ export default {
         }
     },
     methods:{
+        test() {
+             IModelApp.tools.run("View.Fit", viewport, true);
+        },
+
     fitToView(){
         IModelApp.tools.run("View.Fit", this.viewport, true);
     },
