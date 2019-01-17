@@ -63,7 +63,6 @@ export default {
         window.eventHub.$on('Walk',function(){
             IModelApp.tools.run("View.Walk", that.theViewPort);
         });
-
     
     },
     mounted(){
