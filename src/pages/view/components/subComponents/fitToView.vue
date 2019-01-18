@@ -1,6 +1,6 @@
 <template>
     <div @click="startfit">
-        <i class="iconfont icon-iostoggleoutline1"></i>
+        <i class="iconfont icon-cc-contraction"></i>
     </div>
 </template>
 

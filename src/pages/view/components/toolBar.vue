@@ -2,19 +2,19 @@
     <div class="tool-bar">
         <!-- <brief-cases-component></brief-cases-component> -->
         <change-view-component></change-view-component>
-        <color-picker-component></color-picker-component>
+        <!-- <color-picker-component></color-picker-component> -->
         <categories-component></categories-component>
-        <camera-component></camera-component>
+        <!-- <camera-component></camera-component> -->
         <fit-to-view-component></fit-to-view-component>
         <window-area-component></window-area-component>
-        <measure-component></measure-component>
+        <!-- <measure-component></measure-component> -->
         <walk-component></walk-component>
         <rotate-component></rotate-component>
         <gyroscopeComponent></gyroscopeComponent>
         <settingComponent></settingComponent>
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
-        <syncComponent></syncComponent>
+        <!-- <syncComponent></syncComponent> -->
     </div>
 </template>
 <script>

@@ -1,6 +1,6 @@
 <template>
     <div class="category">
-        <i class="iconfont icon-category1"></i>
+        <i class="iconfont icon-layers-1"></i>
     </div>
 </template>
 
