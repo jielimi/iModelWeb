@@ -14,6 +14,8 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBan
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import Tools from './dependency/tools';
+import { Angle } from '@bentley/geometry-core';
+import { Transform, Point3d } from "@bentley/geometry-core/lib/geometry-core";
 
 class SimpleViewState {
     constructor(){};
@@ -63,7 +65,11 @@ export default {
         window.eventHub.$on('Walk',function(){
             IModelApp.tools.run("View.Walk", that.theViewPort);
         });
-    
+        window.eventHub.$on('Gyroscope',function(dir){
+            that.applyStandardViewRotation(dir, that.theViewPort);
+
+        })
+         
     },
     mounted(){
      this.main();
@@ -78,36 +84,31 @@ export default {
         }
     },
     methods:{
-    // updateRenderModeOptionsMap() {
-    //     let skybox = false;
-    //     let groundplane = false;
-    //     if (this.theViewPort.view.is3d()) {
-    //         const view = this.theViewPort.view;
-    //         const env = view.getDisplayStyle3d().getEnvironment();
-    //         skybox = env.sky.display;
-    //         groundplane = env.ground.display;
-    //     }
-    //     const viewflags = this.theViewPort.view.viewFlags;
-    //     const lights = viewflags.showSourceLights() || viewflags.showSolarLight() || viewflags.showCameraLights();
-        
-    //     updateRenderModeOption("skybox", skybox, renderModeOptions.flags);
-    //     updateRenderModeOption("groundplane", groundplane, renderModeOptions.flags);
-    //     updateRenderModeOption("ACSTriad", viewflags.showAcsTriad(), renderModeOptions.flags);
-    //     updateRenderModeOption("fill", viewflags.showFill(), renderModeOptions.flags);
-    //     updateRenderModeOption("grid", viewflags.showGrid(), renderModeOptions.flags);
-    //     updateRenderModeOption("textures", viewflags.showTextures(), renderModeOptions.flags);
-    //     updateRenderModeOption("visibleEdges", viewflags.showVisibleEdges(), renderModeOptions.flags);
-    //     updateRenderModeOption("hiddenEdges", viewflags.showHiddenEdges(), renderModeOptions.flags);
-    //     updateRenderModeOption("materials", viewflags.showMaterials(), renderModeOptions.flags);
-    //     updateRenderModeOption("lights", lights, renderModeOptions.flags);
-    //     updateRenderModeOption("monochrome", viewflags.isMonochrome(), renderModeOptions.flags);
-    //     updateRenderModeOption("constructions", viewflags.showConstructions(), renderModeOptions.flags);
-    //     updateRenderModeOption("weights", viewflags.showWeights(), renderModeOptions.flags);
-    //     updateRenderModeOption("styles", viewflags.showStyles(), renderModeOptions.flags);
-    //     updateRenderModeOption("transparency", viewflags.showTransparency(), renderModeOptions.flags);
-    //     renderModeOptions.mode = viewflags.getRenderMode();
-    //     //document.getElementById("renderModeList").value = renderModeToString(viewflags.getRenderMode());
-    // },
+    applyStandardViewRotation (dir, theViewport) {
+        if (undefined === theViewport)
+            return;
+
+        let  rotationId = frontend_1.StandardViewId[dir];
+
+        if (frontend_1.StandardViewId.Top !== rotationId && !theViewport.view.allow3dManipulations())
+            return;
+
+        const rMatrix = frontend_1.AccuDraw.getStandardRotation(rotationId, theViewport, theViewport.isContextRotationRequired);
+        const inverse = rMatrix.inverse();
+        if (undefined === inverse)
+            return;
+
+        const targetMatrix = inverse.multiplyMatrixMatrix(theViewport.rotation);
+        const rotateTransform = Transform.createFixedPointAndMatrix(theViewport.view.getTargetPoint(), targetMatrix);
+        const startFrustum = theViewport.getFrustum();
+        const newFrustum = startFrustum.clone();
+        newFrustum.multiply(rotateTransform);
+
+        theViewport.animateFrustumChange(startFrustum, newFrustum);
+        theViewport.view.setupFromFrustum(newFrustum);
+        theViewport.synchWithView(true);
+       
+    },
     async _changeView(view) {
         await this.theViewPort.changeView(view);
         activeViewState.viewState = view;

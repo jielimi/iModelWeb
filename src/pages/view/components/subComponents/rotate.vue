@@ -1,6 +1,8 @@
 <template>
     <div>
-        <i class="iconfont icon-rotate_left" @click="rotate"></i>
+        <i class="iconfont icon-rotate_left" @click="rotate">
+            
+        </i>
     </div>
 </template>
 
