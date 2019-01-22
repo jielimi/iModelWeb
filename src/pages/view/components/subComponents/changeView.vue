@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { ViewState } from "@bentley/imodeljs-frontend";
 export default {
     name: 'changeView',
     data () {
@@ -33,8 +34,20 @@ export default {
         },
         selectChange(item){
            window.eventHub.$emit('categories_viewList_change',item);
+           //this.changeView(item);
            this.value = item.name;
+        },
+        async notify(view) {
+            //activeViewState.viewState = view;
+        },
+        async changeView (view) {
+        if (!(view instanceof ViewState)) {
+            view = await activeViewState.iModelConnection.views.load(view.id);
         }
+        await this.GLOBAL_DATA.theViewPort.changeView(view);
+        await this.notify(view.clone());
+    },
+        
     }
     
 }

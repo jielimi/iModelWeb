@@ -14,8 +14,8 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBan
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import Tools from './dependency/tools';
-import { Angle } from '@bentley/geometry-core';
-import { Transform, Point3d } from "@bentley/geometry-core/lib/geometry-core";
+import RPC from './dependency/rpc';
+
 
 class SimpleViewState {
     constructor(){};
@@ -45,13 +45,6 @@ export default {
     },
     created(){
         window.eventHub.$on('categories_viewList_change',this.changeView);
-
-        let that = this;
-      
-        window.eventHub.$on('Gyroscope',function(dir){
-            that.applyStandardViewRotation(dir, that.theViewPort);
-        })
-         
     },
     mounted(){
      this.main();
@@ -66,31 +59,6 @@ export default {
         }
     },
     methods:{
-    applyStandardViewRotation (dir, theViewport) {
-        if (undefined === theViewport)
-            return;
-
-        let  rotationId = frontend_1.StandardViewId[dir];
-
-        if (frontend_1.StandardViewId.Top !== rotationId && !theViewport.view.allow3dManipulations())
-            return;
-
-        const rMatrix = frontend_1.AccuDraw.getStandardRotation(rotationId, theViewport, theViewport.isContextRotationRequired);
-        const inverse = rMatrix.inverse();
-        if (undefined === inverse)
-            return;
-
-        const targetMatrix = inverse.multiplyMatrixMatrix(theViewport.rotation);
-        const rotateTransform = Transform.createFixedPointAndMatrix(theViewport.view.getTargetPoint(), targetMatrix);
-        const startFrustum = theViewport.getFrustum();
-        const newFrustum = startFrustum.clone();
-        newFrustum.multiply(rotateTransform);
-
-        theViewport.animateFrustumChange(startFrustum, newFrustum);
-        theViewport.view.setupFromFrustum(newFrustum);
-        theViewport.synchWithView(true);
-       
-    },
     async _changeView(view) {
         await this.theViewPort.changeView(view);
         activeViewState.viewState = view;
@@ -106,25 +74,15 @@ export default {
         await this._changeView(view.clone());
     },
     async loginAndOpenImodel(state) {
-        // This is where the app's frontend must be written to work with the
-        // surrounding project, user, and deployment infrastructure.
-
-        // *** NON-CONNECT - ask the user mgr to authenticate the user and obtain an AccessToken.
+       
         const userProfile = new UserProfile("first", "last", "email@organization.org", "userid", "organization");
         const foreignAccessTokenWrapper = {};
         foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userProfile };
         state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
         console.log("state=",state)
 
-        // *** NON-CONNECT - ask the project mgr to let the user choose an iModel.
         const iModelId = "233e1f55-561d-42a4-8e80-d6f91743863e";
 
-        // *** NON-CONNECT - ask the deployment infrastructure for the iModelBank to use for this iModel
-        // Now that we know what iModelBank to use, we can set up IModelApp
-        // to work with that bank.
-
-        // Tell IModelApp to use this IModelBank client
-        
         const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv, new UrlFileHandler());
         IModelApp.iModelClient = imbcontext.client;
 
@@ -172,21 +130,10 @@ export default {
     },
     async main (){
        this.isLoading = true; 
-       let rpcConfiguration;
-       rpcConfiguration = common_1.BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
-        [common_1.IModelTileRpcInterface, common_1.StandaloneIModelRpcInterface, common_1.IModelReadRpcInterface]);
-        // Config.devCorsProxyServer = "https://localhost:3001";
 
-        
-        //console.log(rpcConfiguration.interfaces())
-        for (const definition of rpcConfiguration.interfaces()){
-            common_1.RpcOperation.forEach(definition,
-            (operation) => operation.policy.token = (_request) => new common_1.IModelToken("test", "test", "test", "test"));
-        }
-
+        RPC.init();
         frontend_1.IModelApp.hubDeploymentEnv = this.configuration.environment || "QA";
         
-        // step3:loginAndOpenImdel
         try{
             console.log("loginAndOpenImodel start")
             await this.loginAndOpenImodel(activeViewState);

@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+import { Transform } from "@bentley/geometry-core/lib/geometry-core";
 export default {
     name: 'gyroscope',
     data () {
@@ -48,10 +50,32 @@ export default {
             this.isShowDetail = true;
         },
         direction (e,dir) {
-            this.GLOBAL_DATA.theViewPort;
+            // this.GLOBAL_DATA.theViewPort;
+            let theViewport = this.GLOBAL_DATA.theViewPort;
             e.stopPropagation();
             this.isShowDetail = false;
-            window.eventHub.$emit('Gyroscope',dir);
+            if (undefined === theViewport)
+            return;
+
+            let  rotationId = frontend_1.StandardViewId[dir];
+
+            if (frontend_1.StandardViewId.Top !== rotationId && !theViewport.view.allow3dManipulations())
+                return;
+
+            const rMatrix = frontend_1.AccuDraw.getStandardRotation(rotationId, theViewport, theViewport.isContextRotationRequired);
+            const inverse = rMatrix.inverse();
+            if (undefined === inverse)
+                return;
+
+            const targetMatrix = inverse.multiplyMatrixMatrix(theViewport.rotation);
+            const rotateTransform = Transform.createFixedPointAndMatrix(theViewport.view.getTargetPoint(), targetMatrix);
+            const startFrustum = theViewport.getFrustum();
+            const newFrustum = startFrustum.clone();
+            newFrustum.multiply(rotateTransform);
+
+            theViewport.animateFrustumChange(startFrustum, newFrustum);
+            theViewport.view.setupFromFrustum(newFrustum);
+            theViewport.synchWithView(true);
             
         }
     }
