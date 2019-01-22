@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
     name: 'undo',
     data () {
@@ -17,7 +18,7 @@ export default {
     created () {},
     methods: {
         redo(){
-            window.eventHub.$emit('Redo');
+            IModelApp.tools.run("View.Redo", this.GLOBAL_DATA.theViewPort);
         }
     }
     

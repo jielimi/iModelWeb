@@ -47,27 +47,9 @@ export default {
         window.eventHub.$on('categories_viewList_change',this.changeView);
 
         let that = this;
-        window.eventHub.$on('fitToView',function(){
-            IModelApp.tools.run("View.Fit", that.theViewPort, true);
-        });
-        window.eventHub.$on('windowArea',function(){
-            IModelApp.tools.run("View.WindowArea", that.theViewPort);
-        });
-        window.eventHub.$on('Undo',function(){
-            IModelApp.tools.run("View.Undo", that.theViewPort);
-        });
-        window.eventHub.$on('Redo',function(){
-            IModelApp.tools.run("View.Redo", that.theViewPort);
-        });
-        window.eventHub.$on('Rotate',function(){
-            IModelApp.tools.run("View.Rotate", that.theViewPort);
-        });
-        window.eventHub.$on('Walk',function(){
-            IModelApp.tools.run("View.Walk", that.theViewPort);
-        });
+      
         window.eventHub.$on('Gyroscope',function(dir){
             that.applyStandardViewRotation(dir, that.theViewPort);
-
         })
          
     },
@@ -180,6 +162,7 @@ export default {
             console.log(state.viewState)
             if (!this.theViewPort){
                 this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                this.GLOBAL_DATA.theViewPort = this.theViewPort;
             }
             //new frontend_1.ScreenViewport(parent);
             console.log("GET THE VIEWPORT 2")

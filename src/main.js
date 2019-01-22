@@ -38,6 +38,10 @@ new Vue({
 
 window.eventHub = new Vue();
 
+Vue.prototype.GLOBAL_DATA = {
+  theViewPort:{}
+};
+
 
 function stringToSnapMode(name) {
   switch (name) {

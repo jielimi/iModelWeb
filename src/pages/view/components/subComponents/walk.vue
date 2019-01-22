@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
     name: 'walk',
     data () {
@@ -17,7 +18,7 @@ export default {
     created () {},
     methods: {
         walk(){
-            window.eventHub.$emit('Walk');
+            IModelApp.tools.run("View.Walk", this.GLOBAL_DATA.theViewPort);
         }
     }
     

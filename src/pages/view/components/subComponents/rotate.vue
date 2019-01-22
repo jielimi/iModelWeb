@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
     name: 'rotate',
     data () {
@@ -19,7 +20,7 @@ export default {
     created () {},
     methods: {
         rotate(){
-            window.eventHub.$emit('Rotate');
+            IModelApp.tools.run("View.Rotate", this.GLOBAL_DATA.theViewPort);
         }
     }
     

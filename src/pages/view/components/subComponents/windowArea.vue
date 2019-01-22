@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
     name: 'window-area',
     data () {
@@ -17,7 +18,7 @@ export default {
     created () {},
     methods: {
         windowArea() {
-            window.eventHub.$emit('windowArea');
+            IModelApp.tools.run("View.WindowArea", this.GLOBAL_DATA.theViewPort);
         }
     }
     

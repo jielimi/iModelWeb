@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
+
 export default {
     name: 'fitToView',
     data () {
@@ -17,7 +19,7 @@ export default {
     created () {},
     methods: {
         startfit(){
-            window.eventHub.$emit('fitToView');
+            IModelApp.tools.run("View.Fit", this.GLOBAL_DATA.theViewPort, true);
         }
     }
     

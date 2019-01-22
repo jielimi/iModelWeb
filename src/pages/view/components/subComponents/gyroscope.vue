@@ -48,6 +48,7 @@ export default {
             this.isShowDetail = true;
         },
         direction (e,dir) {
+            this.GLOBAL_DATA.theViewPort;
             e.stopPropagation();
             this.isShowDetail = false;
             window.eventHub.$emit('Gyroscope',dir);
