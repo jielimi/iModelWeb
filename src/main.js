@@ -39,7 +39,8 @@ new Vue({
 window.eventHub = new Vue();
 
 Vue.prototype.GLOBAL_DATA = {
-  theViewPort:{}
+  theViewPort:{},
+  activeViewState:{}
 };
 
 

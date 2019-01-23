@@ -44,7 +44,7 @@ export default {
         toolBarComponent
     },
     created(){
-        window.eventHub.$on('categories_viewList_change',this.changeView);
+        window.eventHub.$on('categories_viewList_change',this.categoryChange);
     },
     mounted(){
      this.main();
@@ -59,20 +59,19 @@ export default {
         }
     },
     methods:{
-    async _changeView(view) {
-        await this.theViewPort.changeView(view);
-        activeViewState.viewState = view;
-        // await buildModelMenu(activeViewState);
-        // await buildCategoryMenu(activeViewState);
-        //updateRenderModeOptionsMap();
+    categoryChange () {
+        console.log(activeViewState,this.GLOBAL_DATA.activeViewState);
     },
-    async changeView (view) {
-        if (!(view instanceof ViewState)) {
-            view = await activeViewState.iModelConnection.views.load(view.id);
-            //viewMap.set(viewName, view);别忘了
-        }
-        await this._changeView(view.clone());
-    },
+    // async _changeView(view) {
+    //     await this.theViewPort.changeView(view);
+    //     activeViewState.viewState = view;
+    // },
+    // async changeView (view) {
+    //     if (!(view instanceof ViewState)) {
+    //         view = await activeViewState.iModelConnection.views.load(view.id);
+    //     }
+    //     await this._changeView(view.clone());
+    // },
     async loginAndOpenImodel(state) {
        
         const userProfile = new UserProfile("first", "last", "email@organization.org", "userid", "organization");
@@ -146,9 +145,11 @@ export default {
 
         console.log("open View Before")
         await this.openView(activeViewState);
-        console.log("open View End")
+        console.log("open View End");
 
-       this.isLoading = false; 
+        this.GLOBAL_DATA.activeViewState = activeViewState;
+
+        this.isLoading = false; 
 
     }
 

@@ -32,22 +32,18 @@ export default {
             this.options = viewList;
             this.value = this.options[0].name
         },
-        selectChange(item){
-           window.eventHub.$emit('categories_viewList_change',item);
-           //this.changeView(item);
-           this.value = item.name;
+        async selectChange(view){
+            if (!(view instanceof ViewState)) {
+                view = await  this.GLOBAL_DATA.activeViewState.iModelConnection.views.load(view.id);
+            }
+            await this.GLOBAL_DATA.theViewPort.changeView(view);
+            await this.notify(view.clone());
+            this.value = view.name;
         },
         async notify(view) {
-            //activeViewState.viewState = view;
-        },
-        async changeView (view) {
-        if (!(view instanceof ViewState)) {
-            view = await activeViewState.iModelConnection.views.load(view.id);
+            this.GLOBAL_DATA.activeViewState.viewState = view;
+            window.eventHub.$emit('categories_viewList_change');
         }
-        await this.GLOBAL_DATA.theViewPort.changeView(view);
-        await this.notify(view.clone());
-    },
-        
     }
     
 }
