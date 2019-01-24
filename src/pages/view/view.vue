@@ -150,7 +150,7 @@ export default {
         this.GLOBAL_DATA.activeViewState = activeViewState;
 
         this.isLoading = false; 
-
+        window.eventHub.$emit('categories_init');
     }
 
     }
