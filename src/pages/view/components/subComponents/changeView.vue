@@ -43,6 +43,7 @@ export default {
         async notify(view) {
             this.GLOBAL_DATA.activeViewState.viewState = view;
             window.eventHub.$emit('categories_init');
+            window.eventHub.$emit('render_mode_init');
             window.eventHub.$emit('categories_viewList_change');
             
         }

@@ -116,7 +116,7 @@ export default {
             top: 45px;
             z-index: 999;
             width: 200px;
-            height: 350px;
+            padding-bottom: 10px;
             text-align: left;
             border: 1px solid #666;
             background-color: #E9F2F9;
