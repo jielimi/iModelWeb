@@ -2,7 +2,7 @@
     <div>
         <i class="iconfont icon-layers-1 category" @click.self="detail">
             <div v-show="isShowDetail" class="detail">
-                <el-checkbox id="cbxCatToggleAll" v-model="hasCheckAll" label="Toggle All" @change="handleCheckAllChange"></el-checkbox>
+                <el-checkbox id="cbxCatToggleAll" :value="hasCheckAll" label="Toggle All" @change="handleCheckAllChange"></el-checkbox>
                 <el-checkbox-group v-model="checkCodeList">
                     <el-checkbox v-for="category in categoryList" :label="category.code" :key="category.id" @change="applyCategoryToggleChange(category.id,category.code)"></el-checkbox>
                 </el-checkbox-group>
@@ -73,6 +73,8 @@ export default {
             if (alreadyInvis !== invis){
                 view.changeCategoryDisplay(id, invis);
             }
+            this.isCheckAll();
+            console.log(this.hasCheckAll)
             //view.changeCategoryDisplay(id, invis);
         },
         handleCheckAllChange(val){
@@ -102,7 +104,7 @@ export default {
             this.isCheckAll();
         },
         isCheckAll(){
-            this.hasCheckAll = this.categoryList.length === this.checkCodeList.length ? true : false;
+            this.hasCheckAll = this.categoryList.length === this.checkCodeList.length;
         }
 
     }
