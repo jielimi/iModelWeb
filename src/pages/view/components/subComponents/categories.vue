@@ -2,7 +2,7 @@
     <div>
         <i class="iconfont icon-layers-1 category" @click.self="detail">
             <div v-show="isShowDetail" class="detail">
-                <el-checkbox id="cbxCatToggleAll" :value="hasCheckAll" label="Toggle All" @change="handleCheckAllChange"></el-checkbox>
+                <el-checkbox id="cbxCatToggleAll" v-model="hasCheckAll" label="Toggle All" @change="handleCheckAllChange"></el-checkbox>
                 <el-checkbox-group v-model="checkCodeList">
                     <el-checkbox v-for="category in categoryList" :label="category.code" :key="category.id" @change="applyCategoryToggleChange(category.id,category.code)"></el-checkbox>
                 </el-checkbox-group>
@@ -74,13 +74,14 @@ export default {
                 view.changeCategoryDisplay(id, invis);
             }
             this.isCheckAll();
-            console.log(this.hasCheckAll)
             //view.changeCategoryDisplay(id, invis);
         },
-        handleCheckAllChange(val){
+        handleCheckAllChange(value){
+            this.checkCodeList = [];
+            this.checkList = [];
             let that = this;
             let view = this.GLOBAL_DATA.theViewPort.view;
-            if(val){
+            if(value){
                 this.categoryList.forEach(function(val,index){
                     if(that.checkList.indexOf(val.id) < 0){
                         that.checkCodeList.push(val.code);
@@ -92,8 +93,6 @@ export default {
                     }
                 });
             }else{
-                this.checkCodeList = [];
-                this.checkList = [];
                 this.categoryList.forEach(function(val,index){
                     const alreadyInvis = view.viewsCategory(val.id);
                     if (alreadyInvis !== false){
