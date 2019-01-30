@@ -27,7 +27,7 @@ export default {
         
     },
     created () {
-        window.eventHub.$on('categories_init',this.buildCategoryMenu);
+        window.eventHub.$on('categories_viewList_init',this.buildCategoryMenu);
     },
     methods: {
         detail() {
