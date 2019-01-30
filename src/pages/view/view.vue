@@ -8,7 +8,7 @@
 <script>
 import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 import * as common_1 from "@bentley/imodeljs-common/lib/common"
-import { AccessToken, UserProfile } from "@bentley/imodeljs-clients";
+import { AccessToken, UserInfo } from "@bentley/imodeljs-clients";
 import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
@@ -74,9 +74,9 @@ export default {
     // },
     async loginAndOpenImodel(state) {
        
-        const userProfile = new UserProfile("first", "last", "email@organization.org", "userid", "organization");
+        const userInfo = new UserInfo("userid", "email@organization.org", {"firstName": "first", "lastName": "last"}, {"id": "orgid", "name": "organization"});
         const foreignAccessTokenWrapper = {};
-        foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userProfile };
+        foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
         state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
         console.log("state=",state)
 
