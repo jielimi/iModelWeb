@@ -8,7 +8,20 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/common.less';
 import locale from 'element-ui/lib/locale/lang/en';
 
-import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+// import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+
+import {
+  AccuSnap,
+  IModelApp,
+  MessageBoxIconType,
+  MessageBoxType,
+  MessageBoxValue,
+  NotificationManager,
+  NotifyMessageDetails,
+  SnapMode,
+  ToolTipOptions,
+} from "@bentley/imodeljs-frontend";
+import { DrawingAidTestTool } from "./DrawingAidTestTool";
 
 Vue.config.productionTip = false
 
@@ -44,45 +57,77 @@ Vue.prototype.GLOBAL_DATA = {
 };
 
 
-function stringToSnapMode(name) {
-  switch (name) {
-      case "Keypoint": return 2 /* NearestKeypoint */;
-      case "Nearest": return 1 /* Nearest */;
-      case "Center": return 8 /* Center */;
-      case "Origin": return 16 /* Origin */;
-      case "Intersection": return 64 /* Intersection */;
-      default: return 2 /* NearestKeypoint */;
-  }
-}
-class SVTAccuSnap extends frontend_1.AccuSnap {
-  getActiveSnapModes() {
-      const select = document.getElementById("snapModeList"); // 这个是工具栏第7个，杠铃下面有个钢琴那个，不知道什么意思，回头看,感觉是一个新增的工具才这么处理了
-      const snapMode = stringToSnapMode(select.value);
-      const snaps = [];
-      snaps.push(snapMode);
-      return snaps;
-  }
-}
+// function stringToSnapMode(name) {
+//   switch (name) {
+//       case "Keypoint": return 2 /* NearestKeypoint */;
+//       case "Nearest": return 1 /* Nearest */;
+//       case "Center": return 8 /* Center */;
+//       case "Origin": return 16 /* Origin */;
+//       case "Intersection": return 64 /* Intersection */;
+//       default: return 2 /* NearestKeypoint */;
+//   }
+// }
+// class SVTAccuSnap extends frontend_1.AccuSnap {
+//   getActiveSnapModes() {
+//       const select = document.getElementById("snapModeList"); // 这个是工具栏第7个，杠铃下面有个钢琴那个，不知道什么意思，回头看,感觉是一个新增的工具才这么处理了
+//       const snapMode = stringToSnapMode(select.value);
+//       const snaps = [];
+//       snaps.push(snapMode);
+//       return snaps;
+//   }
+// }
 
-class MeasurePointsTool extends frontend_1.PrimitiveTool {
+// class MeasurePointsTool extends frontend_1.PrimitiveTool {
+//   constructor() {
+//       super(...arguments);
+//       this.points = [];
+//   }
+//   requireWriteableTarget() { return false; }
+//   onPostInstall() { super.onPostInstall(); frontend_1.IModelApp.accuSnap.enableSnap(true); }
+//   onRestartTool() {
+//       this.exitTool();
+//   }
+// }
+
+// MeasurePointsTool.toolId = "Measure.Points";
+
+// class SVTIModelApp extends frontend_1.IModelApp {
+//   onStartup() {
+//   const svtToolNamespace = frontend_1.IModelApp.i18n.registerNamespace("SVTTools");
+//   MeasurePointsTool.register(svtToolNamespace);
+// }
+// }
+class DisplayTestAppAccuSnap extends AccuSnap {
   constructor() {
-      super(...arguments);
-      this.points = [];
+    super()
+    this._activeSnaps =  [SnapMode.NearestKeypoint];
   }
-  requireWriteableTarget() { return false; }
-  onPostInstall() { super.onPostInstall(); frontend_1.IModelApp.accuSnap.enableSnap(true); }
-  onRestartTool() {
-      this.exitTool();
+  keypointDivisor() { return 2; }
+  getActiveSnapModes() { return this._activeSnaps; }
+  setActiveSnapModes(snaps) {
+    this._activeSnaps.length = snaps.length;
+    for (let i = 0; i < snaps.length; i++)
+      this._activeSnaps[i] = snaps[i];
   }
 }
 
-MeasurePointsTool.toolId = "Measure.Points";
 
-class SVTIModelApp extends frontend_1.IModelApp {
+class SVTIModelApp extends IModelApp {
   onStartup() {
-  const svtToolNamespace = frontend_1.IModelApp.i18n.registerNamespace("SVTTools");
-  MeasurePointsTool.register(svtToolNamespace);
+    IModelApp.accuSnap = new DisplayTestAppAccuSnap();
+    // IModelApp.notifications = new Notifications();
+    const svtToolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
+    DrawingAidTestTool.register(svtToolNamespace);
+  }
+
+  setActiveSnapModes(snaps) {
+    IModelApp.accuSnap.setActiveSnapModes(snaps);
+  }
+
+  setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
+
 }
-}
+
+
 
 SVTIModelApp.startup();
