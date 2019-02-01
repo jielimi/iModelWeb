@@ -112,7 +112,7 @@ export default {
             const env = style.environment;
              env["sky"].display = $event;
             view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
-            // this.sync();
+            
             const viewPort = this.GLOBAL_DATA.theViewPort
             viewPort.synchWithView(true);
             // const menuDialog = document.getElementById("changeRenderModeMenu");
