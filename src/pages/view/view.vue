@@ -98,14 +98,14 @@ export default {
         const config = undefined !== configurations ? configurations : {};
         const viewQueryParams = { wantPrivate: false };
         const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
-
-        window.eventHub.$emit('categories_viewList_init', viewSpecs);
         
         if (viewSpecs.length > 0){
             let viewSpec = viewSpecs[0];
             const viewState = await state.iModelConnection.views.load(viewSpec.id);
             state.viewState = viewState;
         }
+        window.eventHub.$emit('categories_viewList_init', viewSpecs);
+        
     },
     async  openView(state) {
         // find the canvas.
@@ -160,12 +160,15 @@ export default {
         try{
             console.log("loginAndOpenImodel start")
             await this.loginAndOpenImodel(activeViewState);
+            console.log("activeViewState",activeViewState)
             console.log("loginAndOpenImodel over")
         } catch (reason){
             this.isLoading = false; 
             console.log(reason);
             return;
         }
+
+       this.GLOBAL_DATA.activeViewState = activeViewState;
         
         console.log("open View Before")
         await this.openView(activeViewState);

@@ -72,7 +72,8 @@ export default {
             let groundplane = false;
             if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
                 const view = this.GLOBAL_DATA.theViewPort.view;
-                const env = view.getDisplayStyle3d().getEnvironment();
+                debugger;
+                const env = view.getDisplayStyle3d().environment;
                 skybox = env.sky.display;
                 groundplane = env.ground.display;
             }
