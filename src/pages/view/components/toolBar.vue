@@ -1,6 +1,7 @@
 <template>
     <div class="tool-bar">
         <change-view-component></change-view-component>
+        <model-component></model-component>
         <categories-component></categories-component>
         <fit-to-view-component></fit-to-view-component>
         <window-area-component></window-area-component>
@@ -13,7 +14,8 @@
     </div>
 </template>
 <script>
-
+ 
+ import modelComponent from './subComponents/model'
  import changeViewComponent from './subComponents/changeView'
  import categoriesComponent from './subComponents/categories'
  import fitToViewComponent from './subComponents/fitToView'
@@ -34,6 +36,7 @@ export default {
     },
     props:[''],
     components: {
+        modelComponent,
         changeViewComponent,
         categoriesComponent,
         fitToViewComponent,
