@@ -72,7 +72,6 @@ export default {
             let groundplane = false;
             if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
                 const view = this.GLOBAL_DATA.theViewPort.view;
-                debugger;
                 const env = view.getDisplayStyle3d().environment;
                 skybox = env.sky.display;
                 groundplane = env.ground.display;
@@ -107,10 +106,19 @@ export default {
             }
         },
         applyRenderModeChange($event,mode){
-            const menuDialog = document.getElementById("changeRenderModeMenu");
-            const newValue = this.checkList.indexOf(mode) >= 0 ? true : false;
-            this.renderModeOptions.flags.set(mode, newValue);
-            IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
+            
+            const view3d = this.GLOBAL_DATA.theViewPort.view;
+            const style = view3d.getDisplayStyle3d();
+            const env = style.environment;
+             env["sky"].display = $event;
+            view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
+            // this.sync();
+            const view1 = this.GLOBAL_DATA.theViewPort
+            view1.synchWithView(true);
+            // const menuDialog = document.getElementById("changeRenderModeMenu");
+            // const newValue = this.checkList.indexOf(mode) >= 0 ? true : false;
+            // this.renderModeOptions.flags.set(mode, newValue);
+            // IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
         },
         changeRenderMode(thing){
             const view = this.GLOBAL_DATA.theViewPort
