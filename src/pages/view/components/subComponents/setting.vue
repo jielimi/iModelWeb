@@ -112,10 +112,16 @@ export default {
             this.renderModeOptions.flags.set(mode, newValue);
             IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
         },
-        changeRenderMode(){
-            const menuDialog = document.getElementById("changeRenderModeMenu");
-            this.renderModeOptions.mode = this.modeValue;
-            IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
+        changeRenderMode(thing){
+            const view = this.GLOBAL_DATA.theViewPort
+            const activeView = this.GLOBAL_DATA.activeViewState.viewState;
+
+             view.viewFlags.renderMode = Number.parseInt(thing, 10);
+             view.synchWithView(true);
+            
+            // const menuDialog = document.getElementById("changeRenderModeMenu");
+            // this.renderModeOptions.mode = this.modeValue;
+            // IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
         }
     }
     
