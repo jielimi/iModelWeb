@@ -26,6 +26,8 @@ export default {
     data () {
         return {
             isShowDetail: false,
+            showSkybox: false,
+            showGroundplane: false,
             modeValue: RenderMode.SmoothShade,
             renderModeOptions: {
                 flags: new Map(),
@@ -39,8 +41,6 @@ export default {
             ],
             checkList: [],
             options: [
-                {"id": "skybox", "text": "Skybox"},
-                {"id": "groundplane", "text": "Ground Plane"},
                 {"id": "ACSTriad", "text": "ACS Triad"},
                 {"id": "fill", "text": "Fill"},
                 {"id": "grid", "text": "Grid"},
@@ -71,17 +71,27 @@ export default {
             let skybox = false;
             let groundplane = false;
             if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
+                if(!this.showSkybox){
+                    this.options.push({"id": "sky", "text": "Sky box"});
+                    this.options.push({"id": "ground", "text": "Ground Plane"});
+                }
+                this.showSkybox = true;
+                this.showGroundplane = true;
                 const view = this.GLOBAL_DATA.theViewPort.view;
                 const env = view.getDisplayStyle3d().environment;
                 skybox = env.sky.display;
                 groundplane = env.ground.display;
+                
+            }else{
+                this.options.pop();
+                this.options.pop();
+                this.showSkybox = false;
+                this.showGroundplane = false;
             }
             const viewflags = this.GLOBAL_DATA.theViewPort.view.viewFlags;
             const lights = viewflags.sourceLights || viewflags.solarLight || viewflags.cameraLights;
-
             this.checkList = [];
-            this.updateRenderModeOption("skybox", skybox, this.renderModeOptions.flags);
-            this.updateRenderModeOption("groundplane", groundplane, this.renderModeOptions.flags);
+            
             this.updateRenderModeOption("ACSTriad", viewflags.ACSTriad, this.renderModeOptions.flags);
             this.updateRenderModeOption("fill", viewflags.fill, this.renderModeOptions.flags);
             this.updateRenderModeOption("grid", viewflags.grid, this.renderModeOptions.flags);
@@ -95,6 +105,11 @@ export default {
             this.updateRenderModeOption("weights", viewflags.weights, this.renderModeOptions.flags);
             this.updateRenderModeOption("styles", viewflags.styles, this.renderModeOptions.flags);
             this.updateRenderModeOption("transparency", viewflags.transparency, this.renderModeOptions.flags);
+            if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
+                this.updateRenderModeOption("sky", skybox, this.renderModeOptions.flags);
+                this.updateRenderModeOption("ground", groundplane, this.renderModeOptions.flags);
+            }
+            
             // console.log(this.renderModeOptions);
             this.renderModeOptions.mode = viewflags.renderMode;
             this.modeValue = viewflags.renderMode;
@@ -106,15 +121,21 @@ export default {
             }
         },
         applyRenderModeChange($event,mode){
-            
-            const view3d = this.GLOBAL_DATA.theViewPort.view;
-            const style = view3d.getDisplayStyle3d();
-            const env = style.environment;
-             env["sky"].display = $event;
-            view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
-            
-            const viewPort = this.GLOBAL_DATA.theViewPort
-            viewPort.synchWithView(true);
+            if(mode === 'sky' || mode === 'groundplane'){
+                const view3d = this.GLOBAL_DATA.theViewPort.view;
+                const style = view3d.getDisplayStyle3d();
+                const env = style.environment;
+                env[mode].display = $event;
+                view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
+                const viewPort = this.GLOBAL_DATA.theViewPort
+                viewPort.synchWithView(true);
+            }else {
+                const vf = this.GLOBAL_DATA.theViewPort.view.viewFlags;
+                vf[mode] = $event;
+                this.GLOBAL_DATA.theViewPort.view.viewFlags = vf;
+                const viewPort = this.GLOBAL_DATA.theViewPort
+                viewPort.synchWithView(true);
+            }
             // const menuDialog = document.getElementById("changeRenderModeMenu");
             // const newValue = this.checkList.indexOf(mode) >= 0 ? true : false;
             // this.renderModeOptions.flags.set(mode, newValue);
