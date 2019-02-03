@@ -41,7 +41,7 @@ export default {
             ],
             checkList: [],
             options: [
-                {"id": "ACSTriad", "text": "ACS Triad"},
+                {"id": "acsTriad", "text": "ACS Triad"},
                 {"id": "fill", "text": "Fill"},
                 {"id": "grid", "text": "Grid"},
                 {"id": "textures", "text": "Textures"},
@@ -92,7 +92,7 @@ export default {
             const lights = viewflags.sourceLights || viewflags.solarLight || viewflags.cameraLights;
             this.checkList = [];
             
-            this.updateRenderModeOption("ACSTriad", viewflags.ACSTriad, this.renderModeOptions.flags);
+            this.updateRenderModeOption("acsTriad", viewflags.acsTriad, this.renderModeOptions.flags);
             this.updateRenderModeOption("fill", viewflags.fill, this.renderModeOptions.flags);
             this.updateRenderModeOption("grid", viewflags.grid, this.renderModeOptions.flags);
             this.updateRenderModeOption("textures", viewflags.textures, this.renderModeOptions.flags);
