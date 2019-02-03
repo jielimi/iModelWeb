@@ -170,6 +170,8 @@ export default {
             top: 45px;
             z-index: 999;
             width: 200px;
+            max-height: 350px;
+            overflow-y: auto;
             padding-bottom: 10px;
             text-align: left;
             border: 1px solid #666;
