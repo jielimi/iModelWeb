@@ -36,8 +36,8 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancle">Cancle</el-button>
 
-        <el-button v-if="isNewProject" type="primary" @click="createProjectConfirm()">Confirm</el-button>
-        <el-button v-else type="primary" @click="modifyProjectConfirm()">Confirm</el-button>
+        <el-button v-if="isNewProject" type="primary" @click="createProjectConfirm()" :disabled="confirmDisable">Confirm</el-button>
+        <el-button v-else type="primary" @click="modifyProjectConfirm()" :disabled="confirmDisable">Confirm</el-button>
       </div>
     </el-dialog>
 
@@ -191,7 +191,8 @@
         },
         totalNum: 0,
         paginationShow: true,
-        tableData: []
+        tableData: [],
+        confirmDisable:false
       };
     },
     created () {
@@ -283,7 +284,9 @@
               projectName: this.projectForm.projectName,
               projectDescription: this.projectForm.projectDescription
             };
+            this.confirmDisable = true;
             this.$post('/api/project', param).then(res => {
+              this.confirmDisable = false;
               this.handleResult(res);
             });
           }
@@ -298,7 +301,9 @@
               projectName: this.projectForm.projectName,
               projectDescription: this.projectForm.projectDescription
             };
+            this.confirmDisable = true;
             this.$put('api/project', param).then(res => {
+              this.confirmDisable = false;
               this.handleResult(res);
             });
           }
