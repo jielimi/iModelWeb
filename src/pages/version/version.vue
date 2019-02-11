@@ -44,8 +44,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancle">Cancle</el-button>
-        <el-button v-if="isNewVersion" type="primary" @click="createVersionConfirm()">Confirm</el-button>
-        <el-button v-else type="primary" @click="modifyVersionConfirm()">Confirm</el-button>
+        <el-button v-if="isNewVersion" type="primary" @click="createVersionConfirm()" :disabled="confirmDisable">Confirm</el-button>
+        <el-button v-else type="primary" @click="modifyVersionConfirm()" :disabled="confirmDisable">Confirm</el-button>
       </div>
     </el-dialog>
 
@@ -263,7 +263,8 @@
 				uploadPrimaryList:[],
 				uploadReferenceList:[],
 				masterFileList: [],
-				referenceFileList: []
+        referenceFileList: [],
+        confirmDisable:false
       };
     },
     created () {
@@ -353,6 +354,7 @@
         this.versionForm.versionDescription = row.description;
       },
       handleResult (res) {
+        this.confirmDisable = false;
         if (res.state !== 0) {
           this.$message({
             message: res.message,
@@ -377,6 +379,7 @@
               versionName: this.versionForm.versionName,
               versionDescription: this.versionForm.versionDescription
             };
+            this.confirmDisable = true;
             this.$post('api/version', param).then(res => {
               this.handleResult(res);
             });
@@ -397,6 +400,7 @@
           versionName: this.versionForm.versionName,
           versionDescription: this.versionForm.versionDescription
         };
+        this.confirmDisable = true;
         this.$put('api/version', param).then(res => {
           this.handleResult(res);
         });""
