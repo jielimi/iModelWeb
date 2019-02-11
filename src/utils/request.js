@@ -75,6 +75,7 @@ export function post(url, data = {}) {
       .then(response => {
         resolve(response.data);
       }, err => {
+        console.log('catch',err)
         reject(err)
       })
   })

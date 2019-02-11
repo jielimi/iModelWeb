@@ -524,7 +524,7 @@
         };
         this.isLoading = true;
 
-        this.$post('api/version/gen',param).then(res=>{
+        this.$post('http://127.0.0.1:5566/api/version/gen',param).then(res=>{
           this.isLoading = false;
           // this.$ref.progress.endQuery();
           // this.showProgress = false;
