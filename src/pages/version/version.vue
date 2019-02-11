@@ -190,12 +190,19 @@
         <img :src='thumbnailSrc' width="500px" height="500px"/>
       </div>
     </div>
+
+    <div v-if="showProgress" :projectId="projectId" :versionName="versionForm.versionName">
+      <uploadProgress ref="progress"></uploadProgress>
+    </div>
   </div>
+
+  
 
 </template>
 
 <script>
-	import { formatDate } from '@/utils/date';
+  import { formatDate } from '@/utils/date';
+  import uploadProgress from '@/components/uploadProgress'
   export default {
     name: 'project',
     data() {
@@ -264,11 +271,15 @@
 				uploadReferenceList:[],
 				masterFileList: [],
         referenceFileList: [],
-        confirmDisable:false
+        confirmDisable:false,
+        showProgress:false
       };
     },
     created () {
       this.getVersionList();
+    },
+    components:{
+      uploadProgress
     },
     methods: {
       getVersionList (index) {
@@ -512,8 +523,12 @@
           versionName: row.name
         };
         this.isLoading = true;
+
         this.$post('api/version/gen',param).then(res=>{
           this.isLoading = false;
+          // this.$ref.progress.endQuery();
+          // this.showProgress = false;
+          
           if(res.state != 0) {
             this.$message({
               message:res.message,
@@ -527,6 +542,9 @@
             this.getVersionList();
           }
         })
+
+         // this.showProgress = true;
+         // this.$ref.progress.startQuery();
       },
 			getFiles(row){
 				this.masterFileList = [];
