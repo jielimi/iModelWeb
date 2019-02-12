@@ -191,9 +191,9 @@
       </div>
     </div>
 
-    <div v-if="showProgress" :projectId="projectId" :versionName="versionForm.versionName">
-      <uploadProgress ref="progress"></uploadProgress>
-    </div>
+    <!-- <div v-show="showProgress" > -->
+      <uploadProgress ref="progress" :openDialog="showProgress" :projectId="projectId" :versionName="versionForm.versionName" :steps="steps"></uploadProgress>
+    <!-- </div> -->
   </div>
 
   
@@ -272,7 +272,8 @@
 				masterFileList: [],
         referenceFileList: [],
         confirmDisable:false,
-        showProgress:false
+        showProgress:false,
+        steps:[]
       };
     },
     created () {
@@ -521,13 +522,22 @@
         let param = {
         	projectId: this.projectId,
           versionName: row.name
-        };
-        this.isLoading = true;
+        }; 
+
+        let that = this;
+        
+        this.$get('api/steps',{},param).then(res=>{
+          if(res.state == 0) {
+            that.steps = res.data.steps;
+            that.showProgress = true;
+            that.$refs.progress.startQuery();
+          }
+        })
 
         this.$post('http://127.0.0.1:5566/api/version/gen',param).then(res=>{
-          this.isLoading = false;
-          // this.$ref.progress.endQuery();
-          // this.showProgress = false;
+          
+          this.showProgress = false;
+          this.$refs.progress.endQuery();
           
           if(res.state != 0) {
             this.$message({
@@ -542,9 +552,7 @@
             this.getVersionList();
           }
         })
-
-         // this.showProgress = true;
-         // this.$ref.progress.startQuery();
+        
       },
 			getFiles(row){
 				this.masterFileList = [];

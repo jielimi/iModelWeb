@@ -8,60 +8,59 @@
     :close-on-press-escape="false"
     :show-close="false"
     center>
-    
     <div>
-        <el-steps :active="step" align-center>
-        <el-step title="step 1" description="start converting the file format to dgn"></el-step>
-        <el-step title="step 2" description="generating the change sets"></el-step>
-        <el-step title="step 3" description="uploading to imodelBank"></el-step>
-        <el-step title="step 4" description="completed"></el-step>
-    </el-steps>
+        <el-steps :active="step" align-center finish-status="success">
+            <el-step :title=stepNum  v-for="stepNum in steps" :key="stepNum"></el-step>
+        </el-steps>
+        <div class="description">{{description}}</div>
+        <el-progress :text-inside="true" :stroke-width="18" :percentage=progress status="success"></el-progress>
     </div>
     </el-dialog>
     
 </div>
-    
 </template>
 
 <script>
 
 export default {
     name: 'uploadProgress',
-    props:['projectId','versionName'],
+    props:['openDialog','projectId','versionName','steps'],
     data () {
         return {
             step:1,
             timeout:'',
             description:'',
-            openDialog:true
+            progress:0
         };
     },
     components: {
         
     },
     created () {
-        // window.eventHub.$on('start_query_progress',this.);
+       
     },
     methods: {
         startQuery() {
-            this.timeout = setTimeout(()=>{
+            this.timeout = setInterval(()=>{
                 var param = {
                     projectId:this.projectId,
                     versionName:this.versionName
                 }
 
                 this.$get('api/progress',{}, param).then(res => {
-                    if (res.state === 0) {
-                        this.step = res.data.state;
+                    if (res.state == 0) {
+                        this.step = res.data.step;
                         this.description = res.data.description;
+                        this.progress = Number(Number(res.data.progress).toFixed(0));
 
                     }else{
                         this.endQuery()
                     }
             });
-            },10000)
+            },1000)
         },
         endQuery() {
+            
             if (this.timeout){
                 clearTimeout(this.timeout)
             }
@@ -73,5 +72,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
+.description{
+    margin: 50px;
+}
 
 </style>
