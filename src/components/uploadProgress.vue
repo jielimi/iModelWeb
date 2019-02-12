@@ -27,7 +27,7 @@ export default {
     props:['openDialog','projectId','versionName','steps'],
     data () {
         return {
-            step:1,
+            step:0,
             timeout:'',
             description:'',
             progress:0
@@ -49,7 +49,7 @@ export default {
 
                 this.$get('api/progress',{}, param).then(res => {
                     if (res.state == 0) {
-                        this.step = res.data.step;
+                        this.step = res.data.step -1 ;
                         this.description = res.data.description;
                         this.progress = Number(Number(res.data.progress).toFixed(0));
 
