@@ -192,7 +192,7 @@
     </div>
 
     <!-- <div v-show="showProgress" > -->
-      <uploadProgress ref="progress" :openDialog="showProgress" :projectId="projectId" :versionName="versionForm.versionName" :steps="steps"></uploadProgress>
+      <uploadProgress ref="progress" :openDialog="showProgress" :projectId="projectId" :versionName="versionNameForGen" :steps="steps"></uploadProgress>
     <!-- </div> -->
   </div>
 
@@ -231,6 +231,7 @@
         queryWord: '',
         projectId: this.$route.query.projectId,
         projectName: this.$route.query.projectName,
+        versionNameForGen:'',
         dialogFormVisible: false,
         uploadVisible: false,
         dialogFileList: false,
@@ -523,6 +524,8 @@
         	projectId: this.projectId,
           versionName: row.name
         }; 
+
+        this.versionNameForGen = row.name;
 
         let that = this;
         
