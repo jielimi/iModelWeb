@@ -3,28 +3,29 @@
         <i class="iconfont icon-rotate gyroscope" @click="detail">
             <div v-show="isShowDetail" class="detail">
                 <div class="simpleicon" @click="direction($event,'Top')">
-                    Top
+                     <i class="iconfont bim-icon-viewtop"></i>
                 </div>
                 <div class="simpleicon" @click="direction($event,'Bottom')">
-                    Bottom
+                    <i class="iconfont bim-icon-viewbottom"></i>
                 </div>
                 <div class="simpleicon" @click="direction($event,'Left')">
-                    left
+                    <i class="iconfont bim-icon-viewleft"></i>
                 </div>
                 <div class="simpleicon" @click="direction($event,'Right')">
-                    right
+                    <i class="iconfont bim-icon-viewright"></i>
                 </div>
                 <div class="simpleicon" @click="direction($event,'Front')">
-                    front
+                    <i class="iconfont bim-icon-viewfront"></i>
                 </div>
                 <div class="simpleicon"  @click="direction($event,'Back')">
-                    back
+                    <i class="iconfont bim-icon-viewback"></i>
                 </div>
                 <div class="simpleicon" @click="direction($event,'Iso')">
-                    iso
+                    <i class="iconfont bim-icon-viewisoleft"></i>
+                    
                 </div>
                 <div class="simpleicon" @click="direction($event,'RightIso')">
-                    rightiso
+                    <i class="iconfont bim-icon-viewisoright"></i>
                 </div>
             </div>
         </i>
@@ -103,24 +104,25 @@ export default {
             float: left;
             position: relative;
             background-color: #E9F2F9;
-            border-color: gray;
-            border-style: solid;
-            border-width: 1px;
-            padding-left: 3px;
+            padding-left: 4px;
             padding-right: 3px;
-            padding-top: 3px;
+            padding-top: 4px;
             padding-bottom: 3px;
             margin-left: 3px;
             margin-top: 3px;
             margin-right: 3px;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             width: 35px;
             height: 35px;
             cursor: pointer;
-           font-size: 12px;
+            font-size: 12px;
+           i{
+               margin-left: -5px;
+               font-family: 'Bentley-Cesium-Web-Viewer-Icons' !important;
+           }
            &:hover{
                 color: #409EFF !important;
-                border:1px solid #409EFF !important
+                // border:1px solid #409EFF !important
            }
         }
     }
