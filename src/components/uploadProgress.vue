@@ -52,9 +52,25 @@ export default {
                         this.step = res.data.step -1 ;
                         this.description = res.data.description;
                         this.progress = Number(Number(res.data.progress).toFixed(0));
+                        if( res.data.done == true ){
+                            this.$message({
+                            message:'Version successfully generated',
+                            type:'success'
+                            })
+                            this.endQuery();
+                            this.$emit('endQueryVersionGenerate')
+                            this.steps = 0;
+                            this.progress = 0;
 
+                        }
                     }else{
+                        this.$message({
+                            message:res.message,
+                            type:'warning'
+                        })
                         this.endQuery()
+                        this.steps = 0;
+                        this.progress = 0;
                     }
             });
             },1000)

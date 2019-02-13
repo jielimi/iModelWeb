@@ -190,10 +190,12 @@
         <img :src='thumbnailSrc' width="500px" height="500px"/>
       </div>
     </div>
-
-    <!-- <div v-show="showProgress" > -->
-      <uploadProgress ref="progress" :openDialog="showProgress" :projectId="projectId" :versionName="versionNameForGen" :steps="steps"></uploadProgress>
-    <!-- </div> -->
+   
+    <uploadProgress @endQueryVersionGenerate="closeProgress" ref="progress" 
+      :openDialog="showProgress" :projectId="projectId" :versionName="versionNameForGen" 
+      :steps="steps">
+    </uploadProgress>
+    
   </div>
 
   
@@ -519,6 +521,10 @@
           }
         });
       },
+      closeProgress() {
+        this.showProgress = false;
+        this.getVersionList();
+      },
       Generate(row) {
         let param = {
         	projectId: this.projectId,
@@ -528,31 +534,21 @@
         this.versionNameForGen = row.name;
 
         let that = this;
-        
-        this.$get('api/steps',{},param).then(res=>{
-          if(res.state == 0) {
-            that.steps = res.data.steps;
-            that.showProgress = true;
-            that.$refs.progress.startQuery();
-          }
-        })
 
-        this.$post('http://127.0.0.1:5566/api/version/gen',param).then(res=>{
-          
-          this.showProgress = false;
-          this.$refs.progress.endQuery();
-          
+        this.$post('api/version/gen',param).then(res=>{
           if(res.state != 0) {
             this.$message({
               message:res.message,
               type:'warning'
             })
           }else{
-            this.$message({
-              message:res.message,
-              type:'success'
-            })
-            this.getVersionList();
+              this.$get('api/steps',{},param).then(res=>{
+                if(res.state == 0) {
+                  that.steps = res.data.steps;
+                  that.showProgress = true;
+                  that.$refs.progress.startQuery();
+                }
+              })
           }
         })
         
