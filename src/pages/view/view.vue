@@ -127,32 +127,6 @@ export default {
             IModelApp.viewManager.addViewport(this.theViewPort);
         }
     },
-    // async main (){
-    //    this.isLoading = true; 
-
-    //     RPC.init();
-    //     frontend_1.IModelApp.hubDeploymentEnv = this.configuration.environment || "QA";
-        
-    //     try{
-    //         console.log("loginAndOpenImodel start")
-    //         await this.loginAndOpenImodel(activeViewState);
-    //         console.log("loginAndOpenImodel over")
-    //     } catch (reason){
-    //         this.isLoading = false; 
-    //         console.log(reason);
-    //         return;
-    //     }
-
-    //     console.log("open View Before")
-    //     await this.openView(activeViewState);
-    //     console.log("open View End");
-
-    //     this.GLOBAL_DATA.activeViewState = activeViewState;
-
-    //     this.isLoading = false; 
-
-    // }
-
     async main() {
         this.isLoading = true; 
         RPC.init();
