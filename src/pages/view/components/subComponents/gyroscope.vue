@@ -47,7 +47,7 @@ export default {
     created () {},
     methods: {
         detail() {
-            this.isShowDetail = true;
+            this.isShowDetail = !this.isShowDetail;
         },
         direction (e,dir) {
             // this.GLOBAL_DATA.theViewPort;
@@ -118,7 +118,12 @@ export default {
             height: 35px;
             cursor: pointer;
            font-size: 12px;
+           &:hover{
+                color: #409EFF !important;
+                border:1px solid #409EFF !important
+           }
         }
     }
 }
+
 </style>
