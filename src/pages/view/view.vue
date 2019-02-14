@@ -8,7 +8,8 @@
 <script>
 import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 import * as common_1 from "@bentley/imodeljs-common/lib/common"
-import { AccessToken, UserInfo } from "@bentley/imodeljs-clients";
+import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
+import { ActivityLoggingContext } from "@bentley/bentleyjs-core";
 import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
@@ -36,6 +37,7 @@ export default {
                 "url": this.$route.query.url,
                 "iModelId": this.$route.query.projectId,
                 "versionName":this.$route.query.versionName,
+                "versionId": this.$route.query.versionId,
                 "name": "ReadOnlyTest",
             },
         }
@@ -92,6 +94,11 @@ export default {
         console.log("before open")
         state.iModelConnection = await IModelConnection.open(state.accessToken, 
         imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
+
+
+        const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
+        console.log(selectedChangeSets);
+
         console.log("after open")
     },
     async buildViewList(state, configurations) {

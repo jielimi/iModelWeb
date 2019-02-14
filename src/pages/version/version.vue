@@ -406,7 +406,7 @@
           return false;
         }
         // this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name,url:row.url}});
-        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,url: row.url}});
+        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url}});
         window.open(routeData.href, '_blank'); 
       },
       modifyVersionConfirm () {
