@@ -2,6 +2,19 @@
 <div class="view" v-loading="isLoading">
     <tool-bar-component></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
+    <el-dialog
+    title=""
+    width="50%"
+    :visible.sync="isLoading"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :show-close="false"
+    center>
+    <div>
+        <div class="description">{{description}}</div>
+        <el-progress :text-inside="true" :stroke-width="18" :percentage=progress status="success"></el-progress>
+    </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -33,6 +46,9 @@ export default {
             configuration:{
                 "useIModelBank": true
             },
+            timeout:'',
+            description:'',
+            progress:0,
             iminfo:{
                 "url": this.$route.query.url,
                 "iModelId": this.$route.query.projectId,
@@ -97,7 +113,24 @@ export default {
 
 
         const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
-        console.log(selectedChangeSets);
+        let changeSetCount = selectedChangeSets.length;
+        this.timeout = setInterval(()=>{
+            var param = {
+                projectId:this.projectId,
+                versionName:this.versionName,
+                changeSetCount: changeSetCount
+            }
+
+            this.$get('api/viewProgress',{}, param).then(res => {
+                if (res.state == 0) {
+                    this.description = res.data.description;
+                    this.progress = Number(Number(res.data.progress).toFixed(0));
+                }else{
+                    this.steps = 0;
+                    this.progress = 0;
+                }
+        });
+        },1000);
 
         console.log("after open")
     },
@@ -158,6 +191,9 @@ export default {
         this.GLOBAL_DATA.activeViewState = activeViewState;
 
         this.isLoading = false; 
+        clearInterval(this.timeout);
+        this.steps = 0;
+        this.progress = 0;
         window.eventHub.$emit('categories_init');
         window.eventHub.$emit('render_mode_init');
         window.eventHub.$emit('render_model_init');
@@ -176,6 +212,10 @@ export default {
         right: 0;
         bottom: 0;
         
+    }
+    .description {
+        text-align: center;
+        margin-bottom: 10px;
     }
     .imodelview {
         position: absolute;
