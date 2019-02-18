@@ -59,7 +59,7 @@ export default {
                             })
                             this.endQuery();
                             this.$emit('endQueryVersionGenerate')
-                            this.steps = 0;
+                            this.step = 0;
                             this.progress = 0;
 
                         }
