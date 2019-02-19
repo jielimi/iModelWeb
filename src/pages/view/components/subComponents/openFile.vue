@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-Open- relative" @click="dialogVisible=true" >
+        <i class="iconfont icon-Open- relative" @click="dialogVisible=true;inputFileUrl='';" >
         </i>
         <el-dialog
         :visible.sync="dialogVisible"
@@ -65,7 +65,6 @@ export default {
             if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
                 
                 if(this.standalone){
-                    debugger
                     await this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
                 }else {
                     await this.GLOBAL_DATA.activeViewState.iModelConnection.close(this.GLOBAL_DATA.activeViewState.accessToken);
