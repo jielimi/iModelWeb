@@ -28,6 +28,7 @@ export default {
             dialogVisible:false,
             inputFileUrl:'',
             theViewPort:undefined,
+            standalone: false
         };
     },
     components: {
@@ -39,9 +40,9 @@ export default {
         //     IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort);
         // }
 
-        if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
-            this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
-        }
+        // if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
+        //     this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
+        // }
     },
     methods: {
         openFile(){
@@ -56,12 +57,20 @@ export default {
                 await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
                 // await this.buildViewList(this.GLOBAL_DATA.activeViewState);
                 await this.openView(this.GLOBAL_DATA.activeViewState);
+                this.standalone = true;
                 this.dialogVisible = false;
         },
         async clearViews() {
             // await this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
             if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
-                await this.GLOBAL_DATA.activeViewState.iModelConnection.close(this.GLOBAL_DATA.activeViewState.accessToken);
+                
+                if(this.standalone){
+                    debugger
+                    await this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
+                }else {
+                    await this.GLOBAL_DATA.activeViewState.iModelConnection.close(this.GLOBAL_DATA.activeViewState.accessToken);
+                }
+                
                 this.GLOBAL_DATA.activeViewState = new SimpleViewState();
             }
                 // viewMap.clear(); 通知清除下记得
@@ -86,18 +95,16 @@ export default {
         },
         async  openView(state) {
         // find the canvas.
-        const parent = document.getElementById("imodelview");
+            const parent = document.getElementById("imodelview");
             if (parent) {
                 //var htmlCanvas = parent.children[0];
                 console.log("GET THE VIEWPORT 1")
                 //console.log(htmlCanvas)
                 //if (!htmlCanvas) return;
                 await this.buildViewList(state);
-                console.log(state.viewState)
-                if (!this.theViewPort){
-                    this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
-                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
-                }
+                console.log(state.viewState);
+                this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                this.GLOBAL_DATA.theViewPort = this.theViewPort;
                 //new frontend_1.ScreenViewport(parent);
                 console.log("GET THE VIEWPORT 2")
                 console.log(this.theViewPort)
