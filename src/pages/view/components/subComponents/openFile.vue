@@ -6,7 +6,7 @@
         :visible.sync="dialogVisible"
         width="30%"
         >
-        <el-input v-model="inputFileUrl" placeholder=""></el-input>
+        <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">cancle</el-button>
             <el-button type="primary" @click="openFile">confirm</el-button>
@@ -45,14 +45,13 @@ export default {
     },
     methods: {
         openFile(){
-            console.log(this.inputFileUrl)
             if(this.inputFileUrl){
                 this.resetStandaloneIModel(this.inputFileUrl)
             }
 
         },
         async resetStandaloneIModel(filename) {
-                IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewport);
+                IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort, false);
                 await this.clearViews();
                 await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
                 // await this.buildViewList(this.GLOBAL_DATA.activeViewState);
@@ -60,9 +59,11 @@ export default {
                 this.dialogVisible = false;
         },
         async clearViews() {
-            if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined)
+            // await this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
+            if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
                 await this.GLOBAL_DATA.activeViewState.iModelConnection.close(this.GLOBAL_DATA.activeViewState.accessToken);
                 this.GLOBAL_DATA.activeViewState = new SimpleViewState();
+            }
                 // viewMap.clear(); 通知清除下记得
         },
         async openStandaloneIModel(state, filename) {
@@ -94,7 +95,6 @@ export default {
                 await this.buildViewList(state);
                 console.log(state.viewState)
                 if (!this.theViewPort){
-                    debugger
                     this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.GLOBAL_DATA.theViewPort = this.theViewPort;
                 }
@@ -102,6 +102,7 @@ export default {
                 console.log("GET THE VIEWPORT 2")
                 console.log(this.theViewPort)
                 IModelApp.viewManager.addViewport(this.theViewPort);
+                console.log('the end')
             }
         },
 
