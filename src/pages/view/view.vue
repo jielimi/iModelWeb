@@ -112,7 +112,6 @@ export default {
             state.viewState = viewState;
         }
         window.eventHub.$emit('categories_viewList_init', viewSpecs);
-        
     },
     async  openView(state) {
         // find the canvas.

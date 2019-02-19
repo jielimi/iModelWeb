@@ -1,0 +1,126 @@
+<template>
+    <div>
+        <i class="iconfont icon-Open- relative" @click="dialogVisible=true" >
+        </i>
+        <el-dialog
+        :visible.sync="dialogVisible"
+        width="30%"
+        >
+        <el-input v-model="inputFileUrl" placeholder=""></el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">cancle</el-button>
+            <el-button type="primary" @click="openFile">confirm</el-button>
+        </span>
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+import { IModelApp,IModelConnection } from "@bentley/imodeljs-frontend";
+import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+class SimpleViewState {
+    constructor(){};
+}
+export default {
+    name: 'openFile',
+    data () {
+        return {
+            dialogVisible:false,
+            inputFileUrl:''
+        };
+    },
+    components: {
+        
+    },
+    created () {},
+    beforeDestroy(){
+        // if (this.GLOBAL_DATA.theViewPort){
+        //     IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort);
+        // }
+
+        if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
+            this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
+        }
+    },
+    methods: {
+        openFile(){
+            console.log(this.inputFileUrl)
+            if(this.inputFileUrl){
+                this.resetStandaloneIModel(this.inputFileUrl)
+            }
+
+        },
+        async resetStandaloneIModel(filename) {
+                IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewport);
+                await this.clearViews();
+                await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
+                // await this.buildViewList(this.GLOBAL_DATA.activeViewState);
+                await this.openView(this.GLOBAL_DATA.activeViewState);
+                this.dialogVisible = false;
+        },
+        async clearViews() {
+            if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined)
+                await this.GLOBAL_DATA.activeViewState.iModelConnection.close(this.GLOBAL_DATA.activeViewState.accessToken);
+                this.GLOBAL_DATA.activeViewState = new SimpleViewState();
+                // viewMap.clear(); 通知清除下记得
+        },
+        async openStandaloneIModel(state, filename) {
+            // configuration.standalone = true;
+            state.iModelConnection = await IModelConnection.openStandalone(filename);
+            // configuration.iModelName = state.iModelConnection.name;
+        },
+        async buildViewList(state, configurations) {
+            const config = undefined !== configurations ? configurations : {};
+            const viewQueryParams = { wantPrivate: false };
+            const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
+            
+            if (viewSpecs.length > 0){
+                let viewSpec = viewSpecs[0];
+                const viewState = await state.iModelConnection.views.load(viewSpec.id);
+                state.viewState = viewState;
+            }
+            console.log(viewSpecs);
+            window.eventHub.$emit('categories_viewList_init', viewSpecs);
+        },
+        async  openView(state) {
+        // find the canvas.
+        const parent = document.getElementById("imodelview");
+            if (parent) {
+                //var htmlCanvas = parent.children[0];
+                console.log("GET THE VIEWPORT 1")
+                //console.log(htmlCanvas)
+                //if (!htmlCanvas) return;
+                await this.buildViewList(state);
+                console.log(state.viewState)
+                if (!this.theViewPort){
+                    debugger
+                    this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                }
+                //new frontend_1.ScreenViewport(parent);
+                console.log("GET THE VIEWPORT 2")
+                console.log(this.theViewPort)
+                IModelApp.viewManager.addViewport(this.theViewPort);
+            }
+        },
+
+    }
+    
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="less" scoped>
+.relative{
+    position: relative;
+}
+.address{
+    top: 0;
+    opacity: 0;
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    left: 0;
+}
+
+</style>

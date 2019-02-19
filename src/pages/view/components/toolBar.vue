@@ -1,10 +1,11 @@
 <template>
     <div class="tool-bar">
+        <open-file-component></open-file-component>
         <change-view-component></change-view-component>
         <model-component></model-component>
         <categories-component></categories-component>
         <choose-component></choose-component>
-        <hidden-component></hidden-component>
+        <hide-component></hide-component>
         <show-component></show-component>
         <fit-to-view-component></fit-to-view-component>
         <window-area-component></window-area-component>
@@ -18,6 +19,7 @@
 </template>
 <script>
  
+ import openFileComponent from './subComponents/openFile'
  import modelComponent from './subComponents/model'
  import changeViewComponent from './subComponents/changeView'
  import categoriesComponent from './subComponents/categories'
@@ -30,7 +32,7 @@
  import undoComponent from './subComponents/undo'
  import redoComponent from './subComponents/redo'
  import chooseComponent from './subComponents/choose'
- import hiddenComponent from './subComponents/hidden'
+ import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
 
 
@@ -42,6 +44,7 @@ export default {
     },
     props:[''],
     components: {
+        openFileComponent,
         modelComponent,
         changeViewComponent,
         categoriesComponent,
@@ -54,7 +57,7 @@ export default {
         undoComponent,
         redoComponent,
         chooseComponent,
-        hiddenComponent,
+        hideComponent,
         showComponent
 
     },

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-yincang" @click="hidden">
+        <i class="iconfont icon-yincang" @click="hide">
         </i>
     </div>
 </template>
@@ -8,7 +8,7 @@
 <script>
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
-    name: 'hidden',
+    name: 'hide',
     data () {
         return {
             hiddenSet:new Set()
@@ -19,7 +19,7 @@ export default {
     },
     created () {},
     methods: {
-        hidden(){
+        hide(){
             console.log(typeof this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements);
             // console.log(this.hiddenSet);
             // this.hiddenSet()
