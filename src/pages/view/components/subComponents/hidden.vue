@@ -1,0 +1,41 @@
+<template>
+    <div>
+        <i class="iconfont icon-yincang" @click="hidden">
+        </i>
+    </div>
+</template>
+
+<script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
+export default {
+    name: 'hidden',
+    data () {
+        return {
+            hiddenSet:new Set()
+        };
+    },
+    components: {
+        
+    },
+    created () {},
+    methods: {
+        hidden(){
+            console.log(typeof this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements);
+            // console.log(this.hiddenSet);
+            // this.hiddenSet()
+            // "0x20000000094"
+           let selectSet = this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements;
+           let allHiddenSet = new Set([...this.hiddenSet,...selectSet]);
+           this.hiddenSet = allHiddenSet;
+           this.GLOBAL_DATA.theViewPort.view.setNeverDrawn(allHiddenSet);
+
+        }
+    }
+    
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="less" scoped>
+
+</style>

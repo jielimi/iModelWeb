@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-Gear-4 setting" @click.self="detail">
+        <i class="iconfont icon-Gear- setting" @click.self="detail">
             <div v-show="isShowDetail" class="detail" id="changeRenderModeMenu">
                 <el-select v-model="modeValue" @change="changeRenderMode" size="mini">
                     <el-option

@@ -3,6 +3,9 @@
         <change-view-component></change-view-component>
         <model-component></model-component>
         <categories-component></categories-component>
+        <choose-component></choose-component>
+        <hidden-component></hidden-component>
+        <show-component></show-component>
         <fit-to-view-component></fit-to-view-component>
         <window-area-component></window-area-component>
         <walk-component></walk-component>
@@ -26,6 +29,9 @@
  import settingComponent from './subComponents/setting'
  import undoComponent from './subComponents/undo'
  import redoComponent from './subComponents/redo'
+ import chooseComponent from './subComponents/choose'
+ import hiddenComponent from './subComponents/hidden'
+ import showComponent from './subComponents/show'
 
 
 export default {
@@ -46,7 +52,11 @@ export default {
         gyroscopeComponent,
         settingComponent,
         undoComponent,
-        redoComponent
+        redoComponent,
+        chooseComponent,
+        hiddenComponent,
+        showComponent
+
     },
     created () {},
     mounted () {

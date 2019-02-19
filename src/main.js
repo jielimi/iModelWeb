@@ -56,47 +56,6 @@ Vue.prototype.GLOBAL_DATA = {
   activeViewState:{}
 };
 
-
-// function stringToSnapMode(name) {
-//   switch (name) {
-//       case "Keypoint": return 2 /* NearestKeypoint */;
-//       case "Nearest": return 1 /* Nearest */;
-//       case "Center": return 8 /* Center */;
-//       case "Origin": return 16 /* Origin */;
-//       case "Intersection": return 64 /* Intersection */;
-//       default: return 2 /* NearestKeypoint */;
-//   }
-// }
-// class SVTAccuSnap extends frontend_1.AccuSnap {
-//   getActiveSnapModes() {
-//       const select = document.getElementById("snapModeList"); // 这个是工具栏第7个，杠铃下面有个钢琴那个，不知道什么意思，回头看,感觉是一个新增的工具才这么处理了
-//       const snapMode = stringToSnapMode(select.value);
-//       const snaps = [];
-//       snaps.push(snapMode);
-//       return snaps;
-//   }
-// }
-
-// class MeasurePointsTool extends frontend_1.PrimitiveTool {
-//   constructor() {
-//       super(...arguments);
-//       this.points = [];
-//   }
-//   requireWriteableTarget() { return false; }
-//   onPostInstall() { super.onPostInstall(); frontend_1.IModelApp.accuSnap.enableSnap(true); }
-//   onRestartTool() {
-//       this.exitTool();
-//   }
-// }
-
-// MeasurePointsTool.toolId = "Measure.Points";
-
-// class SVTIModelApp extends frontend_1.IModelApp {
-//   onStartup() {
-//   const svtToolNamespace = frontend_1.IModelApp.i18n.registerNamespace("SVTTools");
-//   MeasurePointsTool.register(svtToolNamespace);
-// }
-// }
 class DisplayTestAppAccuSnap extends AccuSnap {
   constructor() {
     super()
