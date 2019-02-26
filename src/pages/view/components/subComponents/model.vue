@@ -62,12 +62,17 @@ export default {
                 return;
              }
         },
-        applyModelChange(id,name){
+        async applyModelChange(id,name){
             const vp = this.GLOBAL_DATA.theViewPort;
             const view = this.GLOBAL_DATA.theViewPort.view;
             const selector = view.modelSelector;
+            console.log(selector);
             let checked = this.checkNameList.indexOf(name) >= 0 ? true : false;
             let model = view.iModel.models.getLoaded(id);
+            if(undefined === model){
+                await view.iModel.models.load(id);
+                model = view.iModel.models.getLoaded(id);
+            }
             if(checked){
                 selector.addModels(id);
             }else{
@@ -76,7 +81,7 @@ export default {
             this.isCheckAll();
             vp.invalidateScene();
         },
-        handleCheckAllChange(value){
+        async handleCheckAllChange(value){
             const vp = this.GLOBAL_DATA.theViewPort;
             const view = this.GLOBAL_DATA.theViewPort.view;
             const selector = view.modelSelector;
@@ -84,11 +89,16 @@ export default {
             this.checkList = [];
             let that = this;
             if(value){
-                this.modelList.forEach(function(val,index){
+                for (const val of this.modelList) {
                     that.checkNameList.push(val.name);
                     that.checkList.push(val.id);
+                    let model = view.iModel.models.getLoaded(val.id);
+                    if(undefined === model){
+                        await view.iModel.models.load(val.id);
+                        model = view.iModel.models.getLoaded(val.id);
+                    }
                     selector.addModels(val.id);
-                });
+                }
             }else{
                 this.modelList.forEach(function(val,index){
                     selector.dropModels(val.id);
