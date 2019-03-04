@@ -8,7 +8,7 @@
         >
         <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">cancle</el-button>
+            <el-button @click="dialogVisible = false">cancel</el-button>
             <el-button type="primary" @click="openFile">confirm</el-button>
         </span>
         </el-dialog>
@@ -43,12 +43,16 @@ export default {
         // if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
         //     this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
         // }
+        this.clearViews()
     },
     methods: {
         openFile(){
             if(this.inputFileUrl){
                 this.resetStandaloneIModel(this.inputFileUrl)
             }
+            window.eventHub.$emit('categories_init');
+            window.eventHub.$emit('render_mode_init');
+            window.eventHub.$emit('render_model_init');
 
         },
         async resetStandaloneIModel(filename) {
