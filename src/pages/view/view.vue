@@ -111,7 +111,7 @@ export default {
             const viewState = await state.iModelConnection.views.load(viewSpec.id);
             state.viewState = viewState;
         }
-        window.eventHub.$emit('categories_viewList_init', viewSpecs);
+        window.eventHub.$emit('viewList_init', viewSpecs);
     },
     async  openView(state) {
         // find the canvas.

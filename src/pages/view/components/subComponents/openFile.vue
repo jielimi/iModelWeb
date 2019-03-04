@@ -50,9 +50,7 @@ export default {
             if(this.inputFileUrl){
                 this.resetStandaloneIModel(this.inputFileUrl)
             }
-            window.eventHub.$emit('categories_init');
-            window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init');
+            
 
         },
         async resetStandaloneIModel(filename) {
@@ -61,6 +59,9 @@ export default {
                 await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
                 // await this.buildViewList(this.GLOBAL_DATA.activeViewState);
                 await this.openView(this.GLOBAL_DATA.activeViewState);
+                window.eventHub.$emit('categories_init');
+                window.eventHub.$emit('render_mode_init');
+                window.eventHub.$emit('render_model_init');
                 this.standalone = true;
                 this.dialogVisible = false;
         },
@@ -94,7 +95,7 @@ export default {
                 state.viewState = viewState;
             }
             console.log(viewSpecs);
-            window.eventHub.$emit('categories_viewList_init', viewSpecs);
+            window.eventHub.$emit('viewList_init', viewSpecs);
         },
         async  openView(state) {
         // find the canvas.
