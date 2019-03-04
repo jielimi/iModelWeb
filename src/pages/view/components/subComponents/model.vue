@@ -55,6 +55,7 @@ export default {
                         that.checkNameList.push(val.name);
                     }
                 });
+                debugger
                 this.isCheckAll();
                 vp.invalidateScene();
              }else {

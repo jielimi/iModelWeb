@@ -25,7 +25,7 @@ export default {
         
     },
     created () {
-        window.eventHub.$on('categories_viewList_init',this.getViewList);
+        window.eventHub.$on('viewList_init',this.getViewList);
     },
     methods: {
         getViewList(viewList){
