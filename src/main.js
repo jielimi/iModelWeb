@@ -7,6 +7,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/common.less';
 import locale from 'element-ui/lib/locale/lang/en';
+import RPC from '@/pages/view/dependency/rpc';
 
 // import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 
@@ -88,5 +89,5 @@ class SVTIModelApp extends IModelApp {
 }
 
 
-
+RPC.init();
 SVTIModelApp.startup();

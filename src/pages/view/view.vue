@@ -15,7 +15,7 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBan
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import Tools from './dependency/tools';
-import RPC from './dependency/rpc';
+// import RPC from './dependency/rpc';
 
 
 class SimpleViewState {
@@ -135,7 +135,7 @@ export default {
     },
     async main() {
         this.isLoading = true; 
-        RPC.init();
+        // RPC.init();
 
         try{
             console.log("loginAndOpenImodel start")
