@@ -44,7 +44,25 @@
     <div class="table-area">
       <div class="operate-area">
         <el-button type="primary" @click="createProject">Create Project</el-button>
+
+        <!-- <i class="iconfont icon-Open- relative" @click="dialogVisible=true;inputFileUrl='';" >
+        </i> -->
+
+        <el-button type="primary" @click="stdialogVisible=true;inputFileUrl='';">Open Standalone</el-button>
+        <el-dialog
+        :visible.sync="stdialogVisible"
+        width="30%"
+        >
+        <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="stdialogVisible = false">cancle</el-button>
+            <el-button type="primary" @click="openSTFile">confirm</el-button>
+        </span>
+        </el-dialog>
       </div>
+      <div>
+       
+    </div>
 
       <el-table
         :data="tableData"
@@ -162,6 +180,8 @@
       };
       return {
         dialogVisible:false,
+        stdialogVisible:false,
+        inputFileUrl:'',
         thumbnailSrc:'',
         isLoading: false,
         isNewProject: true,
@@ -322,6 +342,10 @@
       },
       closeCover(){
         this.dialogVisible = false;
+      },
+      openSTFile(){
+        let routeData = this.$router.resolve({ path: 'view', query: { isStandalone:true,openUrl:this.inputFileUrl}});
+        window.open(routeData.href, '_blank'); 
       }
     }
   };

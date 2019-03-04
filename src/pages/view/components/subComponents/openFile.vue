@@ -8,7 +8,7 @@
         >
         <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">cancel</el-button>
+            <el-button @click="dialogVisible = false">cancle</el-button>
             <el-button type="primary" @click="openFile">confirm</el-button>
         </span>
         </el-dialog>
@@ -34,7 +34,9 @@ export default {
     components: {
         
     },
-    created () {},
+    created () {
+        window.eventHub.$on('open_standalone',this.openFileFromProject);
+    },
     beforeDestroy(){
         // if (this.GLOBAL_DATA.theViewPort){
         //     IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort);
@@ -43,9 +45,13 @@ export default {
         // if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
         //     this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
         // }
+        
         this.clearViews()
     },
     methods: {
+        openFileFromProject(inputFileUrl){
+            this.resetStandaloneIModel(inputFileUrl)
+        },
         openFile(){
             if(this.inputFileUrl){
                 this.resetStandaloneIModel(this.inputFileUrl)
@@ -80,9 +86,7 @@ export default {
                 // viewMap.clear(); 通知清除下记得
         },
         async openStandaloneIModel(state, filename) {
-            // configuration.standalone = true;
             state.iModelConnection = await IModelConnection.openStandalone(filename);
-            // configuration.iModelName = state.iModelConnection.name;
         },
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};

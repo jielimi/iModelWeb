@@ -136,6 +136,12 @@ export default {
     async main() {
         this.isLoading = true; 
         // RPC.init();
+        console.log(this.$route.query)
+        if(this.$route.query && this.$route.query.isStandalone){
+            window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
+            this.isLoading = false;
+            return;
+        }
 
         try{
             console.log("loginAndOpenImodel start")
