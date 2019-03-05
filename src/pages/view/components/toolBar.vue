@@ -1,6 +1,6 @@
 <template>
     <div class="tool-bar">
-        <!-- <open-file-component></open-file-component> -->
+        <open-file-component style="display:none"></open-file-component>
         <change-view-component></change-view-component>
         <model-component></model-component>
         <categories-component></categories-component>
