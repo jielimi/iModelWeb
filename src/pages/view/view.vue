@@ -64,16 +64,6 @@ export default {
     categoryChange () {
         console.log(activeViewState,this.GLOBAL_DATA.activeViewState);
     },
-    // async _changeView(view) {
-    //     await this.theViewPort.changeView(view);
-    //     activeViewState.viewState = view;
-    // },
-    // async changeView (view) {
-    //     if (!(view instanceof ViewState)) {
-    //         view = await activeViewState.iModelConnection.views.load(view.id);
-    //     }
-    //     await this._changeView(view.clone());
-    // },
     async loginAndOpenImodel(state) {
        
         const userInfo = new UserInfo("userid", "email@organization.org", {"firstName": "first", "lastName": "last"}, {"id": "orgid", "name": "organization"});
@@ -136,7 +126,7 @@ export default {
     async main() {
         this.isLoading = true; 
         // RPC.init();
-        console.log(this.$route.query)
+        
         if(this.$route.query && this.$route.query.isStandalone){
             window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
             this.isLoading = false;
