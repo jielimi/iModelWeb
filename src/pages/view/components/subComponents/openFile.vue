@@ -34,18 +34,18 @@ export default {
     components: {
         
     },
+    beforeCreate(){
+      
+    },
     created () {
+        let that = this;
+        window.onbeforeunload = () =>{
+            this.clearViews();
+            return 'tips';
+        }
         window.eventHub.$on('open_standalone',this.openFileFromProject);
     },
     beforeDestroy(){
-        // if (this.GLOBAL_DATA.theViewPort){
-        //     IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort);
-        // }
-
-        // if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
-        //     this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
-        // }
-        
         this.clearViews()
     },
     methods: {
