@@ -45,20 +45,41 @@
       <div class="operate-area">
         <el-button type="primary" @click="createProject">Create Project</el-button>
 
-        <!-- <i class="iconfont icon-Open- relative" @click="dialogVisible=true;inputFileUrl='';" >
-        </i> -->
-
+        
+        <!-- 打开standalone   -->
         <el-button type="primary" @click="stdialogVisible=true;inputFileUrl='';">Open Standalone</el-button>
-        <el-dialog
-        :visible.sync="stdialogVisible"
-        width="30%"
-        >
-        <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="stdialogVisible = false">cancle</el-button>
-            <el-button type="primary" @click="openSTFile">confirm</el-button>
-        </span>
+        <!-- 打开在线版本 -->
+        <el-button type="primary" @click="onlinedialogVisible=true;onlineViewForm.url='';onlineViewForm.versionName=''">Open Online</el-button>
+
+        <el-dialog title="Open Standalone" :visible.sync="stdialogVisible" width="30%" :close-on-click-modal="false" center>
+          <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="stdialogVisible = false">Cancle</el-button>
+            <el-button type="primary" @click="openSTFile">Confirm</el-button>
+          </span>
         </el-dialog>
+
+        <el-dialog title="Open Online View" :visible.sync="onlinedialogVisible"  :close-on-click-modal="false" center>
+        <el-form :model="onlineViewForm" :rules="onlineViewrules" ref="onlineViewForm" @submit.native.prevent>
+          <div>
+            <el-form-item label="VersionName:" :label-width="formLabelWidth"  prop="versionName">
+              <el-input v-model.trim="onlineViewForm.versionName" autocomplete="off"></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="Url Addr:" :label-width="formLabelWidth"  prop="url">
+              <el-input v-model.trim="onlineViewForm.url" autocomplete="off"></el-input>
+            </el-form-item>
+          </div>
+
+          
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="onlinedialogVisible = false">Cancle</el-button>
+          <el-button type="primary" @click="openOnlineFile">Confirm</el-button>
+        </div>
+      </el-dialog>
+
       </div>
       <div>
        
@@ -117,10 +138,6 @@
               type="primary"
               @click="modifyProject(scope.row)">Modify
             </el-button>
-            <!--<el-button-->
-            <!--size="mini"-->
-            <!--type="danger"-->
-            <!--@click="handleDelete(scope.$index, scope.row)">Delete</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -181,6 +198,11 @@
       return {
         dialogVisible:false,
         stdialogVisible:false,
+        onlinedialogVisible:false,
+        onlineViewForm:{
+          url:'',
+          versionName:''
+        },
         inputFileUrl:'',
         thumbnailSrc:'',
         isLoading: false,
@@ -194,6 +216,17 @@
           projectDescription: ''
         },
         oldProjectName:'',
+        onlineViewrules: {
+          versionName: [
+            { required: true, message: 'please input the name of version', trigger: 'blur'},
+            { max: 30, message: 'within 30 characters please', trigger: 'change'},
+            { pattern: /^([\w\u4E00-\u9FA5_\-]+)+$/, message: 'only chinese character,letters,numbers and underscore are allowed ', trigger: 'change'}
+          ],
+          url: [
+            { required: true, message: 'please input the url', trigger: 'blur'},
+            { max: 30, message: 'within 30 characters please', trigger: 'change'},
+          ]
+        },
         rules: {
           projectName: [
             { required: true, message: 'please input the name of project', trigger: 'blur'},
@@ -329,23 +362,32 @@
           }
         });
       },
-      dateFormat(row, column, cellValue, index){
+      dateFormat(row, column, cellValue, index) {
         const  daterc= row[column.property];
         if(daterc!=null){
           const dateMat= new Date(daterc);
           return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
         }
       },
-      expandThumbNail(base64src){
+      expandThumbNail(base64src) {
         this.dialogVisible = true;
         this.thumbnailSrc = base64src;
       },
-      closeCover(){
+      closeCover() {
         this.dialogVisible = false;
       },
-      openSTFile(){
+      openSTFile() {
+        if(!this.inputFileUrl){
+          return;
+        }
         let routeData = this.$router.resolve({ path: 'view', query: { isStandalone:true,openUrl:this.inputFileUrl}});
         window.open(routeData.href, '_blank'); 
+      },
+      openOnlineFile() {
+        let routeData = this.$router.resolve({ path: 'view', query: {projectId: "233e1f55-561d-42a4-8e80-d6f91743863e",
+        versionName: this.onlineViewForm.versionName,versionId: "4a7c8708-58fd-4d1c-8b95-b1bc3915ab80",url: this.onlineViewForm.url}});
+        window.open(routeData.href, '_blank');
+
       }
     }
   };
