@@ -2,6 +2,18 @@
 <div class="view" v-loading="isLoading">
     <tool-bar-component></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
+    <el-dialog
+        title=""
+        width="50%"
+        :visible.sync="isLoading"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :show-close="false"
+        center>
+        <div>
+            <el-progress :text-inside="true" :stroke-width="18" :percentage=progress status="success"></el-progress>
+        </div>
+    </el-dialog>
 </div>
 </template>
 
@@ -33,6 +45,7 @@ export default {
             configuration:{
                 "useIModelBank": true
             },
+            progress:2,
             iminfo:{
                 "url": this.$route.query.url,
                 "iModelId": this.$route.query.projectId,
@@ -70,6 +83,7 @@ export default {
         const foreignAccessTokenWrapper = {};
         foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
         state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
+        this.progress = 20;
         console.log("state=",state)
 
         const iModelId = "233e1f55-561d-42a4-8e80-d6f91743863e";
@@ -88,7 +102,7 @@ export default {
 
         const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
         let changeSetCount = selectedChangeSets.length;
-
+        this.progress = 50;
         console.log("after open")
     },
     async buildViewList(state, configurations) {
@@ -134,8 +148,10 @@ export default {
         }
 
         try{
-            console.log("loginAndOpenImodel start")
+            console.log("loginAndOpenImodel start");
+            this.progress = 10;
             await this.loginAndOpenImodel(activeViewState);
+            this.progress = 95;
             console.log("activeViewState",activeViewState)
             console.log("loginAndOpenImodel over")
         } catch (reason){
@@ -153,7 +169,7 @@ export default {
         this.GLOBAL_DATA.activeViewState = activeViewState;
 
         this.isLoading = false; 
-        clearInterval(this.timeout);
+        this.progress = 0;
         window.eventHub.$emit('categories_init');
         window.eventHub.$emit('render_mode_init');
         window.eventHub.$emit('render_model_init');
