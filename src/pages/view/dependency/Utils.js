@@ -4,7 +4,7 @@ import {
     SnapMode
 } from "@bentley/imodeljs-frontend";
 // const tooltip_js_1 = require("tooltip.js");
-import * as tooltip_js_1 from 'tooltip.js'
+import * as tooltip_js_1 from 'tooltip'
 //import tooltip_js_1 from 'tootip.js/dist/tooltip'
 import { DrawingAidTestTool } from "./DrawingAidTestTool";
 import * as imodeljs_frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
@@ -38,6 +38,7 @@ clearToolTip() {
 }
 _showToolTip(el, message, pt, options) {
     this.clearToolTip();
+    debugger;
     const rect = el.getBoundingClientRect();
     if (undefined === pt)
         pt = { x: rect.width / 2, y: rect.height / 2 };
