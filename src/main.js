@@ -8,21 +8,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/common.less';
 import locale from 'element-ui/lib/locale/lang/en';
 import RPC from '@/pages/view/dependency/rpc';
+import {SVTIModelApp} from '@/pages/view/dependency/Utils'
 
-// import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
-
-import {
-  AccuSnap,
-  IModelApp,
-  MessageBoxIconType,
-  MessageBoxType,
-  MessageBoxValue,
-  NotificationManager,
-  NotifyMessageDetails,
-  SnapMode,
-  ToolTipOptions,
-} from "@bentley/imodeljs-frontend";
-import { DrawingAidTestTool } from "./DrawingAidTestTool";
 
 Vue.config.productionTip = false
 
@@ -56,37 +43,6 @@ Vue.prototype.GLOBAL_DATA = {
   theViewPort:{},
   activeViewState:{}
 };
-
-class DisplayTestAppAccuSnap extends AccuSnap {
-  constructor() {
-    super()
-    this._activeSnaps =  [SnapMode.NearestKeypoint];
-  }
-  keypointDivisor() { return 2; }
-  getActiveSnapModes() { return this._activeSnaps; }
-  setActiveSnapModes(snaps) {
-    this._activeSnaps.length = snaps.length;
-    for (let i = 0; i < snaps.length; i++)
-      this._activeSnaps[i] = snaps[i];
-  }
-}
-
-
-class SVTIModelApp extends IModelApp {
-  onStartup() {
-    IModelApp.accuSnap = new DisplayTestAppAccuSnap();
-    // IModelApp.notifications = new Notifications();
-    const svtToolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
-    DrawingAidTestTool.register(svtToolNamespace);
-  }
-
-  setActiveSnapModes(snaps) {
-    IModelApp.accuSnap.setActiveSnapModes(snaps);
-  }
-
-  setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
-
-}
 
 
 RPC.init();
