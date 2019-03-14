@@ -1,13 +1,14 @@
 import {
-    AccuSnap,
     IModelApp,
     SnapMode
 } from "@bentley/imodeljs-frontend";
 // const tooltip_js_1 = require("tooltip.js");
 import * as tooltip_js_1 from 'tooltip'
 //import tooltip_js_1 from 'tootip.js/dist/tooltip'
+import { AccuSnap } from "./AccuSnap";
+import { NotificationManager } from "./NotificationManager";
 import { DrawingAidTestTool } from "./DrawingAidTestTool";
-import * as imodeljs_frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+// import * as imodeljs_frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 
 
 class DisplayTestAppAccuSnap extends AccuSnap {
@@ -24,7 +25,7 @@ setActiveSnapModes(snaps) {
 }
 }
 
-class Notifications extends imodeljs_frontend_1.NotificationManager {
+class Notifications extends NotificationManager {
 get isToolTipSupported() { return true; }
 get isToolTipOpen() { return undefined !== this._toolTip; }
 clearToolTip() {
@@ -38,7 +39,6 @@ clearToolTip() {
 }
 _showToolTip(el, message, pt, options) {
     this.clearToolTip();
-    debugger;
     const rect = el.getBoundingClientRect();
     if (undefined === pt)
         pt = { x: rect.width / 2, y: rect.height / 2 };
