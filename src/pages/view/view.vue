@@ -74,6 +74,19 @@ export default {
         }
     },
     methods:{
+    randomNum(minNum,maxNum){ 
+        switch(arguments.length){ 
+            case 1: 
+                return parseInt(Math.random()*minNum+1,10); 
+            break; 
+            case 2: 
+                return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
+            break; 
+                default: 
+                    return 0; 
+                break; 
+        } 
+    },
     categoryChange () {
         console.log(activeViewState,this.GLOBAL_DATA.activeViewState);
     },
@@ -83,7 +96,7 @@ export default {
         const foreignAccessTokenWrapper = {};
         foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
         state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
-        this.progress = 20;
+        this.progress = this.randomNum(5,20);
         console.log("state=",state)
 
         const iModelId = "233e1f55-561d-42a4-8e80-d6f91743863e";
@@ -102,7 +115,7 @@ export default {
 
         const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
         let changeSetCount = selectedChangeSets.length;
-        this.progress = 50;
+        this.progress = this.randomNum(40,50);
         console.log("after open")
     },
     async buildViewList(state, configurations) {
@@ -149,9 +162,9 @@ export default {
 
         try{
             console.log("loginAndOpenImodel start");
-            this.progress = 10;
+            this.progress = this.randomNum(0,5);
             await this.loginAndOpenImodel(activeViewState);
-            this.progress = 95;
+            this.progress = this.randomNum(80,95);
             console.log("activeViewState",activeViewState)
             console.log("loginAndOpenImodel over")
         } catch (reason){
