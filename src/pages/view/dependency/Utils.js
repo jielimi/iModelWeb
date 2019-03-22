@@ -10,7 +10,6 @@ import { NotificationManager } from "./NotificationManager";
 import { DrawingAidTestTool } from "./DrawingAidTestTool";
 // import * as imodeljs_frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 
-
 class DisplayTestAppAccuSnap extends AccuSnap {
 constructor() {
     super(...arguments);
@@ -26,38 +25,49 @@ setActiveSnapModes(snaps) {
 }
 
 class Notifications extends NotificationManager {
-get isToolTipSupported() { return true; }
-get isToolTipOpen() { return undefined !== this._toolTip; }
-clearToolTip() {
-    if (!this.isToolTipOpen)
-        return;
-    this._toolTip.dispose();
-    this._el.removeChild(this._tooltipDiv);
-    this._toolTip = undefined;
-    this._el = undefined;
-    this._tooltipDiv = undefined;
+    get isToolTipSupported() { return true; }
+    get isToolTipOpen() { return undefined !== this._toolTip; }
+    clearToolTip() {
+        if (!this.isToolTipOpen)
+            return;
+        this._toolTip.dispose();
+        this._el.removeChild(this._tooltipDiv);
+        this._toolTip = undefined;
+        this._el = undefined;
+        this._tooltipDiv = undefined;
+    }
+    _showToolTip(el, message, pt, options) {
+        String.prototype.replaceAll  = function(s1,s2){   
+            return this.replace(new RegExp(s1,"gm"),s2);   
+        }
+        message = message.replaceAll("<b>","");
+        message = message.replaceAll("</b>","");
+        message = message.replaceAll("<br>","<br><br>");
+        message = message.replaceAll(",","<br><br>");
+        message = message.replaceAll("Element.","");
+        console.log(message);
+        this.clearToolTip();
+        const rect = el.getBoundingClientRect();
+        if (undefined === pt)
+            pt = { x: rect.width / 2, y: rect.height / 2 };
+        const location = document.createElement("div");
+        const height = 20;
+        const width = 20;
+        location.style.position = "absolute";
+        // location.style.top = (pt.y - height / 2) + "px";
+        // location.style.left = (pt.x - width / 2) + "px";
+        location.style.top = 10 + "px";
+        location.style.right = 0;
+        // location.style.width = width + "px";
+        // location.style.height = height + "px";
+        el.appendChild(location);
+        this._el = el;
+        this._tooltipDiv = location;
+        this._toolTip = new tooltip_js_1.default(location, { trigger: "manual", html: true, placement: (options && options.placement) ? options.placement : "right-start", title: message });
+        this._toolTip.show();
+    }
 }
-_showToolTip(el, message, pt, options) {
-    this.clearToolTip();
-    const rect = el.getBoundingClientRect();
-    if (undefined === pt)
-        pt = { x: rect.width / 2, y: rect.height / 2 };
-    const location = document.createElement("div");
-    const height = 20;
-    const width = 20;
-    location.style.position = "absolute";
-    location.style.top = (pt.y - height / 2) + "px";
-    location.style.left = (pt.x - width / 2) + "px";
-    location.style.width = width + "px";
-    location.style.height = height + "px";
-    el.appendChild(location);
-    this._el = el;
-    this._tooltipDiv = location;
-    this._toolTip = new tooltip_js_1.default(location, { trigger: "manual", html: true, placement: (options && options.placement) ? options.placement : "right-start", title: message });
-    this._toolTip.show();
-}
-}
-
+ 
 
 export class SVTIModelApp extends IModelApp {
     static onStartup() {
