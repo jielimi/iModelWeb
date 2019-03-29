@@ -187,7 +187,7 @@
     <div class="cover" v-if="dialogVisible">
       <div class="img-wrap">
         <i class="iconfont icon-close" @click="closeCover"></i>
-        <img :src='thumbnailSrc' width="500px" height="500px"/>
+        <img :src='thumbnailSrc' width="500px"/>
       </div>
     </div>
    
