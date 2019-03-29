@@ -173,7 +173,7 @@ export default {
             return;
         }
 
-       this.GLOBAL_DATA.activeViewState = activeViewState;
+        this.GLOBAL_DATA.activeViewState = activeViewState;
         
         console.log("open View Before")
         await this.openView(activeViewState);
@@ -181,11 +181,33 @@ export default {
 
         this.GLOBAL_DATA.activeViewState = activeViewState;
 
+        
+
         this.isLoading = false; 
         this.progress = 0;
         window.eventHub.$emit('categories_init');
         window.eventHub.$emit('render_mode_init');
         window.eventHub.$emit('render_model_init');
+        let that = this;
+        setTimeout(function(){
+            //thumbnail
+            let parent = document.getElementById("imodelview");
+            let htmlCanvas = parent.children[0];
+            let dataURL = htmlCanvas.toDataURL();
+            console.log(dataURL);
+            let param = {
+                projectId: that.$route.query.projectId,
+                versionName: that.$route.query.versionName,
+                thumbnail: dataURL
+            };
+            that.$post('api/thumbnail',param).then(res=>{
+                if(res.state != 0) {
+                    console.log(res.message);
+                }
+            });
+
+        },2000)
+        
 
     }
 
