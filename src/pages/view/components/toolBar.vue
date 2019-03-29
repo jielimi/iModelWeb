@@ -15,6 +15,7 @@
         <settingComponent></settingComponent>
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
+        <!-- <clipComponent></clipComponent> -->
     </div>
 </template>
 <script>
@@ -34,6 +35,7 @@
  import chooseComponent from './subComponents/choose'
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
+ import clipComponent from './subComponents/clip'
 
 
 export default {
@@ -58,7 +60,8 @@ export default {
         redoComponent,
         chooseComponent,
         hideComponent,
-        showComponent
+        showComponent,
+        clipComponent
 
     },
     created () {},
