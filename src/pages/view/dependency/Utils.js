@@ -45,7 +45,6 @@ class Notifications extends NotificationManager {
         message = message.replaceAll("<br>","<br><br>");
         message = message.replaceAll(",","<br><br>");
         message = message.replaceAll("Element.","");
-        console.log(message);
         this.clearToolTip();
         const rect = el.getBoundingClientRect();
         if (undefined === pt)
