@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-save" @click="save"></i>
+        <i class="iconfont icon-baocun" @click="save"></i>
     </div>
 </template>
 
