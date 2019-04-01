@@ -5,6 +5,7 @@
         <model-component></model-component>
         <categories-component></categories-component>
         <choose-component></choose-component>
+        <save-component :projectId="projectId" :versionName="versionName"></save-component>
         <hide-component></hide-component>
         <show-component></show-component>
         <fit-to-view-component></fit-to-view-component>
@@ -33,6 +34,7 @@
  import undoComponent from './subComponents/undo'
  import redoComponent from './subComponents/redo'
  import chooseComponent from './subComponents/choose'
+ import saveComponent from './subComponents/save'
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
  import clipComponent from './subComponents/clip'
@@ -42,9 +44,11 @@ export default {
     name: 'toolBar',
     data () {
         return {
+            // projectId: this.projectId,
+            // versionName: this.versionName
         };
     },
-    props:[''],
+    props:['projectId','versionName'],
     components: {
         openFileComponent,
         modelComponent,
@@ -59,12 +63,14 @@ export default {
         undoComponent,
         redoComponent,
         chooseComponent,
+        saveComponent,
         hideComponent,
         showComponent,
         clipComponent
 
     },
-    created () {},
+    created () {
+    },
     mounted () {
         
     },

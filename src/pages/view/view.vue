@@ -1,6 +1,6 @@
 <template>
 <div class="view" v-loading="isLoading">
-    <tool-bar-component></tool-bar-component>
+    <tool-bar-component :projectId="iminfo.iModelId" :versionName="iminfo.versionName"></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
     <el-dialog
         title=""
@@ -188,26 +188,6 @@ export default {
         window.eventHub.$emit('categories_init');
         window.eventHub.$emit('render_mode_init');
         window.eventHub.$emit('render_model_init');
-        let that = this;
-        setTimeout(function(){
-            //thumbnail
-            let parent = document.getElementById("imodelview");
-            let htmlCanvas = parent.children[0];
-            let dataURL = htmlCanvas.toDataURL();
-            console.log(dataURL);
-            let param = {
-                projectId: that.$route.query.projectId,
-                versionName: that.$route.query.versionName,
-                thumbnail: dataURL
-            };
-            that.$post('api/thumbnail',param).then(res=>{
-                if(res.state != 0) {
-                    console.log(res.message);
-                }
-            });
-
-        },2000)
-        
 
     }
 
