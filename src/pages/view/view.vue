@@ -26,8 +26,6 @@ import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
-import Tools from './dependency/tools';
-// import RPC from './dependency/rpc';
 
 
 class SimpleViewState {

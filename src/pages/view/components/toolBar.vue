@@ -16,7 +16,8 @@
         <settingComponent></settingComponent>
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
-        <!-- <clipComponent></clipComponent> -->
+        <clipComponent></clipComponent>
+        <tooltipComponent :projectId="projectId"></tooltipComponent>
     </div>
 </template>
 <script>
@@ -38,15 +39,13 @@
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
  import clipComponent from './subComponents/clip'
+ import tooltipComponent from './subComponents/tip'
 
 
 export default {
     name: 'toolBar',
     data () {
-        return {
-            // projectId: this.projectId,
-            // versionName: this.versionName
-        };
+        return {};
     },
     props:['projectId','versionName'],
     components: {
@@ -66,7 +65,8 @@ export default {
         saveComponent,
         hideComponent,
         showComponent,
-        clipComponent
+        clipComponent,
+        tooltipComponent
 
     },
     created () {

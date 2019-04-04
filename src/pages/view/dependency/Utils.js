@@ -50,15 +50,10 @@ class Notifications extends NotificationManager {
         if (undefined === pt)
             pt = { x: rect.width / 2, y: rect.height / 2 };
         const location = document.createElement("div");
-        const height = 20;
-        const width = 20;
         location.style.position = "absolute";
-        // location.style.top = (pt.y - height / 2) + "px";
-        // location.style.left = (pt.x - width / 2) + "px";
         location.style.top = 10 + "px";
         location.style.right = 0;
-        // location.style.width = width + "px";
-        // location.style.height = height + "px";
+        
         el.appendChild(location);
         this._el = el;
         this._tooltipDiv = location;

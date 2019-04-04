@@ -21,10 +21,10 @@ export default {
         clip(){
             
             const points = [];
-            points[0] = Point3d.create(100.0, 200.0, 0.0);
-            points[1] = Point3d.create(-200.0, 100.0, 0.0);
-            points[2] = Point3d.create(-200.0, -100.0, 0.0);
-            points[3] = Point3d.create(-100.0, 200.0, 0.0);
+            points[0] = Point3d.create(620.0, 197.0, 0.0);
+            points[1] = Point3d.create(682.0, 201.0, 0.0);
+            points[2] = Point3d.create(682.0, 246.0, 0.0);
+            points[3] = Point3d.create(620.0, 245.0, 0.0);
             const s = ClipShape.createShape(points, 100.0, 200.0);
             let clipVector ='';
             
@@ -36,9 +36,15 @@ export default {
             }
             console.log("clipVector",clipVector)
         
-            this.GLOBAL_DATA.activeViewState.viewState.setViewClip(clipVector)
-            let test = this.GLOBAL_DATA.activeViewState.viewState.getViewClip();
-            test.setInvisible(true);
+            // this.GLOBAL_DATA.activeViewState.viewState.setViewClip(clipVector)
+          
+                this.GLOBAL_DATA.theViewPort.view.setViewClip(clipVector);
+
+                //  viewport.view.setViewClip(clip);
+                this.GLOBAL_DATA.theViewPort.synchWithView(true);
+
+            // let test = this.GLOBAL_DATA.activeViewState.viewState.getViewClip();
+            // test.setInvisible(true);
             debugger;
         }
     }

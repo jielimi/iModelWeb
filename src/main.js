@@ -46,4 +46,4 @@ Vue.prototype.GLOBAL_DATA = {
 
 
 RPC.init();
-SVTIModelApp.startup();
+//SVTIModelApp.startup();
