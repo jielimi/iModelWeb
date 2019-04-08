@@ -63,8 +63,6 @@ export default {
                     that.showToolTip = true;
                     that.message = message;
                     let id = message.split('</b>')[1].split(",")[0].trim();
-
-                    that.accessToken.aaa = that.accessToken.toTokenString();
                   
                     let param = {
                         id:id,
