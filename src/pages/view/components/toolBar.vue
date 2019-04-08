@@ -17,7 +17,7 @@
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
         <clipComponent></clipComponent>
-        <tooltipComponent :projectId="projectId"></tooltipComponent>
+        <tipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
     </div>
 </template>
 <script>
@@ -39,7 +39,7 @@
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
  import clipComponent from './subComponents/clip'
- import tooltipComponent from './subComponents/tip'
+ import tipComponent from './subComponents/tip'
 
 
 export default {
@@ -47,7 +47,7 @@ export default {
     data () {
         return {};
     },
-    props:['projectId','versionName'],
+    props:['projectId','versionName','contextId','accessToken'],
     components: {
         openFileComponent,
         modelComponent,
@@ -66,7 +66,7 @@ export default {
         hideComponent,
         showComponent,
         clipComponent,
-        tooltipComponent
+        tipComponent
 
     },
     created () {

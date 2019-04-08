@@ -29,7 +29,7 @@ export default {
     components: {
         
     },
-    props:['projectId'],
+    props:['projectId', 'contextId', 'accessToken','versionName'],
     created () {
         this.iModelStartup();
     },
@@ -63,10 +63,15 @@ export default {
                     that.showToolTip = true;
                     that.message = message;
                     let id = message.split('</b>')[1].split(",")[0].trim();
+
+                    that.accessToken.aaa = that.accessToken.toTokenString();
                   
                     let param = {
                         id:id,
-                        projectId:that.projectId
+                        projectId:that.projectId,
+                        contextId:that.contextId,
+                        accessToken:that.accessToken,
+                        versionName:that.versionName
                     };
 
                     that.getExtraParam(param);

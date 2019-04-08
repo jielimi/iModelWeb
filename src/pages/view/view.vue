@@ -1,6 +1,8 @@
 <template>
 <div class="view" v-loading="isLoading">
-    <tool-bar-component :projectId="iminfo.iModelId" :versionName="iminfo.versionName"></tool-bar-component>
+    <tool-bar-component :projectId="iminfo.iModelId" :versionName="iminfo.versionName" :contextId="iminfo.contextId" :accessToken="iminfo.accessToken">
+
+    </tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
     <el-dialog
         title=""
@@ -50,6 +52,8 @@ export default {
                 "versionName":this.$route.query.versionName,
                 "versionId": this.$route.query.versionId,
                 "name": "ReadOnlyTest",
+                "contextId":'',
+                "accessToken":''
             },
         }
     },
@@ -94,10 +98,10 @@ export default {
         const foreignAccessTokenWrapper = {};
         foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
         state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
+        this.iminfo.accessToken = state.accessToken;
+        
         this.progress = this.randomNum(5,20);
         console.log("state=",state)
-
-        const iModelId = "233e1f55-561d-42a4-8e80-d6f91743863e";
 
         const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv, new UrlFileHandler());
         IModelApp.iModelClient = imbcontext.client;
@@ -107,8 +111,9 @@ export default {
         state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
         // showStatus("opening iModel", state.project.name);
         console.log("before open")
+        this.iminfo.contextId = imbcontext.toIModelTokenContextId();
         state.iModelConnection = await IModelConnection.open(state.accessToken, 
-        imbcontext.toIModelTokenContextId(), this.iminfo.iModelId, 1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
+        this.iminfo.contextId, this.iminfo.iModelId, 1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
 
 
         const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));

@@ -8,8 +8,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/common.less';
 import locale from 'element-ui/lib/locale/lang/en';
 import RPC from '@/pages/view/dependency/rpc';
-import {SVTIModelApp} from '@/pages/view/dependency/Utils'
-
 
 Vue.config.productionTip = false
 
@@ -46,4 +44,3 @@ Vue.prototype.GLOBAL_DATA = {
 
 
 RPC.init();
-//SVTIModelApp.startup();
