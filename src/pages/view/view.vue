@@ -25,7 +25,7 @@ import * as common_1 from "@bentley/imodeljs-common/lib/common"
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
 import { ActivityLoggingContext } from "@bentley/bentleyjs-core";
 import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
-import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/IModelBank/IModelBankAccessContext";
+import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 

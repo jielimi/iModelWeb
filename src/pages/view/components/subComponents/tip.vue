@@ -12,7 +12,7 @@
 <script>
 
 import { IModelApp, SnapMode} from "@bentley/imodeljs-frontend";
-import * as tooltip_js_1 from 'tooltip'
+// import * as tooltip_js_1 from 'tooltip'
 import { AccuSnap } from "../../dependency/AccuSnap";
 import { NotificationManager } from "../../dependency/NotificationManager";
 import { DrawingAidTestTool } from "../../dependency/DrawingAidTestTool";
@@ -49,7 +49,10 @@ export default {
                     this._activeSnaps =  [SnapMode.NearestKeypoint];
                 }
                 keypointDivisor() { return 2; }
-                getActiveSnapModes() { return this._activeSnaps; }
+                getActiveSnapModes() { 
+                    
+                    return this._activeSnaps; 
+                }
                 setActiveSnapModes(snaps) {
                     this._activeSnaps.length = snaps.length;
                     for (let i = 0; i < snaps.length; i++)
