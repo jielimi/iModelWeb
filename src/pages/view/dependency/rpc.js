@@ -5,7 +5,7 @@ import {
     IModelTileRpcInterface,
     IModelToken,
     RpcOperation,
-    StandaloneIModelRpcInterface 
+    SnapshotIModelRpcInterface 
   } from "@bentley/imodeljs-common";
 import { OpenMode } from "@bentley/bentleyjs-core";
 
@@ -26,7 +26,7 @@ let RPC = {
         // const uriPrefix = "http://localhost:3001";
         let rpcConfiguration;
         rpcConfiguration = BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
-         [IModelTileRpcInterface, StandaloneIModelRpcInterface , IModelReadRpcInterface]);
+         [IModelTileRpcInterface, SnapshotIModelRpcInterface , IModelReadRpcInterface]);
         // WIP: WebAppRpcProtocol seems to require an IModelToken for every RPC request. ECPresentation initialization tries to set active locale using
         // RPC without any imodel and fails...
         for (const definition of rpcConfiguration.interfaces())

@@ -111,9 +111,10 @@ export default {
         state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
         // showStatus("opening iModel", state.project.name);
         console.log("before open")
+        
         this.iminfo.contextId = imbcontext.toIModelTokenContextId();
-        state.iModelConnection = await IModelConnection.open(state.accessToken, 
-        this.iminfo.contextId, this.iminfo.iModelId, 1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
+        state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
+        1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
 
 
         const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
