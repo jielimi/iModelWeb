@@ -7,7 +7,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
 
 // http request 拦截器
 const responseHandler = (response) => {
-  debugger;
   switch (response.data.errorCode) {
     case 404:
       router.push({ path: '/404' });

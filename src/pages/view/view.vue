@@ -23,12 +23,23 @@
 import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 import * as common_1 from "@bentley/imodeljs-common/lib/common"
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
-import { ActivityLoggingContext } from "@bentley/bentleyjs-core";
-import { UrlFileHandler } from "@bentley/imodeljs-clients/lib/UrlFileHandler"; 
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
-import { IModelConnection, IModelApp, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 
+class IModelBankAuthorizationClient {
+    constructor(jsonObj) {
+        this._userInfo = UserInfo.fromJson(jsonObj);
+        this.hasSignedIn = true;//this is cheating
+    }
+    async getAccessToken(_requestContext) {
+        const userInfo = this._userInfo;
+        const foreignAccessTokenWrapper = {};
+        foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
+        const accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
+        return accessToken;
+    }
+}
 
 class SimpleViewState {
     constructor(){};
@@ -94,18 +105,25 @@ export default {
     },
     async loginAndOpenImodel(state) {
        
-        const userInfo = new UserInfo("userid", "email@organization.org", {"firstName": "first", "lastName": "last"}, {"id": "orgid", "name": "organization"});
-        const foreignAccessTokenWrapper = {};
-        foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
-        state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
-        this.iminfo.accessToken = state.accessToken;
+        // const userInfo = new UserInfo("userid", "email@organization.org", {"firstName": "first", "lastName": "last"}, {"id": "orgid", "name": "organization"});
+        // const foreignAccessTokenWrapper = {};
+        // foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
+        // state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
+        // this.iminfo.accessToken = state.accessToken;
         
         this.progress = this.randomNum(5,20);
-        console.log("state=",state)
+        //console.log("state=",state)
 
-        const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv, new UrlFileHandler());
+        const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
         IModelApp.iModelClient = imbcontext.client;
-
+        IModelApp.authorizationClient = new IModelBankAuthorizationClient({
+            "sub": "userid",
+            "email": "email@organization.org",
+            "given_name": "first",
+            "family_name": "last",
+            "org": "orgid",
+            "org_name": "organization"
+        });
         // Open the iModel
         state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
         state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
@@ -116,8 +134,8 @@ export default {
         state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
         1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
 
-
-        const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(new ActivityLoggingContext(""), state.accessToken, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
+        const requestContext = await AuthorizedFrontendRequestContext.create();
+        const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
         let changeSetCount = selectedChangeSets.length;
         this.progress = this.randomNum(40,50);
         console.log("after open")
