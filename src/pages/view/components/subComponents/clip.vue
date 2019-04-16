@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont" @click="clip">clip</i>
+        <i class="iconfont icon-cut" @click="clip"></i>
     </div>
 </template>
 
@@ -45,7 +45,7 @@ export default {
 
             // let test = this.GLOBAL_DATA.activeViewState.viewState.getViewClip();
             // test.setInvisible(true);
-            debugger;
+            
         }
     }
     
