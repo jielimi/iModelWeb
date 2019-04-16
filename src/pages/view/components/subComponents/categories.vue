@@ -40,7 +40,9 @@ export default {
             this.checkCodeList = [];
             let view = this.GLOBAL_DATA.activeViewState.viewState;
             let ecsql = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM " + (view.is3d() ? "BisCore.SpatialCategory" : "BisCore.DrawingCategory");
-            this.categoryList = await view.iModel.executeQuery(ecsql);
+            // this.categoryList = await view.iModel.executeQuery(ecsql);
+            const bindings = view.is2d() ? [ view.baseModelId ] : undefined;
+            this.categoryList = Array.from(await view.iModel.queryPage(ecsql, bindings, { size: 1000 }));
             this.checkList = Array.from(view.categorySelector.categories);
             let that = this;
             this.categoryList.forEach(function(val,index){
@@ -60,7 +62,7 @@ export default {
         // apply a category checkbox state being changed
         applyCategoryToggleChange(id,code) {
             let that = this;
-            let view = this.GLOBAL_DATA.theViewPort.view;
+            let vp = this.GLOBAL_DATA.theViewPort;
             // for (const cat of this.categoryList) {
             //     console.log(cat);
             //     const cbxName = "cbxCat" + cat;
@@ -69,9 +71,9 @@ export default {
             //     this.toggleCategoryState(invis, cat.id, view);
             // }
             let invis = this.checkCodeList.indexOf(code) >= 0 ? true : false;
-            const alreadyInvis = view.viewsCategory(id);
+            const alreadyInvis = vp.view.viewsCategory(id);
             if (alreadyInvis !== invis){
-                view.changeCategoryDisplay(id, invis);
+                vp.changeCategoryDisplay(id, invis);
             }
             this.isCheckAll();
             //view.changeCategoryDisplay(id, invis);
@@ -80,23 +82,23 @@ export default {
             this.checkCodeList = [];
             this.checkList = [];
             let that = this;
-            let view = this.GLOBAL_DATA.theViewPort.view;
+            let vp = this.GLOBAL_DATA.theViewPort;
             if(value){
                 this.categoryList.forEach(function(val,index){
                     if(that.checkList.indexOf(val.id) < 0){
                         that.checkCodeList.push(val.code);
                         that.checkList.push(val.id);
-                        const alreadyInvis = view.viewsCategory(val.id);
+                        const alreadyInvis = vp.view.viewsCategory(val.id);
                         if (alreadyInvis !== true){
-                            view.changeCategoryDisplay(val.id, true);
+                            vp.changeCategoryDisplay(val.id, true);
                         }
                     }
                 });
             }else{
                 this.categoryList.forEach(function(val,index){
-                    const alreadyInvis = view.viewsCategory(val.id);
+                    const alreadyInvis = vp.view.viewsCategory(val.id);
                     if (alreadyInvis !== false){
-                        view.changeCategoryDisplay(val.id, false);
+                        vp.changeCategoryDisplay(val.id, false);
                     }
                 });
             }
