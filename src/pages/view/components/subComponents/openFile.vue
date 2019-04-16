@@ -76,9 +76,9 @@ export default {
             if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
                 
                 if(this.standalone){
-                    await this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
+                    await this.GLOBAL_DATA.activeViewState.iModelConnection.closeSnapshot();
                 }else {
-                    await this.GLOBAL_DATA.activeViewState.iModelConnection.close(this.GLOBAL_DATA.activeViewState.accessToken);
+                    await this.GLOBAL_DATA.activeViewState.iModelConnection.close();
                 }
                 
                 this.GLOBAL_DATA.activeViewState = new SimpleViewState();
@@ -86,7 +86,7 @@ export default {
                 // viewMap.clear(); 通知清除下记得
         },
         async openStandaloneIModel(state, filename) {
-            state.iModelConnection = await IModelConnection.openStandalone(filename);
+            state.iModelConnection = await IModelConnection.openSnapshot(filename);
         },
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
