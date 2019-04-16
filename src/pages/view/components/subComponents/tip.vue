@@ -12,7 +12,6 @@
 <script>
 
 import { IModelApp, SnapMode} from "@bentley/imodeljs-frontend";
-// import * as tooltip_js_1 from 'tooltip'
 import { AccuSnap } from "../../dependency/AccuSnap";
 import { NotificationManager } from "../../dependency/NotificationManager";
 import { DrawingAidTestTool } from "../../dependency/DrawingAidTestTool";
@@ -50,7 +49,6 @@ export default {
                 }
                 keypointDivisor() { return 2; }
                 getActiveSnapModes() { 
-                    
                     return this._activeSnaps; 
                 }
                 setActiveSnapModes(snaps) {

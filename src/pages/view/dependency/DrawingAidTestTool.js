@@ -38,6 +38,7 @@ import {
   
     setupAndPromptForNextAction() {
       IModelApp.accuSnap.enableSnap(true);
+     
   
       if (0 === this.points.length)
         return;
