@@ -2,7 +2,6 @@
   <div>
     <header>
        <img  class="logo" src="../../../assets/images/site_logo.png">
-
       <div>
         <el-dropdown>
         <span class="el-dropdown-link">

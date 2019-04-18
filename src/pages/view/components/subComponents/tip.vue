@@ -93,7 +93,7 @@ export default {
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
 
-            SVTIModelApp.startup();
+            //SVTIModelApp.startup();
        }
         
     }

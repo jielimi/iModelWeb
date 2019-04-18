@@ -482,7 +482,7 @@ class AccuSnap {
     }
     static async requestSnap(thisHit, snapModes, hotDistanceInches, keypointDivisor, hitList, out) {
         if (undefined !== thisHit.subCategoryId) {
-            const appearance = thisHit.viewport.view.getSubCategoryAppearance(thisHit.subCategoryId);
+            const appearance = thisHit.viewport.getSubCategoryAppearance(thisHit.subCategoryId);
             if (appearance.dontSnap) {
                 if (out)
                     out.snapStatus = 300 /* NotSnappable */;

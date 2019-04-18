@@ -6,11 +6,11 @@
 </template>
 
 <script>
-import { IModelApp ,SnapMode} from "@bentley/imodeljs-frontend";
+import { IModelApp ,SnapMode,TileAdmin} from "@bentley/imodeljs-frontend";
 import { AccuSnap } from "../../dependency/AccuSnap";
 import { NotificationManager } from "../../dependency/NotificationManager";
-import { MarkTool } from "../../dependency/MarkTool";
-
+import { MarkTool } from "@bentley/imodeljs-frontend/lib/tools/iModelWeb/iModelWebMark";
+//import { MarkTool } from "../../dependency/markTool";
 
 export default {
     name: 'imodelmark',
@@ -27,7 +27,7 @@ export default {
     },
     methods: {
         mark() {
-            //IModelApp.accuSnap.enableSnap(true);
+            IModelApp.tools.run("iModelWeb.Mark")
         },
         markStartup(){
             let that = this;
@@ -50,8 +50,14 @@ export default {
             class MarkIModelApp extends IModelApp {
                 static onStartup() {
                     IModelApp.accuSnap = new DisplayTestAppAccuSnap();
+                    IModelApp.tileAdmin = TileAdmin.create({
+                        retryInterval: 50,
+                        enableInstancing: true,
+                        elideEmptyChildContentRequests: true,
+                    });
                     console.log("onstartup")
-                    const markToolNamespace = IModelApp.i18n.registerNamespace(MarkTool.toolId);
+                    const markToolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
+
                     MarkTool.register(markToolNamespace);
                 }
 
@@ -62,8 +68,7 @@ export default {
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
 
-           // MarkIModelApp.startup();
-           
+           MarkIModelApp.startup();
         }
     }
     

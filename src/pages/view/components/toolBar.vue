@@ -1,5 +1,6 @@
 <template>
     <div class="tool-bar">
+        <img src="@/assets/images/cake.svg" style="width:30px;height:30px" id="testSvg">
         <open-file-component style="display:none"></open-file-component>
         <change-view-component></change-view-component>
         <model-component></model-component>
