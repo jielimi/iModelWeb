@@ -11,10 +11,8 @@
 
 <script>
 
-import { IModelApp, SnapMode} from "@bentley/imodeljs-frontend";
-import { AccuSnap } from "../../dependency/AccuSnap";
-import { NotificationManager } from "../../dependency/NotificationManager";
-import { DrawingAidTestTool } from "../../dependency/DrawingAidTestTool";
+import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
+
 
 export default {
     name: 'tootip',
@@ -59,6 +57,9 @@ export default {
             }
 
             class Notifications extends NotificationManager {
+                constructor() {
+                    super();
+                }
                 get isToolTipSupported() { return true; }
                 _showToolTip(el, message, pt, options) {
                     that.showToolTip = true;
@@ -82,8 +83,6 @@ export default {
                     IModelApp.accuSnap = new DisplayTestAppAccuSnap();
                     IModelApp.notifications = new Notifications();
                     console.log("onstartup")
-                    const svtToolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
-                    DrawingAidTestTool.register(svtToolNamespace);
                 }
 
                 static setActiveSnapModes(snaps) {
@@ -93,7 +92,8 @@ export default {
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
 
-            SVTIModelApp.startup();
+            //SVTIModelApp.startup();
+            
        }
         
     }

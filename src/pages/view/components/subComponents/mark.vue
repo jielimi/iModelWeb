@@ -6,12 +6,13 @@
 </template>
 
 <script>
-import { IModelApp ,SnapMode,TileAdmin} from "@bentley/imodeljs-frontend";
-import { AccuSnap } from "../../dependency/AccuSnap";
-import { NotificationManager } from "../../dependency/NotificationManager";
+import { IModelApp ,SnapMode,TileAdmin,AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
+
 import { MarkTool } from "@bentley/imodeljs-frontend/lib/tools/iModelWeb/iModelWebMark";
-//import { MarkTool } from "../../dependency/markTool";
+
 import {PrimitiveTool} from "@bentley/imodeljs-frontend"
+
+
 
 export default {
     name: 'imodelmark',
@@ -25,13 +26,16 @@ export default {
     },
     created () {
         this.markStartup();
-        // class marktest extends PrimitiveTool{
-
-        // }
-        // var test = new marktest()
     },
     methods: {
         mark() {
+            // class marktest extends PrimitiveTool{
+            //     constructor(){
+            //         super()
+            //     }
+            // }
+            // var test = new marktest();
+    
             IModelApp.tools.run("iModelWeb.Mark")
         },
         markStartup(){
