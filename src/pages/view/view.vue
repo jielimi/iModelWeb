@@ -26,7 +26,7 @@ import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
-import RPC from '@/pages/view/dependency/rpc';
+import RPC from './rpc';
 
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
