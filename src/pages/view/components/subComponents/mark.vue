@@ -8,7 +8,7 @@
 <script>
 import { IModelApp ,SnapMode,TileAdmin,AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
 
-import { MarkTool } from "@bentley/imodeljs-frontend/lib/tools/iModelWeb/iModelWebMark";
+import { MarkTool } from "./mark/iModelWebMarkTool";
 
 import {PrimitiveTool} from "@bentley/imodeljs-frontend"
 
