@@ -11,6 +11,7 @@ import { AccuSnap } from "../../dependency/AccuSnap";
 import { NotificationManager } from "../../dependency/NotificationManager";
 import { MarkTool } from "@bentley/imodeljs-frontend/lib/tools/iModelWeb/iModelWebMark";
 //import { MarkTool } from "../../dependency/markTool";
+import {PrimitiveTool} from "@bentley/imodeljs-frontend"
 
 export default {
     name: 'imodelmark',
@@ -24,6 +25,10 @@ export default {
     },
     created () {
         this.markStartup();
+        // class marktest extends PrimitiveTool{
+
+        // }
+        // var test = new marktest()
     },
     methods: {
         mark() {

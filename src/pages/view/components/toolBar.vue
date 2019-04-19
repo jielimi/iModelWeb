@@ -17,9 +17,9 @@
         <settingComponent></settingComponent>
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
-        <clipComponent></clipComponent>
+        <!-- <clipComponent></clipComponent> -->
         <tipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
-        <markComponent></markComponent>
+        <!-- <markComponent></markComponent> -->
     </div>
 </template>
 <script>
@@ -40,9 +40,9 @@
  import saveComponent from './subComponents/save'
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
- import clipComponent from './subComponents/clip'
+//  import clipComponent from './subComponents/clip'
  import tipComponent from './subComponents/tip'
- import markComponent from './subComponents/mark'
+//  import markComponent from './subComponents/mark'
 
 
 export default {
@@ -68,9 +68,9 @@ export default {
         saveComponent,
         hideComponent,
         showComponent,
-        clipComponent,
-        tipComponent,
-        markComponent
+        // clipComponent,
+        tipComponent
+        // markComponent
 
     },
     created () {
