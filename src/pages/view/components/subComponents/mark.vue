@@ -25,7 +25,7 @@ export default {
         
     },
     created () {
-        this.markStartup();
+        //this.markStartup();
     },
     methods: {
         mark() {
@@ -38,47 +38,7 @@ export default {
     
             IModelApp.tools.run("iModelWeb.Mark")
         },
-        markStartup(){
-            let that = this;
-            class DisplayTestAppAccuSnap extends AccuSnap {
-                    constructor() {
-                        super(...arguments);
-                        this._activeSnaps =  [SnapMode.NearestKeypoint];
-                    }
-                    keypointDivisor() { return 2; }
-                    getActiveSnapModes() { 
-                        return this._activeSnaps; 
-                    }
-                    setActiveSnapModes(snaps) {
-                        this._activeSnaps.length = snaps.length;
-                        for (let i = 0; i < snaps.length; i++)
-                        this._activeSnaps[i] = snaps[i];
-                    }
-            }
-
-            class MarkIModelApp extends IModelApp {
-                static onStartup() {
-                    IModelApp.accuSnap = new DisplayTestAppAccuSnap();
-                    IModelApp.tileAdmin = TileAdmin.create({
-                        retryInterval: 50,
-                        enableInstancing: true,
-                        elideEmptyChildContentRequests: true,
-                    });
-                    console.log("onstartup")
-                    const markToolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
-
-                    MarkTool.register(markToolNamespace);
-                }
-
-                static setActiveSnapModes(snaps) {
-                    IModelApp.accuSnap.setActiveSnapModes(snaps);
-                }
-
-                static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
-            }
-
-           MarkIModelApp.startup();
-        }
+        
     }
     
 }

@@ -26,6 +26,7 @@ import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
+import RPC from '@/pages/view/dependency/rpc';
 
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
@@ -174,7 +175,7 @@ export default {
     },
     async main() {
         this.isLoading = true; 
-        // RPC.init();
+        RPC.init();
         
         if(this.$route.query && this.$route.query.isStandalone){
             window.eventHub.$emit('open_standalone',this.$route.query.openUrl);

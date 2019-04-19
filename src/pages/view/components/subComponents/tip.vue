@@ -12,6 +12,7 @@
 <script>
 
 import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
+import { MarkTool } from "./mark/iModelWebMarkTool";
 
 
 export default {
@@ -81,7 +82,10 @@ export default {
             class SVTIModelApp extends IModelApp {
                 static onStartup() {
                     IModelApp.accuSnap = new DisplayTestAppAccuSnap();
-                    IModelApp.notifications = new Notifications();
+                    //IModelApp.notifications = new Notifications();
+
+                    const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
+                    MarkTool.register(toolNamespace);
                     console.log("onstartup")
                 }
 
@@ -92,7 +96,7 @@ export default {
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
 
-            //SVTIModelApp.startup();
+            SVTIModelApp.startup();
             
        }
         
