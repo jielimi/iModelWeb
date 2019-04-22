@@ -19,7 +19,7 @@ export default {
     created () {},
     methods: {
         show(){
-            this.GLOBAL_DATA.theViewPort.view.clearNeverDrawn();
+            this.GLOBAL_DATA.theViewPort.clearNeverDrawn();
             this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.emptyAll();
         }
     }

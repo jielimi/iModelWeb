@@ -19,7 +19,6 @@ class IncidentMarker extends Marker {
   // }
 
   onMouseButton(ev) {
-    
     if (ev.button === BeButton.Data) {
       if (ev.isDown) {
         console.log(this.title)

@@ -2,9 +2,7 @@ import {
     IModelApp, PrimitiveTool,
     EventHandled,
   } from "@bentley/imodeljs-frontend";
-
  import {IncidentMarkerDemo} from "./incentMaker"
-//import {IncidentMarkerDemo} from "@bentley/imodeljs-frontend/lib/tools/iModelWeb/demo"
 
 class MarkTool extends PrimitiveTool {
 
@@ -12,6 +10,7 @@ class MarkTool extends PrimitiveTool {
         super(...arguments);
         this.points = [];
     }
+    
 
     isCompatibleViewport(vp, isSelectedViewChange) { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
 
