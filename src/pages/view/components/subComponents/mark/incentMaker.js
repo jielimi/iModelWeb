@@ -142,12 +142,12 @@ var IncidentMarkerDemo = /** @class */ (function () {
   };
   /** Turn the markers on and off. Each time it runs it creates a new random set of incidents. */
   IncidentMarkerDemo.toggle = function (extents) {
-      if (undefined === IncidentMarkerDemo._decorator) {
+      // if (undefined === IncidentMarkerDemo._decorator) {
           // start the demo by creating the IncidentMarkerDemo object and adding it as a ViewManager decorator.
           IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
           
           IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
-      }
+      // }
       // else {
       //     // stop the demo
       //     IModelApp.viewManager.dropDecorator(IncidentMarkerDemo._decorator);
