@@ -71,17 +71,20 @@ export default {
                 _showToolTip(el, message, pt, options) {
                     that.showToolTip = true;
                     that.message = message;
-                    let id = message.split('</b>')[1].split(",")[0].trim();
-                  
-                    let param = {
-                        id:id,
-                        projectId:that.projectId,
-                        contextId:that.contextId,
-                        accessToken:that.accessToken,
-                        versionName:that.versionName
-                    };
 
-                    that.getExtraParam(param);
+                    if(message.indexOf('</b>') !== -1) {
+                        let id = message.split('</b>')[1].split(",")[0].trim();
+                    
+                        let param = {
+                            id:id,
+                            projectId:that.projectId,
+                            contextId:that.contextId,
+                            accessToken:that.accessToken,
+                            versionName:that.versionName
+                        };
+                        that.getExtraParam(param);
+                    }
+                    
                 }
             }
             

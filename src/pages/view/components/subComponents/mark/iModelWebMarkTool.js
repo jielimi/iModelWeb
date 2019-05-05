@@ -19,8 +19,8 @@ class MarkTool extends PrimitiveTool {
 
    
     setupAndPromptForNextAction() {
-        //IModelApp.accuSnap.enableSnap(true);
-        //IModelApp.accuDraw.deactivate();
+        IModelApp.accuSnap.enableSnap(true);
+        IModelApp.accuDraw.deactivate();
     }
 
     onDynamicFrame(ev, context) {
@@ -39,14 +39,14 @@ class MarkTool extends PrimitiveTool {
         this.updateDynamicDistanceMarker(tmpPoints);
       }
     
-       decorate(context) {
-        if (!context.viewport.view.isSpatialView())
-          return;
-        if (undefined !== this._distanceMarker)
-          this._distanceMarker.addDecoration(context);
-      }
+    decorate(context) {
+      if (!context.viewport.view.isSpatialView())
+        return;
+      if (undefined !== this._distanceMarker)
+        this._distanceMarker.addDecoration(context);
+    }
     
-      decorateSuspended(context) { this.decorate(context); }
+    decorateSuspended(context) { this.decorate(context); }
 
     async onDataButtonDown(ev){
         this.points.push(ev.rawPoint.clone());

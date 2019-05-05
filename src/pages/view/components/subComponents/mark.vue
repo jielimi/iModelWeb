@@ -25,17 +25,10 @@ export default {
         
     },
     created () {
-        //this.markStartup();
+        
     },
     methods: {
         mark() {
-            // class marktest extends PrimitiveTool{
-            //     constructor(){
-            //         super()
-            //     }
-            // }
-            // var test = new marktest();
-    
             IModelApp.tools.run("iModelWeb.Mark")
         },
         

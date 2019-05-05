@@ -20,7 +20,7 @@
         <!-- <clipComponent></clipComponent> -->
         <tipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
         <markComponent></markComponent>
-        <!-- <graffitiComponent></graffitiComponent> -->
+        <graffitiComponent></graffitiComponent>
     </div>
 </template>
 <script>
