@@ -21,7 +21,8 @@ export default {
     methods: {
         save(){
             let parent = document.getElementById("imodelview");
-            let htmlCanvas = parent.children[0];
+            let htmlCanvas = parent.children[0].children[0];
+            debugger
             let dataURL = htmlCanvas.toDataURL();
             let param = {
                 projectId: this.projectId,
