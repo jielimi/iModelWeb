@@ -20,6 +20,7 @@
         <!-- <clipComponent></clipComponent> -->
         <tipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
         <markComponent></markComponent>
+        <!-- <graffitiComponent></graffitiComponent> -->
     </div>
 </template>
 <script>
@@ -43,6 +44,7 @@
 //  import clipComponent from './subComponents/clip'
  import tipComponent from './subComponents/tip'
 import markComponent from './subComponents/mark'
+import graffitiComponent from './subComponents/graffiti'
 
 
 export default {
@@ -70,7 +72,8 @@ export default {
         showComponent,
         // clipComponent,
         tipComponent,
-        markComponent
+        markComponent,
+        graffitiComponent
 
     },
     created () {

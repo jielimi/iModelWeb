@@ -4,7 +4,7 @@
         {{message}}
     </div>
     <div class="externalMsg">
-        extra Msg:{{extraMsg}}
+        Extented:{{extraMsg}}
     </div>
     </div>
 </template>
@@ -13,6 +13,7 @@
 
 import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
 import { MarkTool } from "./mark/iModelWebMarkTool";
+// import { MarkupSelectTestTool } from "./MarkupSelectTestTool";
 
 
 export default {
@@ -21,7 +22,7 @@ export default {
         return {
             showToolTip:false,
             message:'',
-            extraMsg:''
+            extraMsg:[]
         };
     },
     components: {
@@ -35,7 +36,12 @@ export default {
        getExtraParam(param) {
             this.$get('api/extraMsg',{},param).then(res=>{
                 if(res.state === 0){
-                    this.extraMsg = res.data.extraMsg.property
+                    for(var i = 0; i< res.data.extraMsg.length;i++){
+                        delete res.data.extraMsg[i].className
+                        delete res.data.extraMsg[i].element
+                        delete res.data.extraMsg[i].id
+                    }
+                    this.extraMsg = res.data.extraMsg
                 }
             })
        },
@@ -82,10 +88,11 @@ export default {
             class SVTIModelApp extends IModelApp {
                 static onStartup() {
                     IModelApp.accuSnap = new DisplayTestAppAccuSnap();
-                    //IModelApp.notifications = new Notifications();
+                    IModelApp.notifications = new Notifications();
 
                     const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
                     MarkTool.register(toolNamespace);
+                    // MarkupSelectTestTool.register(svtToolNamespace);
                     console.log("onstartup")
                 }
 

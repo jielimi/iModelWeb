@@ -21,8 +21,8 @@ class IncidentMarker extends Marker {
   onMouseButton(ev) {
     if (ev.button === BeButton.Data) {
       if (ev.isDown) {
-        console.log(this.title)
-        IModelApp.notifications.openMessageBox(MessageBoxType.LargeOk, "severity = " + this.title, MessageBoxIconType.Information); // tslint:disable-line:no-floating-promises
+        //console.log(this.title)
+        //IModelApp.notifications.openMessageBox(MessageBoxType.LargeOk, "severity = " + this.title, MessageBoxIconType.Information); // tslint:disable-line:no-floating-promises
       }
     }
     return true;
