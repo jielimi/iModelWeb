@@ -49,8 +49,8 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [ resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client'),
-        resolve('node_modules/@bentley'), resolve('node_modules/@svgdotjs')]
+        include: [ resolve('src'), resolve('node_modules/webpack-dev-server/client'),
+        resolve('node_modules/@bentley'),resolve('node_modules/@svgdotjs')],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
