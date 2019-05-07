@@ -1,7 +1,6 @@
 <template>
 <div class="view" v-loading="isLoading">
     <tool-bar-component :projectId="iminfo.iModelId" :versionName="iminfo.versionName" :contextId="iminfo.contextId" :accessToken="iminfo.accessToken">
-
     </tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
     <el-dialog
@@ -27,7 +26,6 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelban
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import RPC from './rpc';
-
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
         this._userInfo = UserInfo.fromJson(jsonObj);
@@ -41,13 +39,10 @@ class IModelBankAuthorizationClient {
         return accessToken;
     }
 }
-
 class SimpleViewState {
     constructor(){};
 }
 let activeViewState = new SimpleViewState();
-
-
 export default {
     name:'imodelviewer',
     data(){
@@ -88,132 +83,92 @@ export default {
         }
     },
     methods:{
-    randomNum(minNum,maxNum){ 
-        switch(arguments.length){ 
-            case 1: 
-                return parseInt(Math.random()*minNum+1,10); 
-            break; 
-            case 2: 
-                return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
-            break; 
-                default: 
-                    return 0; 
+        randomNum(minNum,maxNum){ 
+            switch(arguments.length){ 
+                case 1: 
+                    return parseInt(Math.random()*minNum+1,10); 
                 break; 
-        } 
-    },
-    categoryChange () {
-        console.log(activeViewState,this.GLOBAL_DATA.activeViewState);
-    },
-    async loginAndOpenImodel(state) {
-       
-        // const userInfo = new UserInfo("userid", "email@organization.org", {"firstName": "first", "lastName": "last"}, {"id": "orgid", "name": "organization"});
-        // const foreignAccessTokenWrapper = {};
-        // foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
-        // state.accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
-        // this.iminfo.accessToken = state.accessToken;
-        
-        this.progress = this.randomNum(5,20);
-        //console.log("state=",state)
-
-        const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
-        IModelApp.iModelClient = imbcontext.client;
-        IModelApp.authorizationClient = new IModelBankAuthorizationClient({
-            "sub": "userid",
-            "email": "email@organization.org",
-            "given_name": "first",
-            "family_name": "last",
-            "org": "orgid",
-            "org_name": "organization"
-        });
-        // Open the iModel
-        state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
-        state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
-        // showStatus("opening iModel", state.project.name);
-        console.log("before open")
-        
-        this.iminfo.contextId = imbcontext.toIModelTokenContextId();
-        state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
-        1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
-
-        const requestContext = await AuthorizedFrontendRequestContext.create();
-        const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
-        let changeSetCount = selectedChangeSets.length;
-        this.progress = this.randomNum(40,50);
-        console.log("after open")
-    },
-    async buildViewList(state, configurations) {
-        const config = undefined !== configurations ? configurations : {};
-        const viewQueryParams = { wantPrivate: false };
-        const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
-        
-        if (viewSpecs.length > 0){
-            let viewSpec = viewSpecs[0];
-            const viewState = await state.iModelConnection.views.load(viewSpec.id);
-            state.viewState = viewState;
-        }
-        window.eventHub.$emit('viewList_init', viewSpecs);
-    },
-    async  openView(state) {
-        // find the canvas.
-        const parent = document.getElementById("imodelview");
-        if (parent) {
-            //var htmlCanvas = parent.children[0];
-            console.log("GET THE VIEWPORT 1")
-            //console.log(htmlCanvas)
-            //if (!htmlCanvas) return;
-            await this.buildViewList(state);
-            console.log(state.viewState)
-            if (!this.theViewPort){
-                this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
-                this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                case 2: 
+                    return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
+                break; 
+                    default: 
+                        return 0; 
+                    break; 
+            } 
+        },
+        categoryChange () {
+        },
+        async loginAndOpenImodel(state) {
+            this.progress = this.randomNum(5,20);
+            const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
+            IModelApp.iModelClient = imbcontext.client;
+            IModelApp.authorizationClient = new IModelBankAuthorizationClient({
+                "sub": "userid",
+                "email": "email@organization.org",
+                "given_name": "first",
+                "family_name": "last",
+                "org": "orgid",
+                "org_name": "organization"
+            });
+            // Open the iModel
+            state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
+            state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
+            this.iminfo.contextId = imbcontext.toIModelTokenContextId();
+            state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
+            1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
+            const requestContext = await AuthorizedFrontendRequestContext.create();
+            const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
+            let changeSetCount = selectedChangeSets.length;
+            this.progress = this.randomNum(40,50);
+        },
+        async buildViewList(state, configurations) {
+            const config = undefined !== configurations ? configurations : {};
+            const viewQueryParams = { wantPrivate: false };
+            const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
+            if (viewSpecs.length > 0){
+                let viewSpec = viewSpecs[0];
+                const viewState = await state.iModelConnection.views.load(viewSpec.id);
+                state.viewState = viewState;
             }
-            //new frontend_1.ScreenViewport(parent);
-            console.log("GET THE VIEWPORT 2")
-            console.log(this.theViewPort)
-            IModelApp.viewManager.addViewport(this.theViewPort);
-        }
-    },
-    async main() {
-        this.isLoading = true; 
-        RPC.init();
-        
-        if(this.$route.query && this.$route.query.isStandalone){
-            window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
-            this.isLoading = false;
-            return;
-        }
-
-        try{
-            console.log("loginAndOpenImodel start");
-            this.progress = this.randomNum(0,5);
-            await this.loginAndOpenImodel(activeViewState);
-            this.progress = this.randomNum(80,95);
-            console.log("activeViewState",activeViewState)
-            console.log("loginAndOpenImodel over")
-        } catch (reason){
+            window.eventHub.$emit('viewList_init', viewSpecs);
+        },
+        async  openView(state) {
+            // find the canvas.
+            const parent = document.getElementById("imodelview");
+            if (parent) {
+                await this.buildViewList(state);
+                if (!this.theViewPort){
+                    this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                }
+                IModelApp.viewManager.addViewport(this.theViewPort);
+            }
+        },
+        async main() {
+            this.isLoading = true; 
+            RPC.init();
+            if(this.$route.query && this.$route.query.isStandalone){
+                window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
+                this.isLoading = false;
+                return;
+            }
+            try{
+                this.progress = this.randomNum(0,5);
+                await this.loginAndOpenImodel(activeViewState);
+                this.progress = this.randomNum(80,95);
+            } catch (reason){
+                this.isLoading = false; 
+                return;
+            }
+            this.GLOBAL_DATA.activeViewState = activeViewState;
+            await this.openView(activeViewState);
+            this.GLOBAL_DATA.activeViewState = activeViewState;
             this.isLoading = false; 
-            console.log(reason);
-            return;
+            this.progress = 0;
+            window.eventHub.$emit('categories_init');
+            window.eventHub.$emit('render_mode_init');
+            window.eventHub.$emit('render_model_init');
         }
-
-        this.GLOBAL_DATA.activeViewState = activeViewState;
-        
-        console.log("open View Before")
-        await this.openView(activeViewState);
-        console.log("open View End");
-
-        this.GLOBAL_DATA.activeViewState = activeViewState;
-
-        
-
-        this.isLoading = false; 
-        this.progress = 0;
-        window.eventHub.$emit('categories_init');
-        window.eventHub.$emit('render_mode_init');
-        window.eventHub.$emit('render_model_init');
-
-    }
-
     }
 }
 </script>
@@ -240,6 +195,5 @@ export default {
         margin-bottom: 5px;
         background-color: gray;
     }
-
 </style>
 
