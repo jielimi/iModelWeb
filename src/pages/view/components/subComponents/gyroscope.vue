@@ -77,7 +77,6 @@ export default {
             theViewport.animateFrustumChange(startFrustum, newFrustum);
             theViewport.view.setupFromFrustum(newFrustum);
             theViewport.synchWithView(true);
-            
         }
     }
     

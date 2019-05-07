@@ -84,7 +84,6 @@ export default {
                         };
                         that.getExtraParam(param);
                     }
-                    
                 }
             }
             
@@ -96,7 +95,6 @@ export default {
                     const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
                     MarkTool.register(toolNamespace);
                     MarkupSelectTestTool.register(toolNamespace);
-                    console.log("onstartup")
                 }
 
                 static setActiveSnapModes(snaps) {
@@ -107,11 +105,8 @@ export default {
             }
 
             SVTIModelApp.startup();
-            
        }
-        
     }
-    
 }
 </script>
 

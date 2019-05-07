@@ -30,22 +30,13 @@ export default {
             
 
             if (undefined !== s) {
-            const clipShapes = [];
-            clipShapes[0] = s;
-            clipVector = ClipVector.createClipShapeClones(clipShapes);
+                const clipShapes = [];
+                clipShapes[0] = s;
+                clipVector = ClipVector.createClipShapeClones(clipShapes);
             }
-            console.log("clipVector",clipVector)
-        
-            // this.GLOBAL_DATA.activeViewState.viewState.setViewClip(clipVector)
-          
-                this.GLOBAL_DATA.theViewPort.view.setViewClip(clipVector);
-
-                //  viewport.view.setViewClip(clip);
-                this.GLOBAL_DATA.theViewPort.synchWithView(true);
-
-            // let test = this.GLOBAL_DATA.activeViewState.viewState.getViewClip();
-            // test.setInvisible(true);
-            
+           
+            this.GLOBAL_DATA.theViewPort.view.setViewClip(clipVector);
+            this.GLOBAL_DATA.theViewPort.synchWithView(true);
         }
     }
     

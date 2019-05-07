@@ -20,10 +20,6 @@ export default {
     created () {},
     methods: {
         choose(){
-            console.log(this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet);
-            console.log(this.GLOBAL_DATA.theViewPort);
-            // "0x2000000039b"
-            //this.GLOBAL_DATA.theViewPort.view.setNeverDrawn(this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements)
             IModelApp.tools.run("View.Select", this.GLOBAL_DATA.theViewPort);
         }
     }

@@ -40,7 +40,7 @@ export default {
             this.checkCodeList = [];
             let view = this.GLOBAL_DATA.activeViewState.viewState;
             let ecsql = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM " + (view.is3d() ? "BisCore.SpatialCategory" : "BisCore.DrawingCategory");
-            // this.categoryList = await view.iModel.executeQuery(ecsql);
+            
             const bindings = view.is2d() ? [ view.baseModelId ] : undefined;
             this.categoryList = Array.from(await view.iModel.queryPage(ecsql, bindings, { size: 1000 }));
             this.checkList = Array.from(view.categorySelector.categories);
@@ -52,31 +52,17 @@ export default {
             });
             this.isCheckAll();
         },
-        // toggleCategoryState(invis, catId, view) {
-        //     //set to true to emulate semi-wacky Navigator behavior...
-        //     const enableAllSubCategories = false;
-        //     const alreadyInvis = view.viewsCategory(catId);
-        //     if (alreadyInvis !== invis)
-        //     view.changeCategoryDisplay(catId, invis, enableAllSubCategories);
-        // },
         // apply a category checkbox state being changed
         applyCategoryToggleChange(id,code) {
             let that = this;
             let vp = this.GLOBAL_DATA.theViewPort;
-            // for (const cat of this.categoryList) {
-            //     console.log(cat);
-            //     const cbxName = "cbxCat" + cat;
-            //     const isChecked = that.checkList.indexOf(cat.id) >= 0;
-            //     const invis = isChecked ? false : true;
-            //     this.toggleCategoryState(invis, cat.id, view);
-            // }
+            
             let invis = this.checkCodeList.indexOf(code) >= 0 ? true : false;
             const alreadyInvis = vp.view.viewsCategory(id);
             if (alreadyInvis !== invis){
                 vp.changeCategoryDisplay(id, invis);
             }
             this.isCheckAll();
-            //view.changeCategoryDisplay(id, invis);
         },
         handleCheckAllChange(value){
             this.checkCodeList = [];

@@ -56,15 +56,13 @@ export default {
             if(this.inputFileUrl){
                 this.resetStandaloneIModel(this.inputFileUrl)
             }
-            
-
         },
         async resetStandaloneIModel(filename) {
                 IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort, false);
                 await this.clearViews();
                 await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
-                // await this.buildViewList(this.GLOBAL_DATA.activeViewState);
                 await this.openView(this.GLOBAL_DATA.activeViewState);
+
                 window.eventHub.$emit('categories_init');
                 window.eventHub.$emit('render_mode_init');
                 window.eventHub.$emit('render_model_init');
@@ -72,7 +70,6 @@ export default {
                 this.dialogVisible = false;
         },
         async clearViews() {
-            // await this.GLOBAL_DATA.activeViewState.iModelConnection.closeStandalone();
             if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
                 
                 if(this.standalone){
@@ -80,10 +77,9 @@ export default {
                 }else {
                     await this.GLOBAL_DATA.activeViewState.iModelConnection.close();
                 }
-                
+
                 this.GLOBAL_DATA.activeViewState = new SimpleViewState();
             }
-                // viewMap.clear(); 通知清除下记得
         },
         async openStandaloneIModel(state, filename) {
             state.iModelConnection = await IModelConnection.openSnapshot(filename);
@@ -98,31 +94,19 @@ export default {
                 const viewState = await state.iModelConnection.views.load(viewSpec.id);
                 state.viewState = viewState;
             }
-            console.log(viewSpecs);
+
             window.eventHub.$emit('viewList_init', viewSpecs);
         },
         async  openView(state) {
-        // find the canvas.
             const parent = document.getElementById("imodelview");
             if (parent) {
-                //var htmlCanvas = parent.children[0];
-                console.log("GET THE VIEWPORT 1")
-                //console.log(htmlCanvas)
-                //if (!htmlCanvas) return;
                 await this.buildViewList(state);
-                console.log(state.viewState);
                 this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                 this.GLOBAL_DATA.theViewPort = this.theViewPort;
-                //new frontend_1.ScreenViewport(parent);
-                console.log("GET THE VIEWPORT 2")
-                console.log(this.theViewPort)
                 IModelApp.viewManager.addViewport(this.theViewPort);
-                console.log('the end')
             }
         },
-
     }
-    
 }
 </script>
 

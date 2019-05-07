@@ -23,7 +23,6 @@ export default {
             IModelApp.tools.run("View.Rotate", this.GLOBAL_DATA.theViewPort);
         }
     }
-    
 }
 </script>
 

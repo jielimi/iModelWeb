@@ -110,7 +110,6 @@ export default {
                 this.updateRenderModeOption("ground", groundplane, this.renderModeOptions.flags);
             }
             
-            // console.log(this.renderModeOptions);
             this.renderModeOptions.mode = viewflags.renderMode;
             this.modeValue = viewflags.renderMode;
         },
@@ -136,10 +135,6 @@ export default {
                 const viewPort = this.GLOBAL_DATA.theViewPort
                 viewPort.synchWithView(true);
             }
-            // const menuDialog = document.getElementById("changeRenderModeMenu");
-            // const newValue = this.checkList.indexOf(mode) >= 0 ? true : false;
-            // this.renderModeOptions.flags.set(mode, newValue);
-            // IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
         },
         changeRenderMode(thing){
             const view = this.GLOBAL_DATA.theViewPort
@@ -147,13 +142,8 @@ export default {
 
              view.viewFlags.renderMode = Number.parseInt(thing, 10);
              view.synchWithView(true);
-            
-            // const menuDialog = document.getElementById("changeRenderModeMenu");
-            // this.renderModeOptions.mode = this.modeValue;
-            // IModelApp.tools.run("View.ChangeRenderMode", this.GLOBAL_DATA.theViewPort, this.renderModeOptions.flags, menuDialog, this.renderModeOptions.mode);
         }
     }
-    
 }
 </script>
 

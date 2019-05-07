@@ -21,7 +21,6 @@ export default {
             IModelApp.tools.run("View.Redo", this.GLOBAL_DATA.theViewPort);
         }
     }
-    
 }
 </script>
 

@@ -22,14 +22,14 @@ export default {
         save(){
             let parent = document.getElementById("imodelview");
             let htmlCanvas = parent.children[0].children[0];
-            debugger
+            
             let dataURL = htmlCanvas.toDataURL();
             let param = {
                 projectId: this.projectId,
                 versionName: this.versionName,
                 thumbnail: dataURL
             };
-            console.log(param);
+            
             this.$post('api/thumbnail',param).then(res=>{
                 if(res.state != 0) {
                     console.log(res.message);
@@ -37,7 +37,6 @@ export default {
             });
         }
     }
-    
 }
 </script>
 

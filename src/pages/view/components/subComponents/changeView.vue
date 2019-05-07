@@ -46,18 +46,14 @@ export default {
             window.eventHub.$emit('render_mode_init');
             window.eventHub.$emit('render_model_init');
             window.eventHub.$emit('categories_viewList_change');
-            
         }
     }
     
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .change-view {
     margin-left: 5px;
 };
-
-
 </style>
