@@ -17,7 +17,7 @@ class MarkTool extends PrimitiveTool {
         IncidentMarkerDemo.cancel();
     }
     setupAndPromptForNextAction() {
-        IModelApp.accuSnap.enableSnap(true);
+        // IModelApp.accuSnap.enableSnap(true);
         IModelApp.accuDraw.deactivate();
     }
 
