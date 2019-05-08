@@ -33,7 +33,7 @@ export default {
             if(this.active){
                 IModelApp.tools.run("iModelWeb.Mark");
             }else{
-                MarkTool.cancelMark();
+                MarkTool.cancleMark();
             }
             
         },
