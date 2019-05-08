@@ -1,11 +1,11 @@
 <template>
     <div class="tool-bar">
-        <img src="@/assets/images/cake.svg" style="width:30px;height:30px" id="testSvg">
+        <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
         <open-file-component style="display:none"></open-file-component>
         <change-view-component></change-view-component>
         <model-component></model-component>
         <categories-component></categories-component>
-        <choose-component></choose-component>
+        <!-- <choose-component></choose-component> -->
         <save-component :projectId="projectId" :versionName="versionName"></save-component>
         <hide-component></hide-component>
         <show-component></show-component>
@@ -37,7 +37,7 @@
  import settingComponent from './subComponents/setting'
  import undoComponent from './subComponents/undo'
  import redoComponent from './subComponents/redo'
- import chooseComponent from './subComponents/choose'
+//  import chooseComponent from './subComponents/choose'
  import saveComponent from './subComponents/save'
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
@@ -66,7 +66,7 @@ export default {
         settingComponent,
         undoComponent,
         redoComponent,
-        chooseComponent,
+        // chooseComponent,
         saveComponent,
         hideComponent,
         showComponent,

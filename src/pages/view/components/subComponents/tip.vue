@@ -13,7 +13,7 @@
 
 import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
 import { MarkTool } from "./mark/iModelWebMarkTool";
-import { MarkupSelectTestTool } from "./graffiti/MarkupSelectTestTool";
+import { GraffitiTool } from "./graffiti/graffitiTool";
 
 
 export default {
@@ -94,7 +94,7 @@ export default {
 
                     const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
                     MarkTool.register(toolNamespace);
-                    MarkupSelectTestTool.register(toolNamespace);
+                    GraffitiTool.register(toolNamespace);
                 }
 
                 static setActiveSnapModes(snaps) {

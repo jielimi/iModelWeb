@@ -13,7 +13,7 @@ function getSvgFile(uri) {
   return xhr.responseText;
 }
 
-export class MarkupSelectTestTool extends SelectTool {
+export class GraffitiTool extends SelectTool {
   async onKeyTransition(wentDown, key) {
     if (EventHandled.Yes === await super.onKeyTransition(wentDown, key))
       return EventHandled.Yes;
@@ -68,4 +68,4 @@ export class MarkupSelectTestTool extends SelectTool {
   }
 }
 
-MarkupSelectTestTool.toolId = "iModelWeb.graffiti";
+GraffitiTool.toolId = "iModelWeb.graffiti";
