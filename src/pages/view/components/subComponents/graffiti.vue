@@ -46,8 +46,7 @@ export default {
             let parent = document.getElementById("imodelview");
             let htmlCanvas = parent.children[0].children[0];
             let dataURL = htmlCanvas.toDataURL(); 
-            // console.log(dataURL);
-            window.open(dataURL)   
+            // you can save the picture here 
             
         }
     }
