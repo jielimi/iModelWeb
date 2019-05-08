@@ -18,7 +18,7 @@ export default {
     name: 'imodelmark',
     data () {
         return {
-            
+            active: false
         };
     },
     components: {
@@ -29,7 +29,13 @@ export default {
     },
     methods: {
         mark() {
-            IModelApp.tools.run("iModelWeb.Mark")
+            this.active = !this.active;
+            if(this.active){
+                IModelApp.tools.run("iModelWeb.Mark");
+            }else{
+                MarkTool.cancelMark();
+            }
+            
         },
         
     }
