@@ -14,7 +14,7 @@ class MarkTool extends PrimitiveTool {
     onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
 
     static cancleMark() {
-        IncidentMarkerDemo.cancel();
+        IncidentMarkerDemo.cancle();
     }
     setupAndPromptForNextAction() {
         // IModelApp.accuSnap.enableSnap(true);
