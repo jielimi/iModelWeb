@@ -13,8 +13,8 @@ class MarkTool extends PrimitiveTool {
     requireWriteableTarget(){ return false; }
     onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
 
-    static cancelMark() {
-        IncidentMarkerDemo.cancel();
+    static cancleMark() {
+        IncidentMarkerDemo.cancle();
     }
     setupAndPromptForNextAction() {
         // IModelApp.accuSnap.enableSnap(true);
