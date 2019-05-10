@@ -1,43 +1,38 @@
 <template>
     <div v-show="showToolTip" class="tip">
-        <div class="mainMsg">
-            <div><span>Id</span>0x20000000026</div>
-            <div><span>Type</span>PhysicalObject</div>
-            <div><span>Category</span>Plan Border</div>
-            <div><span>Model</span>mydgn</div>
-        </div>
         <el-collapse v-model="activeName" accordion>
-            <el-collapse-item title="General" name="1">
-                <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+            <el-collapse-item title="BaseInfo" name="1">
+                <div v-for="(value, key, index) in baseInfo">
+                    {{key}}: {{value}}
+                </div>
             </el-collapse-item>
-            <el-collapse-item title="Geometry" name="2">
-                <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-                <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+            <el-collapse-item title="General" name="2" v-if="general">
+                <div v-for="(value, key, index) in general">
+                    {{key}}: {{value}}
+                </div>
             </el-collapse-item>
-            <el-collapse-item title="RawData" name="3">
-                <div>简化流程：设计简洁直观的操作流程；</div>
-                <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-                <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+            <el-collapse-item title="Geometry" name="3" v-if="geometry">
+                <div v-for="(value, key, index) in geometry">
+                    {{key}}: {{value}}
+                </div>
             </el-collapse-item>
-            <el-collapse-item title="Material" name="4">
-                <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-                <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+            <el-collapse-item title="RawData" name="4" v-if="rawData">
+                <div v-for="(value, key, index) in rawData">
+                    {{key}}: {{value}}
+                </div>
             </el-collapse-item>
-            <el-collapse-item title="Extend" name="5">
-                Extented:{{extraMsg}}
+            <el-collapse-item title="Material" name="5" v-if="material">
+            </el-collapse-item>
+            <el-collapse-item title="Extend" name="6" v-if="extend">
             </el-collapse-item>
         </el-collapse>
     </div>
 </template>
 
 <script>
-
 import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
 import { MarkTool } from "./mark/iModelWebMarkTool";
 import { GraffitiTool } from "./graffiti/graffitiTool";
-
-
 export default {
     name: 'tootip',
     data () {
@@ -45,26 +40,47 @@ export default {
             showToolTip:false,
             message:'',
             extraMsg:[],
-            activeName: '1'
+            activeName: '1',
+            baseInfo: '',
+            general: '',
+            geometry: '',
+            rawData: '',
+            material: '',
+            extend: ''
         };
     },
     components: {
-        
     },
     props:['projectId', 'contextId', 'accessToken','versionName'],
     created () {
         this.iModelStartup();
     },
     methods: {
-       getExtraParam(param) {
+        getExtraParam(param) {
+            this.general = '';
+            this.geometry = '';
+            this.rawData = '';
+            this.material = '';
+            this.extend = '';
+            let that = this;
             this.$get('api/detailMsg',{},param).then(res=>{
                 if(res.state === 0){
-                    // for(var i = 0; i< res.data.extraMsg.length;i++){
-                    //     delete res.data.extraMsg[i].className
-                    //     delete res.data.extraMsg[i].element
-                    //     delete res.data.extraMsg[i].id
-                    // }
-                    // this.extraMsg = res.data.extraMsg
+                    res.data.extraMsg.geom.forEach(function(ele){
+                        if(ele.appearance){
+                            that.general = ele.appearance;
+                        }else {
+                            for(let key in ele){
+                                that.geometry = ele[key];
+                                return;
+                            }
+                        }
+                    });
+                    that.geometry.pitch = res.data.extraMsg.raw.pitch;
+                    that.geometry.roll = res.data.extraMsg.raw.roll;
+                    that.geometry.yaw = res.data.extraMsg.raw.yaw;
+                    that.rawData = {};
+                    that.rawData.bBoxHigh = res.data.extraMsg.raw.bBoxHigh;
+                    that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
                 }
             })
        },
@@ -85,7 +101,6 @@ export default {
                     this._activeSnaps[i] = snaps[i];
                 }
             }
-
             class Notifications extends NotificationManager {
                 constructor() {
                     super();
@@ -93,8 +108,17 @@ export default {
                 get isToolTipSupported() { return true; }
                 _showToolTip(el, message, pt, options) {
                     that.showToolTip = true;
+                    that.baseInfo = {};
                     that.message = message;
-
+                    that.message = that.message.replace(new RegExp(',','gm'), '<br>');
+                    that.message = that.message.replace(new RegExp('<b>','gm'), '');
+                    that.message = that.message.replace(new RegExp('</b>','gm'), '');
+                    that.message = that.message.replace(new RegExp(' ','gm'), '');
+                    let arr = that.message.split('<br>');
+                    that.baseInfo.id = arr[0].substring(arr[0].indexOf(':')+1);
+                    that.baseInfo.type = arr[1].substring(arr[1].indexOf(':')+1);
+                    that.baseInfo.category = arr[2].substring(arr[2].indexOf(':')+1);
+                    that.baseInfo.model = arr[3].substring(arr[3].indexOf(':')+1);
                     if(message.indexOf('</b>') !== -1) {
                         let id = message.split('</b>')[1].split(",")[0].trim();
                     
@@ -109,7 +133,6 @@ export default {
                     }
                 }
             }
-            
             class SVTIModelApp extends IModelApp {
                 static onStartup() {
                     IModelApp.accuSnap = new DisplayTestAppAccuSnap();
@@ -119,14 +142,11 @@ export default {
                     MarkTool.register(toolNamespace);
                     GraffitiTool.register(toolNamespace);
                 }
-
                 static setActiveSnapModes(snaps) {
                     IModelApp.accuSnap.setActiveSnapModes(snaps);
                 }
-
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
-
             SVTIModelApp.startup();
        }
     }
