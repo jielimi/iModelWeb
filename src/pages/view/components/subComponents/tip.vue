@@ -2,24 +2,39 @@
     <div v-show="showToolTip" class="tip">
         <el-collapse v-model="activeName" accordion>
             <el-collapse-item title="BaseInfo" name="1">
-                <div v-for="(value, key, index) in baseInfo">
+                <!-- <div v-for="(value, key, index) in baseInfo">
                     {{key}}: {{value}}
-                </div>
+                </div> -->
+                <table>
+                    <tr v-for="(value, key, index) in baseInfo">
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                </table>
             </el-collapse-item>
             <el-collapse-item title="General" name="2" v-if="general">
-                <div v-for="(value, key, index) in general">
-                    {{key}}: {{value}}
-                </div>
+                <table>
+                    <tr v-for="(value, key, index) in general">
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                </table>
             </el-collapse-item>
             <el-collapse-item title="Geometry" name="3" v-if="geometry">
-                <div v-for="(value, key, index) in geometry">
-                    {{key}}: {{value}}
-                </div>
+                <table>
+                    <tr v-for="(value, key, index) in geometry">
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                </table>
             </el-collapse-item>
             <el-collapse-item title="RawData" name="4" v-if="rawData">
-                <div v-for="(value, key, index) in rawData">
-                    {{key}}: {{value}}
-                </div>
+                <table>
+                    <tr v-for="(value, key, index) in rawData">
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                </table>
             </el-collapse-item>
             <el-collapse-item title="Material" name="5" v-if="material">
             </el-collapse-item>
