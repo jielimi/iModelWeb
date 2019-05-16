@@ -122,6 +122,10 @@ export default {
                 }
                 get isToolTipSupported() { return true; }
                 _showToolTip(el, message, pt, options) {
+                    if(message.indexOf('Element.Id') === -1){
+                        that.showToolTip = false;
+                        return;
+                    }
                     that.showToolTip = true;
                     that.baseInfo = {};
                     that.message = message;

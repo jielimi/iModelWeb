@@ -126,7 +126,7 @@
 
     <el-dialog title="Upload Files" :close-on-click-modal="false" @close="clearUploadList" :visible.sync="uploadVisible" center>
         <div class="file-upload">
-					<el-upload class="uploader" accept=".dgn"
+					<el-upload class="uploader" accept=".dgn,.rvt"
 					  :show-file-list="true"
 					  :file-list="uploadPrimaryList"
 					  :multiple="true"
@@ -140,7 +140,7 @@
 					  	<el-button @click="changeParam('0')" type="primary">Upload master file</el-button>
 					</el-upload>
 					<br />
-					<el-upload class="uploader" accept=".dgn"
+					<el-upload class="uploader" accept=".dgn,.rvt"
 					  :show-file-list="true"
 					  :file-list="uploadReferenceList"
 					  :multiple="true"
