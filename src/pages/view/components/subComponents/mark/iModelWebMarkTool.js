@@ -20,13 +20,6 @@ class MarkTool extends PrimitiveTool {
     setupAndPromptForNextAction() {
         IModelApp.accuSnap.enableSnap(true);
     }
-
-    onDynamicFrame(ev, context) {
-        
-    }
-    decorate(context) {
-     
-    }
    
     async onDataButtonDown(ev){
       
