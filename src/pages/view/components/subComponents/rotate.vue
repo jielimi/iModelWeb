@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-rotate_left" @click="rotate">
+        <i class="iconfont icon-Directions-" @click="rotate">
             
         </i>
     </div>

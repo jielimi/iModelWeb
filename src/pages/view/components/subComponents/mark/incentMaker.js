@@ -2,12 +2,10 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { AngleSweep, Arc3d, Point2d, Point3d, XAndY, XYAndZ } from "@bentley/geometry-core";
-import { AxisAlignedBox3d, ColorByName, ColorDef } from "@bentley/imodeljs-common";
+import { AngleSweep, Arc3d, Point2d, Point3d} from "@bentley/geometry-core";
+
 import {
-  BeButton, BeButtonEvent, Cluster, DecorateContext, GraphicType, imageElementFromUrl,
-  IModelApp, Marker, MarkerImage, MarkerSet, MessageBoxIconType, MessageBoxType,
-} from "@bentley/imodeljs-frontend";
+ GraphicType,  IModelApp, Marker, MarkerSet} from "@bentley/imodeljs-frontend";
 
 class IncidentMarker extends Marker {
 
@@ -112,16 +110,21 @@ var IncidentMarkerDemo = /** @class */ (function () {
   };
   IncidentMarkerDemo.decoratorArr = [];
   /** Turn the markers on and off. Each time it runs it creates a new random set of incidents. */
+
   IncidentMarkerDemo.toggle = function (extents) {
     IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
     IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
+    console.log(IncidentMarkerDemo._decorator);
     IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
   };
+  IncidentMarkerDemo.delete = function(extents){
+    console.log("extents",extents)
+    IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[0]);
+  }
   IncidentMarkerDemo.cancle = function(){
     for(var i=0;i<IncidentMarkerDemo.decoratorArr.length;i++){
       IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[i]);
     }
-    IncidentMarkerDemo.decoratorArr[i] = undefined;
     IModelApp.toolAdmin.startDefaultTool();
   }
   return IncidentMarkerDemo;

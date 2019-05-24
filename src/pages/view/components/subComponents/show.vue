@@ -19,7 +19,7 @@ export default {
     created () {},
     methods: {
         show(){
-            debugger
+            
             this.GLOBAL_DATA.theViewPort.clearNeverDrawn();
             this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.emptyAll();
             this.GLOBAL_DATA.activeViewState.moveCameraWorld

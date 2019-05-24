@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-rotate gyroscope" @click="detail">
+        <i class="iconfont icon-rotate icon-lifangti" @click="detail">
             <div v-show="isShowDetail" class="detail">
                 <div class="simpleicon" @click="direction($event,'Top')">
                      <i class="iconfont bim-icon-viewtop"></i>
@@ -85,7 +85,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-.gyroscope{
+.icon-lifangti{
     position: relative;
     .detail{
         position: absolute;

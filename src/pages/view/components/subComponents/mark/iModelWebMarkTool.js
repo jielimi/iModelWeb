@@ -4,6 +4,7 @@ import {
   } from "@bentley/imodeljs-frontend";
  import {IncidentMarkerDemo} from "./incentMaker"
 
+
 class MarkTool extends PrimitiveTool {
     constructor() {
         super(...arguments);
@@ -17,38 +18,29 @@ class MarkTool extends PrimitiveTool {
         IncidentMarkerDemo.cancle();
     }
     setupAndPromptForNextAction() {
-        // IModelApp.accuSnap.enableSnap(true);
-        IModelApp.accuDraw.deactivate();
+        IModelApp.accuSnap.enableSnap(true);
     }
 
     onDynamicFrame(ev, context) {
-        if (this.points.length < 1)
-          return;
-    
-        const tmpPoints = this.points.slice();
-        tmpPoints.push(ev.point.clone());
-    
-        const builder = context.createSceneGraphicBuilder();
-    
-        builder.setSymbology(ColorDef.white, ColorDef.white, 1);
-        builder.addLineString(tmpPoints);
-    
-        context.addGraphic(builder.finish());
-        this.updateDynamicDistanceMarker(tmpPoints);
-      }
-    decorate(context) {
-      if (!context.viewport.view.isSpatialView())
-        return;
-      if (undefined !== this._distanceMarker)
-        this._distanceMarker.addDecoration(context);
+        
     }
-    decorateSuspended(context) { this.decorate(context); }
+    decorate(context) {
+     
+    }
+   
     async onDataButtonDown(ev){
-        this.points.push(ev.rawPoint.clone());
-        IncidentMarkerDemo.toggle(ev.rawPoint.clone())
-        this.setupAndPromptForNextAction();
+      
+        const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
+        console.log("hit?", curSnapDetail.snapPoint)
+        if (curSnapDetail) {
+          //this.points.push(ev.rawPoint.clone());
+          this.points.push(curSnapDetail.snapPoint.clone());
+          IncidentMarkerDemo.toggle(curSnapDetail.snapPoint.clone())
+          //this.setupAndPromptForNextAction();
+        }
         return EventHandled.No;
     }
+    
 
     async onResetButtonUp(_ev) {
         IModelApp.toolAdmin.startDefaultTool();

@@ -141,12 +141,14 @@ export default {
                     if(message.indexOf('</b>') !== -1) {
                         let id = message.split('</b>')[1].split(",")[0].trim();
                     
+                        var test = {
+                            changeSetId: "b981c0e09fe2bc1259d7f1c852def830ff2bdb28",    
+                            key: "fc536f57-e3e5-4bf1-811d-0aebc644945e:b981c0e09fe2bc1259d7f1c852def830ff2bdb28:0",
+                            openMode: 1
+                        }
                         let param = {
                             id:id,
-                            projectId:that.projectId,
-                            contextId:that.contextId,
-                            accessToken:that.accessToken,
-                            versionName:that.versionName
+                            imodeltoken:JSON.stringify(that.GLOBAL_DATA.activeViewState.iModelConnection.iModelToken)
                         };
                         that.getExtraParam(param);
                     }
@@ -215,10 +217,6 @@ export default {
             width: 100px;
             display: inline-block;
     }
-}
-
-.subtitle{
-
 }
 
 </style>
