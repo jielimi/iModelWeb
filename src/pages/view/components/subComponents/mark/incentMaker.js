@@ -10,13 +10,8 @@ import {
 class IncidentMarker extends Marker {
 
   constructor(location, icon) {
-    super(location, Point2d.create(30, 30));
-    this._imageSize = Point2d.create(80, 80);
-    this._imageOffset = Point2d.create(0, 30);
-    this._sweep360 = AngleSweep.create360();
+    super(location, Point2d.create(20, 20));
     this.setImage(icon); // save icon
-    this.imageOffset = IncidentMarker._imageOffset; // move icon up by 30 pixels
-    this.imageSize = IncidentMarker._imageSize; // 40x40
     this.labelFont = "italic 14px san-serif"; // use italic so incidents look different than Clusters
     this.setScaleFactor({ low: .2, high: 1.4 }); // make size 20% at back of frustum and 140% at front of frustum (if camera is on)
   }
@@ -52,16 +47,9 @@ var IncidentMarkerDemo = (function () {
 
   IncidentMarkerDemo.toggle = function (extents) {
     IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
+    IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
+    IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
     
-    //var indexOfPoints = points.indexOf(extents)
-    // if( indexOfPoints > -1){
-    //   // points.splice(indexOfPoints,1)
-    //   IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[indexOfPoints].decorate);
-    // }else{
-    //   points.push(extents);
-      IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
-      IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
-    // }
   };
  
   IncidentMarkerDemo.cancle = function(){
