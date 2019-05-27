@@ -1,5 +1,9 @@
 <template>
     <div v-show="showToolTip" class="tip">
+        <div class="close-wrap">
+            <a href="javascript:;" @click="closeTip" class="close">X</a>
+        </div>
+        
         <el-collapse v-model="activeName" accordion>
             <el-collapse-item title="BaseInfo" name="1">
                 <!-- <div v-for="(value, key, index) in baseInfo">
@@ -169,6 +173,9 @@ export default {
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
             SVTIModelApp.startup();
+       },
+       closeTip() {
+            this.showToolTip = false;
        }
     }
 }
@@ -217,6 +224,13 @@ export default {
             width: 100px;
             display: inline-block;
     }
+}
+.close-wrap {
+    text-align: right;
+}
+.close {
+    text-decoration: none;
+    color: #fff;
 }
 
 </style>
