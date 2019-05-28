@@ -1,5 +1,9 @@
 <template>
+
     <div v-show="showToolTip" class="tip">
+        <div class="close-wrap">
+            <a href="javascript:;" @click="closeTip" class="close">X</a>
+        </div>
         <el-collapse v-model="activeName" accordion>
             <el-collapse-item title="BaseInfo" name="1">
                 <table>
