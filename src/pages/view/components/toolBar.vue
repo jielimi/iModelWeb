@@ -19,7 +19,7 @@
         <redoComponent></redoComponent>
         <!-- <clipComponent></clipComponent> -->
         <tipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
-        <markComponent></markComponent>
+        <!-- <markComponent></markComponent> -->
         <graffitiComponent></graffitiComponent>
     </div>
 </template>
@@ -43,7 +43,7 @@
  import showComponent from './subComponents/show'
 //  import clipComponent from './subComponents/clip'
  import tipComponent from './subComponents/tip'
-import markComponent from './subComponents/mark'
+// import markComponent from './subComponents/mark'
 import graffitiComponent from './subComponents/graffiti'
 
 
@@ -72,7 +72,7 @@ export default {
         showComponent,
         // clipComponent,
         tipComponent,
-        markComponent,
+        // markComponent,
         graffitiComponent
 
     },

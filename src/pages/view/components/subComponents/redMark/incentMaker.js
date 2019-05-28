@@ -2,7 +2,7 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { AngleSweep, Point2d, Point3d} from "@bentley/geometry-core";
+import { Point2d, Point3d} from "@bentley/geometry-core";
 
 import {
  GraphicType,  IModelApp, Marker} from "@bentley/imodeljs-frontend";
@@ -41,17 +41,39 @@ var IncidentMarkerDemo = (function () {
       }
   };
   IncidentMarkerDemo.decoratorArr = [];
-  //let points = [];
+  let points = [];
   
   /** Turn the markers on and off. Each time it runs it creates a new random set of incidents. */
 
   IncidentMarkerDemo.toggle = function (extents) {
-    IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
-    IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
-    IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
     
-  };
- 
+
+    var indexOfPoints = -1;
+   
+    for(var i=0;i<points.length;i++){
+      if(JSON.stringify(points[i]) === JSON.stringify(extents)){
+        indexOfPoints = i;
+        break;
+      }
+    }
+
+    if( indexOfPoints !== -1  ){
+      points.splice(indexOfPoints,1)
+      IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[indexOfPoints]);
+    }else{
+      points.push(extents);
+      IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
+      IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
+      IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
+    };
+  }
+  IncidentMarkerDemo.undo = function() {
+    const length = IncidentMarkerDemo.decoratorArr.length;
+    if(length === 0) return;
+    IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[length-1]);
+    IncidentMarkerDemo.decoratorArr.pop()
+
+  }
   IncidentMarkerDemo.cancle = function(){
     for(var i=0;i<IncidentMarkerDemo.decoratorArr.length;i++){
       IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[i]);
