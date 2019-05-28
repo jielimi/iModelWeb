@@ -1,6 +1,7 @@
 <template>
-    <div>
+    <div class="registerTool">
         <markComponent ref="redMark"></markComponent>
+        <graffitiComponent ref='graffiti'></graffitiComponent>
         <div v-show="showToolTip" class="tip">
             <el-collapse v-model="activeName" accordion>
                 <el-collapse-item title="BaseInfo" name="1">
@@ -51,7 +52,8 @@
 import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
 
 import markComponent from './redMark/redMark'
-import { GraffitiTool } from "./graffiti/graffitiTool";
+import graffitiComponent from './graffiti'
+
 export default {
     name: 'tootip',
     data () {
@@ -69,7 +71,8 @@ export default {
         };
     },
     components: {
-        markComponent
+        markComponent,
+        graffitiComponent
     },
     props:['projectId', 'contextId', 'accessToken','versionName'],
     created () {
@@ -168,11 +171,12 @@ export default {
                     
                     setTimeout(()=>{
                        that.$refs.redMark.register(toolNamespace);
+                       that.$refs.graffiti.register(toolNamespace);
                     })
 
                     
                     // MarkTool.register(toolNamespace);
-                    GraffitiTool.register(toolNamespace);
+                    //GraffitiTool.register(toolNamespace);
                 }
                 static setActiveSnapModes(snaps) {
                     IModelApp.accuSnap.setActiveSnapModes(snaps);
@@ -180,6 +184,9 @@ export default {
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
             SVTIModelApp.startup();
+       },
+       closeTip() {
+            this.showToolTip = false;
        }
     }
 }
@@ -228,6 +235,16 @@ export default {
             width: 100px;
             display: inline-block;
     }
+}
+.close-wrap {
+    text-align: right;
+}
+.close {
+    text-decoration: none;
+    color: #fff;
+}
+.registerTool{
+    display: flex;
 }
 
 </style>
