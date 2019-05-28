@@ -3,24 +3,46 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import { Point2d, Point3d} from "@bentley/geometry-core";
+import { AngleSweep, Arc3d, XAndY, XYAndZ } from "@bentley/geometry-core";
+import { ColorDef } from "@bentley/imodeljs-common";
 
-import {
- GraphicType,  IModelApp, Marker} from "@bentley/imodeljs-frontend";
+import { BeButton,GraphicType,  IModelApp, Marker} from "@bentley/imodeljs-frontend";
 
 class IncidentMarker extends Marker {
 
   constructor(location, icon) {
     super(location, Point2d.create(20, 20));
+    this.title =  Math.random() +5;
     this.setImage(icon); // save icon
     this.labelFont = "italic 14px san-serif"; // use italic so incidents look different than Clusters
     this.setScaleFactor({ low: .2, high: 1.4 }); // make size 20% at back of frustum and 140% at front of frustum (if camera is on)
   }
 
   addMarker(context) {
+    const _sweep360 = AngleSweep.create360();
     super.addMarker(context);
+
     const builder = context.createGraphicBuilder(GraphicType.WorldDecoration);
-    //const ellipse = Arc3d.createScaledXYColumns(this.worldLocation, context.viewport.rotation.transpose(), .2, .2, IncidentMarker._sweep360);
+    const ellipse = Arc3d.createScaledXYColumns(this.worldLocation, context.viewport.rotation.transpose(), .2, .2, _sweep360);
+    // builder.setSymbology(ColorDef.white, this._color, 1);
+    builder.addArc(ellipse, false, false);
+    // builder.setBlankingFill(this._color);
+    builder.addArc(ellipse, true, true);
     context.addDecorationFromBuilder(builder);
+    
+  }
+  // onMouseEnter(ev) {
+  //   // 可以用来显示tip
+  //   //console.log(this.tip);
+
+  // };
+
+  onMouseButton(ev) {
+    if (ev.button === BeButton.Reset) {
+     console.log("worldLocation",this.worldLocation)
+      IncidentMarkerDemo.delete(this.worldLocation);
+    }
+    return true;
   }
 }
 
@@ -42,12 +64,10 @@ var IncidentMarkerDemo = (function () {
   };
   IncidentMarkerDemo.decoratorArr = [];
   let points = [];
+  let vp = {};
   
   /** Turn the markers on and off. Each time it runs it creates a new random set of incidents. */
-
-  IncidentMarkerDemo.toggle = function (extents) {
-    
-
+  IncidentMarkerDemo.delete = function(extents) {
     var indexOfPoints = -1;
    
     for(var i=0;i<points.length;i++){
@@ -56,16 +76,19 @@ var IncidentMarkerDemo = (function () {
         break;
       }
     }
-
     if( indexOfPoints !== -1  ){
-      points.splice(indexOfPoints,1)
+      points.splice(indexOfPoints,1);
       IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[indexOfPoints]);
-    }else{
+      IncidentMarkerDemo.decoratorArr.splice(indexOfPoints,1);
+    }
+  }
+
+  IncidentMarkerDemo.toggle = function (extents) {
       points.push(extents);
       IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
       IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
       IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
-    };
+    
   }
   IncidentMarkerDemo.undo = function() {
     const length = IncidentMarkerDemo.decoratorArr.length;

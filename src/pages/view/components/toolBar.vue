@@ -5,7 +5,6 @@
         <change-view-component></change-view-component>
         <model-component></model-component>
         <categories-component></categories-component>
-        <!-- <choose-component></choose-component> -->
         <save-component :projectId="projectId" :versionName="versionName"></save-component>
         <hide-component></hide-component>
         <show-component></show-component>
@@ -19,8 +18,7 @@
         <redoComponent></redoComponent>
         <!-- <clipComponent></clipComponent> -->
         <regeisterToolComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
-        <!-- <markComponent></markComponent> -->
-        <!-- <graffitiComponent></graffitiComponent> -->
+        
     </div>
 </template>
 <script>
@@ -37,7 +35,6 @@
  import settingComponent from './subComponents/setting'
  import undoComponent from './subComponents/undo'
  import redoComponent from './subComponents/redo'
-//  import chooseComponent from './subComponents/choose'
  import saveComponent from './subComponents/save'
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
@@ -65,7 +62,6 @@ export default {
         settingComponent,
         undoComponent,
         redoComponent,
-        // chooseComponent,
         saveComponent,
         hideComponent,
         showComponent,

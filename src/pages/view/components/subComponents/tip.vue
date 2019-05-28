@@ -125,7 +125,7 @@ export default {
                 }
                 get isToolTipSupported() { return true; }
                 _showToolTip(el, message, pt, options) {
-                    if(message.indexOf('Element.Id') === -1){
+                    if(typeof(message) !== 'string' || message.indexOf('Element.Id') === -1){
                         that.showToolTip = false;
                         return;
                     }

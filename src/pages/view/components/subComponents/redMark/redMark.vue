@@ -39,7 +39,6 @@ export default {
                 }
             
                 async onDataButtonDown(ev){
-                
                     const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
                     console.log("hit?", curSnapDetail.snapPoint)
                     if (curSnapDetail) {
