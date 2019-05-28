@@ -1,50 +1,58 @@
 <template>
-    <div v-show="showToolTip" class="tip">
-        <el-collapse v-model="activeName" accordion>
-            <el-collapse-item title="BaseInfo" name="1">
-                <table>
-                    <tr v-for="(value, key, index) in baseInfo">
-                        <td>{{key}}</td>
-                        <td>{{value}}</td>
-                    </tr>
-                </table>
-            </el-collapse-item>
-            <el-collapse-item title="General" name="2" v-if="general">
-                <table>
-                    <tr v-for="(value, key, index) in general">
-                        <td>{{key}}</td>
-                        <td>{{value}}</td>
-                    </tr>
-                </table>
-            </el-collapse-item>
-            <el-collapse-item title="Geometry" name="3" v-if="geometry">
-                <table>
-                    <tr v-for="(value, key, index) in geometry">
-                        <td>{{key}}</td>
-                        <td>{{value}}</td>
-                    </tr>
-                </table>
-            </el-collapse-item>
-            <el-collapse-item title="RawData" name="4" v-if="rawData">
-                <table>
-                    <tr v-for="(value, key, index) in rawData">
-                        <td>{{key}}</td>
-                        <td>{{value}}</td>
-                    </tr>
-                </table>
-            </el-collapse-item>
-            <el-collapse-item title="Material" name="5" v-if="material">
-            </el-collapse-item>
-            <el-collapse-item title="Extend" name="6" v-if="extend">
-            </el-collapse-item>
-        </el-collapse>
+    <div class="registerTool">
+        <markComponent ref="redMark"></markComponent>
+        <graffitiComponent ref='graffiti'></graffitiComponent>
+        <div v-show="showToolTip" class="tip">
+            <el-collapse v-model="activeName" accordion>
+                <el-collapse-item title="BaseInfo" name="1">
+                    <!-- <div v-for="(value, key, index) in baseInfo">
+                        {{key}}: {{value}}
+                    </div> -->
+                    <table>
+                        <tr v-for="(value, key, index) in baseInfo">
+                            <td>{{key}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </table>
+                </el-collapse-item>
+                <el-collapse-item title="General" name="2" v-if="general">
+                    <table>
+                        <tr v-for="(value, key, index) in general">
+                            <td>{{key}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </table>
+                </el-collapse-item>
+                <el-collapse-item title="Geometry" name="3" v-if="geometry">
+                    <table>
+                        <tr v-for="(value, key, index) in geometry">
+                            <td>{{key}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </table>
+                </el-collapse-item>
+                <el-collapse-item title="RawData" name="4" v-if="rawData">
+                    <table>
+                        <tr v-for="(value, key, index) in rawData">
+                            <td>{{key}}</td>
+                            <td>{{value}}</td>
+                        </tr>
+                    </table>
+                </el-collapse-item>
+                <el-collapse-item title="Material" name="5" v-if="material">
+                </el-collapse-item>
+                <el-collapse-item title="Extend" name="6" v-if="extend">
+                </el-collapse-item>
+            </el-collapse>
+        </div>
     </div>
-    
 </template>
 
 <script>
 import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
 
+import markComponent from './redMark/redMark'
+import graffitiComponent from './graffiti'
 
 export default {
     name: 'tootip',
@@ -62,9 +70,13 @@ export default {
             extend: ''
         };
     },
-    components: {},
+    components: {
+        markComponent,
+        graffitiComponent
+    },
     props:['projectId', 'contextId', 'accessToken','versionName'],
     created () {
+        this.iModelStartup();
     },
     methods: {
         getExtraParam(param) {
@@ -95,7 +107,8 @@ export default {
                 }
             })
        },
-       displayTestAppAccuSnap() {
+       iModelStartup() {
+           let that = this;
            class DisplayTestAppAccuSnap extends AccuSnap {
                 constructor() {
                     super(...arguments);
@@ -111,11 +124,7 @@ export default {
                     this._activeSnaps[i] = snaps[i];
                 }
             }
-            return new DisplayTestAppAccuSnap();
-       },
-       notifications(){
-           let that = this;
-           class Notifications extends NotificationManager {
+            class Notifications extends NotificationManager {
                 constructor() {
                     super();
                 }
@@ -153,7 +162,24 @@ export default {
                     }
                 }
             }
-            return new Notifications();
+            class SVTIModelApp extends IModelApp {
+                static onStartup() {
+                    IModelApp.accuSnap = new DisplayTestAppAccuSnap();
+                    IModelApp.notifications = new Notifications();
+
+                    const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
+                    
+                    setTimeout(()=>{
+                       that.$refs.redMark.register(toolNamespace);
+                       that.$refs.graffiti.register(toolNamespace);
+                    })
+                }
+                static setActiveSnapModes(snaps) {
+                    IModelApp.accuSnap.setActiveSnapModes(snaps);
+                }
+                static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
+            }
+            SVTIModelApp.startup();
        },
        closeTip() {
             this.showToolTip = false;
@@ -213,6 +239,8 @@ export default {
     text-decoration: none;
     color: #fff;
 }
-
+.registerTool{
+    display: flex;
+}
 
 </style>

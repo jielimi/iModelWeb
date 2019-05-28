@@ -18,7 +18,7 @@
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
         <!-- <clipComponent></clipComponent> -->
-        <tipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
+        <regeisterToolComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
         <!-- <markComponent></markComponent> -->
         <!-- <graffitiComponent></graffitiComponent> -->
     </div>
@@ -42,7 +42,7 @@
  import hideComponent from './subComponents/hide'
  import showComponent from './subComponents/show'
 //  import clipComponent from './subComponents/clip'
- import tipComponent from './subComponents/tip'
+ import regeisterToolComponent from './subComponents/regeisterTool'
 
 
 
@@ -70,7 +70,7 @@ export default {
         hideComponent,
         showComponent,
         // clipComponent,
-        tipComponent
+        regeisterToolComponent
     },
     created () {
     },
