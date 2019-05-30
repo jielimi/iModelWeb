@@ -3,6 +3,7 @@
         <i class="iconfont icon-mark" @click="mark">
         </i>
     </div>
+    
 </template>
 
 <script>
@@ -14,7 +15,8 @@ export default {
     name: 'imodelmark',
     data () {
         return {
-            active: false
+            tips:'hello',
+            
         };
     },
     components: {
@@ -24,7 +26,9 @@ export default {
         
     },
     methods: {
+        
         register(toolNamespace){
+                let that = this;
                 class MarkTool extends PrimitiveTool {
                 constructor() {
                     super(...arguments);
@@ -40,17 +44,16 @@ export default {
             
                 async onDataButtonDown(ev){
                     const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
-                    console.log("hit?", curSnapDetail.snapPoint)
                     if (curSnapDetail) {
-                        IncidentMarkerDemo.toggle(curSnapDetail.snapPoint.clone())
+                        IncidentMarkerDemo.toggle(curSnapDetail.snapPoint.clone(),that.tips)
                     }
                     return EventHandled.No;
                 }
 
-                async onResetButtonUp(_ev) {
-                    IModelApp.toolAdmin.startDefaultTool();
-                    return EventHandled.No;
-                }
+                // async onResetButtonUp(_ev) {
+                //     // IModelApp.toolAdmin.startDefaultTool(); 
+                //     // return EventHandled.No;
+                // }
 
                 onRestartTool() {
                     const tool = new MarkTool();
@@ -59,11 +62,14 @@ export default {
                 }
                 async onKeyTransition(wentDown, keyEvent) {
                     if (wentDown) {
-                    switch (keyEvent.key.toLowerCase()) {
-                        case "delete":
-                        IncidentMarkerDemo.undo();
-                        break;
-                    }
+                        switch (keyEvent.key.toLowerCase()) {
+                            case "delete":
+                            IncidentMarkerDemo.undo();
+                            break;
+                            case "escape":
+                            IncidentMarkerDemo.cancle();
+                            break;
+                        }
                     }
                     return EventHandled.No;
                 }
@@ -77,8 +83,9 @@ export default {
             if(this.active){
                 IModelApp.tools.run("iModelWeb.Mark");
             }else{
-                IncidentMarkerDemo.cancle();
+                IncidentMarkerDemo.cancle()
             }
+            
         },
         
     }

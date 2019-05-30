@@ -10,12 +10,16 @@ import { BeButton,GraphicType,  IModelApp, Marker} from "@bentley/imodeljs-front
 
 class IncidentMarker extends Marker {
 
-  constructor(location, icon) {
-    super(location, Point2d.create(20, 20));
-    this.title =  Math.random() +5;
+  constructor(location, icon, tips) {
+    super(location, Point2d.create(30, 30));
+    //this.imageOffset = Point2d.create(0, 30); // move icon up by 30 pixels
+    this.imageSize = Point2d.create(30, 30); // 40x40
+    this.labelFont = "italic 14px san-serif";
+
+    this.title =  tips;
     this.setImage(icon); // save icon
     this.labelFont = "italic 14px san-serif"; // use italic so incidents look different than Clusters
-    this.setScaleFactor({ low: .2, high: 1.4 }); // make size 20% at back of frustum and 140% at front of frustum (if camera is on)
+    //this.setScaleFactor({ low: .2, high: 1.4 }); // make size 20% at back of frustum and 140% at front of frustum (if camera is on)
   }
 
   addMarker(context) {
@@ -23,23 +27,29 @@ class IncidentMarker extends Marker {
     super.addMarker(context);
 
     const builder = context.createGraphicBuilder(GraphicType.WorldDecoration);
-    const ellipse = Arc3d.createScaledXYColumns(this.worldLocation, context.viewport.rotation.transpose(), .2, .2, _sweep360);
-    // builder.setSymbology(ColorDef.white, this._color, 1);
+    const ellipse = Arc3d.createScaledXYColumns(this.worldLocation, context.viewport.rotation.transpose(), 0.1, 0.1, _sweep360);
+    builder.setSymbology(ColorDef.white, ColorDef.red, 1);
     builder.addArc(ellipse, false, false);
-    // builder.setBlankingFill(this._color);
+    builder.setBlankingFill(ColorDef.red);
     builder.addArc(ellipse, true, true);
     context.addDecorationFromBuilder(builder);
-    
   }
-  // onMouseEnter(ev) {
-  //   // 可以用来显示tip
-  //   //console.log(this.tip);
-
-  // };
+  onMouseEnter(ev) {
+    console.log(this.title);
+  };
+  
+  // drawFunc(ctx) {
+  //   ctx.beginPath();
+  //   ctx.strokeStyle = "#ff0000";
+  //   ctx.fillStyle = "white";
+  //   ctx.lineWidth = 5;
+  //   ctx.arc(0, 0, 13, 0, Math.PI * 2);
+  //   ctx.fill();
+  //   ctx.stroke();
+  // }
 
   onMouseButton(ev) {
     if (ev.button === BeButton.Reset) {
-     console.log("worldLocation",this.worldLocation)
       IncidentMarkerDemo.delete(this.worldLocation);
     }
     return true;
@@ -47,13 +57,13 @@ class IncidentMarker extends Marker {
 }
 
 var IncidentMarkerDemo = (function () {
-  function IncidentMarkerDemo(extents) {
+  function IncidentMarkerDemo(extents,tips) {
     var svg = document.getElementById("testSvg");
     var pos = new  Point3d();
     pos.x = extents.x;
     pos.y = extents.y;
     pos.z = extents.z;
-    this._incidents = new IncidentMarker(pos, svg)
+    this._incidents = new IncidentMarker(pos, svg, tips)
       
   }
   /** We added this class as a ViewManager.decorator below. This method is called to ask for our decorations. We add the MarkerSet. */
@@ -83,9 +93,9 @@ var IncidentMarkerDemo = (function () {
     }
   }
 
-  IncidentMarkerDemo.toggle = function (extents) {
+  IncidentMarkerDemo.toggle = function (extents,tips) {
       points.push(extents);
-      IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents);
+      IncidentMarkerDemo._decorator = new IncidentMarkerDemo(extents,tips);
       IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
       IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
     
