@@ -33,7 +33,8 @@
 </template>
 
 <script>
-import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+//import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+import { StandardViewId, AccuDraw } from '@bentley/imodeljs-frontend';
 import { Transform } from "@bentley/geometry-core/lib/geometry-core";
 export default {
     name: 'gyroscope',
@@ -58,12 +59,12 @@ export default {
             if (undefined === theViewport)
             return;
 
-            let  rotationId = frontend_1.StandardViewId[dir];
+            let  rotationId = StandardViewId[dir];
 
-            if (frontend_1.StandardViewId.Top !== rotationId && !theViewport.view.allow3dManipulations())
+            if (StandardViewId.Top !== rotationId && !theViewport.view.allow3dManipulations())
                 return;
 
-            const rMatrix = frontend_1.AccuDraw.getStandardRotation(rotationId, theViewport, theViewport.isContextRotationRequired);
+            const rMatrix = AccuDraw.getStandardRotation(rotationId, theViewport, theViewport.isContextRotationRequired);
             const inverse = rMatrix.inverse();
             if (undefined === inverse)
                 return;

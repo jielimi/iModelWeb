@@ -20,7 +20,7 @@
 
 <script>
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { RenderMode } from "@bentley/imodeljs-common/lib/common"
+import { RenderMode } from "@bentley/imodeljs-common"
 export default {
     name: 'setting',
     data () {

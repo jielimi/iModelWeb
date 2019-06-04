@@ -19,8 +19,10 @@
 </template>
 
 <script>
-import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
-import * as common_1 from "@bentley/imodeljs-common/lib/common"
+//import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+import { ScreenViewport } from '@bentley/imodeljs-frontend';
+import { IModelVersion } from '@bentley/imodeljs-common'
+//import * as common_1 from "@bentley/imodeljs-common/lib/common"
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
@@ -115,7 +117,7 @@ export default {
             state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
             this.iminfo.contextId = imbcontext.toIModelTokenContextId();
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
-            1, this.iminfo.versionName? common_1.IModelVersion.named(this.iminfo.versionName):common_1.IModelVersion.latest());
+            1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
             const requestContext = await AuthorizedFrontendRequestContext.create();
             const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
             let changeSetCount = selectedChangeSets.length;
@@ -138,7 +140,8 @@ export default {
             if (parent) {
                 await this.buildViewList(state);
                 if (!this.theViewPort){
-                    this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                    this.theViewPort = ScreenViewport.create(parent, state.viewState);
                     this.GLOBAL_DATA.theViewPort = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);

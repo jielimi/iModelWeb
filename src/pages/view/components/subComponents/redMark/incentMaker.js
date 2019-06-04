@@ -28,9 +28,9 @@ class IncidentMarker extends Marker {
 
     const builder = context.createGraphicBuilder(GraphicType.WorldDecoration);
     const ellipse = Arc3d.createScaledXYColumns(this.worldLocation, context.viewport.rotation.transpose(), 0.1, 0.1, _sweep360);
-    builder.setSymbology(ColorDef.white, ColorDef.red, 1);
+    //builder.setSymbology(ColorDef.white, ColorDef.red, 1);
     builder.addArc(ellipse, false, false);
-    builder.setBlankingFill(ColorDef.red);
+    builder.setBlankingFill(ColorDef.blue);
     builder.addArc(ellipse, true, true);
     context.addDecorationFromBuilder(builder);
   }
@@ -38,15 +38,15 @@ class IncidentMarker extends Marker {
     console.log(this.title);
   };
   
-  // drawFunc(ctx) {
-  //   ctx.beginPath();
-  //   ctx.strokeStyle = "#ff0000";
-  //   ctx.fillStyle = "white";
-  //   ctx.lineWidth = 5;
-  //   ctx.arc(0, 0, 13, 0, Math.PI * 2);
-  //   ctx.fill();
-  //   ctx.stroke();
-  // }
+  drawFunc(ctx) {
+    // ctx.beginPath();
+    // ctx.strokeStyle = "#ff0000";
+    // ctx.fillStyle = "red";
+    // ctx.lineWidth = 5;
+    // ctx.arc(0, 0, 13, 0, Math.PI * 2);
+    // ctx.fill();
+    // ctx.stroke();
+  }
 
   onMouseButton(ev) {
     if (ev.button === BeButton.Reset) {

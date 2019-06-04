@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import { IModelApp,IModelConnection } from "@bentley/imodeljs-frontend";
-import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+import { IModelApp,IModelConnection,ScreenViewport } from "@bentley/imodeljs-frontend";
+//import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
 class SimpleViewState {
     constructor(){};
 }
@@ -101,7 +101,7 @@ export default {
             const parent = document.getElementById("imodelview");
             if (parent) {
                 await this.buildViewList(state);
-                this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                this.theViewPort = ScreenViewport.create(parent, state.viewState); 
                 this.GLOBAL_DATA.theViewPort = this.theViewPort;
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
