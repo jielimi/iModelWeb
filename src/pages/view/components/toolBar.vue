@@ -18,6 +18,7 @@
         <redoComponent></redoComponent>
         <!-- <clipComponent></clipComponent> -->
         <regeisterToolComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
+        <isolateComponent></isolateComponent>
         
     </div>
 </template>
@@ -40,6 +41,7 @@
  import showComponent from './subComponents/show'
 //  import clipComponent from './subComponents/clip'
  import regeisterToolComponent from './subComponents/regeisterTool'
+  import isolateComponent from './subComponents/isolate'
 
 
 
@@ -66,7 +68,8 @@ export default {
         hideComponent,
         showComponent,
         // clipComponent,
-        regeisterToolComponent
+        regeisterToolComponent,
+        isolateComponent
     },
     created () {
     },
