@@ -30,7 +30,9 @@ const provider = {
 	appearance: FeatureSymbology.Appearance.defaults,
 	defaultOvrs: FeatureSymbology.Appearance | undefined,
     addFeatureOverrides(ovrs, _vp) {
-    	this.elementOvrs.forEach((value, key) => ovrs.overrideElement(key, value));
+    	this.elementOvrs.forEach(function(value, key){
+    		ovrs.overrideElement(key, value);
+    	});
         // const appearance = FeatureSymbology.Appearance.fromRgba(new ColorDef(this.targetColor));
         // this.elemSet.forEach(v => {
         //     ovrs.overrideElement(v, appearance);
@@ -55,14 +57,15 @@ export default {
     		this.isolating = !this.isolating;
     	},
         handleColorChange(e){
-        	let props = provider.appearance.toJSON();
-      		props['rgb'] = this.convertHexToRgb(e.target.value);
-      		provider.appearance = FeatureSymbology.Appearance.fromJSON(props);
+        	this.updateAppearance('rgb',this.convertHexToRgb(e.target.value));
         },
         handleTransparencyChange(e){
-        	// let props = provider.appearance.toJSON();
-      		// props['transparency'] = parseFloat(e.target.value);
-      		// provider.appearance = FeatureSymbology.Appearance.fromJSON(props);
+        	this.updateAppearance('transparency',parseFloat(e.target.value));
+        },
+        updateAppearance(field,value){
+        	let props = provider.appearance.toJSON();
+      		props[field] = value;
+      		provider.appearance = FeatureSymbology.Appearance.fromJSON(props);
         },
         apply(){
       		let elementOvrs = new Map();
@@ -100,8 +103,6 @@ export default {
     
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 	.isolote {
         position: relative;
@@ -136,7 +137,7 @@ export default {
         	color: #ccc;
         }
         .el-button-group {
-        	margin-left: 20px;
+        	margin-left: 54px;
         }
         button:focus {
             background-color: #fff;
