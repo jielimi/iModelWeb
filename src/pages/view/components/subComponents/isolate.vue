@@ -2,13 +2,16 @@
     <div>
         <i class="iconfont icon-color isolote" @click.self="pop">
         	<div v-show="isolating" class="detail">
-        		<el-checkbox v-model="colorActive">
+        		<el-checkbox v-model="colorActive" @change="handleColorCheckChange">
         			<span>Color</span>
         			<input type="color" :disabled="!colorActive" value="#ffffff" @change="handleColorChange">
         		</el-checkbox>
-        		<el-checkbox v-model="transparencyActive">
+        		<el-checkbox v-model="transparencyActive" @change="handleTransparencyCheckChange">
         			<span>Transparency</span>
         			<input type="range" :disabled="!transparencyActive" class="range" min="0.0" max="1.0" step="0.05" value="0.0" @change="handleTransparencyChange">
+        		</el-checkbox>
+        		<el-checkbox v-model="ignoreMaterial" @change="handleIgnoreMaterialChange">
+        			<span>Ignore Material</span>
         		</el-checkbox>
                 <hr />
                 <el-button-group>
@@ -28,7 +31,7 @@ import { IModelApp, EmphasizeElements,FeatureOverrideProvider, FeatureSymbology 
 const provider = {
 	elementOvrs: new Map(),
 	appearance: FeatureSymbology.Appearance.defaults,
-	defaultOvrs: FeatureSymbology.Appearance | undefined,
+	defaultOvrs: undefined,
     addFeatureOverrides(ovrs, _vp) {
     	this.elementOvrs.forEach(function(value, key){
     		ovrs.overrideElement(key, value);
@@ -43,23 +46,43 @@ export default {
     data () {
         return {
         	colorActive: false,
+        	currColor: undefined,
         	transparencyActive: false,
-        	isolating: false
+        	currTransparency: 0,
+        	isolating: false,
+        	ignoreMaterial: false
         };
     },
-    components: {
-        
-    },
+    components: {},
     created () {},
     methods: {
     	pop(){
     		this.isolating = !this.isolating;
     	},
+    	handleColorCheckChange(){
+    		if(this.colorActive){
+				this.updateAppearance('rgb',this.convertHexToRgb(this.currColor));
+        	}else{
+        		this.updateAppearance('rgb',undefined);
+        	}
+    	},
         handleColorChange(e){
+        	this.currColor = e.target.value;
         	this.updateAppearance('rgb',this.convertHexToRgb(e.target.value));
         },
+        handleTransparencyCheckChange(){
+        	if(this.transparencyActive){
+        		this.updateAppearance('transparency',parseFloat(this.currTransparency));
+        	}else{
+        		this.updateAppearance('transparency',undefined);
+        	}
+        },
         handleTransparencyChange(e){
+        	this.currColor = e.target.value;
         	this.updateAppearance('transparency',parseFloat(e.target.value));
+        },
+        handleIgnoreMaterialChange(){
+        	this.updateAppearance('ignoresMaterial',this.ignoreMaterial);
         },
         updateAppearance(field,value){
         	let props = provider.appearance.toJSON();
@@ -98,8 +121,7 @@ export default {
 		  ) : undefined;
 		}
 
-    }
-    
+    }  
 }
 </script>
 <style lang="less" scoped>
