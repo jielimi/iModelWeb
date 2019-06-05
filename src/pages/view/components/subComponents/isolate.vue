@@ -26,17 +26,16 @@ import { dispose, Id64String, IDisposable } from "@bentley/bentleyjs-core";
 import { ColorByName, ColorDef, RgbColor } from "@bentley/imodeljs-common";
 import { IModelApp, EmphasizeElements,FeatureOverrideProvider, FeatureSymbology  } from "@bentley/imodeljs-frontend";
 const provider = {
-	elementOvrs: '',
+	elementOvrs: new Map(),
 	appearance: FeatureSymbology.Appearance.defaults,
 	defaultOvrs: FeatureSymbology.Appearance | undefined,
     addFeatureOverrides(ovrs, _vp) {
     	this.elementOvrs.forEach(function(value, key){
     		ovrs.overrideElement(key, value);
     	});
-        // const appearance = FeatureSymbology.Appearance.fromRgba(new ColorDef(this.targetColor));
-        // this.elemSet.forEach(v => {
-        //     ovrs.overrideElement(v, appearance);
-        // });
+    	if (undefined !== this.defaultOvrs){
+    		ovrs.setDefaultOverrides(this.defaultOvrs);
+    	}
     }
 };
 export default {
@@ -68,22 +67,22 @@ export default {
       		provider.appearance = FeatureSymbology.Appearance.fromJSON(props);
         },
         apply(){
-      		let elementOvrs = new Map();
 			for(const id of this.GLOBAL_DATA.theViewPort.iModel.selectionSet.elements){
-				elementOvrs.set(id, provider.appearance);
+				provider.elementOvrs.set(id, provider.appearance);
 			}
-			provider.elementOvrs = elementOvrs;
 			this.GLOBAL_DATA.theViewPort.featureOverrideProvider = provider;
 			this.sync();
         },
         setDefault(){
         	let pro = this.GLOBAL_DATA.theViewPort.featureOverrideProvider;
-        	pro.defaults = provider.appearance;
+        	provider.defaultOvrs = provider.appearance;
+        	this.GLOBAL_DATA.theViewPort.featureOverrideProvider = provider;
         	this.sync();
         },
         clear(){
 			provider.elementOvrs.clear();
 			provider.defaultOvrs = undefined;
+			this.GLOBAL_DATA.theViewPort.featureOverrideProvider = provider;
 			this.sync();
         },
         sync(){
