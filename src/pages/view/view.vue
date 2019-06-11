@@ -171,6 +171,7 @@ export default {
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
             window.eventHub.$emit('render_model_init');
+            window.eventHub.$emit('tile_progress_init');
         }
     }
 }

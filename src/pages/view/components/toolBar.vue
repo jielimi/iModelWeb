@@ -19,6 +19,7 @@
         <!-- <clipComponent></clipComponent> -->
         <regeisterToolComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
         <isolateComponent></isolateComponent>
+        <tileprogressComponent></tileprogressComponent>
         
     </div>
 </template>
@@ -41,7 +42,8 @@
  import showComponent from './subComponents/show'
 //  import clipComponent from './subComponents/clip'
  import regeisterToolComponent from './subComponents/regeisterTool'
-  import isolateComponent from './subComponents/isolate'
+import isolateComponent from './subComponents/isolate'
+import tileprogressComponent from './subComponents/tileprogress'
 
 
 
@@ -69,7 +71,8 @@ export default {
         showComponent,
         // clipComponent,
         regeisterToolComponent,
-        isolateComponent
+        isolateComponent,
+        tileprogressComponent
     },
     created () {
     },

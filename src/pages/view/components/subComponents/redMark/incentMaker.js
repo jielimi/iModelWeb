@@ -35,7 +35,7 @@ class IncidentMarker extends Marker {
     context.addDecorationFromBuilder(builder);
   }
   onMouseEnter(ev) {
-    console.log(this.title);
+    // console.log(this.title);
   };
   
   drawFunc(ctx) {
