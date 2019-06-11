@@ -9,6 +9,7 @@
         <hide-component></hide-component>
         <show-component></show-component>
         <fit-to-view-component></fit-to-view-component>
+        <zoomin-component></zoomin-component>
         <window-area-component></window-area-component>
         <walk-component></walk-component>
         <rotate-component></rotate-component>
@@ -30,6 +31,7 @@
  import changeViewComponent from './subComponents/changeView'
  import categoriesComponent from './subComponents/categories'
  import fitToViewComponent from './subComponents/fitToView'
+ import zoominComponent from './subComponents/zoomIn'
  import windowAreaComponent from './subComponents/windowArea'
  import walkComponent from './subComponents/walk'
  import rotateComponent from './subComponents/rotate'
@@ -59,6 +61,7 @@ export default {
         changeViewComponent,
         categoriesComponent,
         fitToViewComponent,
+        zoominComponent,
         windowAreaComponent,
         walkComponent,
         rotateComponent,
