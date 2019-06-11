@@ -53,7 +53,8 @@ export default {
                 {"id": "constructions", "text": "Constructions"},
                 {"id": "transparency", "text": "Transparency"},
                 {"id": "weights", "text": "Line Weight"},
-                {"id": "styles", "text": "Line Styles"}
+                {"id": "styles", "text": "Line Styles"},
+                {"id": "backgroundMap", "text": "Background Map"}
             ]
         };
     },
@@ -105,6 +106,7 @@ export default {
             this.updateRenderModeOption("weights", viewflags.weights, this.renderModeOptions.flags);
             this.updateRenderModeOption("styles", viewflags.styles, this.renderModeOptions.flags);
             this.updateRenderModeOption("transparency", viewflags.transparency, this.renderModeOptions.flags);
+            this.updateRenderModeOption("backgroundMap", viewflags.backgroundMap, this.renderModeOptions.flags);
             if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
                 this.updateRenderModeOption("sky", skybox, this.renderModeOptions.flags);
                 this.updateRenderModeOption("ground", groundplane, this.renderModeOptions.flags);
@@ -129,9 +131,9 @@ export default {
                 const viewPort = this.GLOBAL_DATA.theViewPort
                 viewPort.synchWithView(true);
             }else {
-                const vf = this.GLOBAL_DATA.theViewPort.view.viewFlags;
+                const vf = this.GLOBAL_DATA.theViewPort.viewFlags;
                 vf[mode] = $event;
-                this.GLOBAL_DATA.theViewPort.view.viewFlags = vf;
+                this.GLOBAL_DATA.theViewPort.viewFlags = vf;
                 const viewPort = this.GLOBAL_DATA.theViewPort
                 viewPort.synchWithView(true);
             }
