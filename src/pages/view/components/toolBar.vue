@@ -22,6 +22,7 @@
         <isolateComponent></isolateComponent>
         <measureComponent></measureComponent>
         <tileprogressComponent></tileprogressComponent>
+        <shadowComponent></shadowComponent>
         
     </div>
 </template>
@@ -48,6 +49,7 @@
 import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
+import shadowComponent from './subComponents/shadow'
 
 
 
@@ -78,7 +80,8 @@ export default {
         regeisterToolComponent,
         isolateComponent,
         tileprogressComponent,
-        measureComponent
+        measureComponent,
+        shadowComponent
     },
     created () {
     },
