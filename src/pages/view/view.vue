@@ -1,6 +1,6 @@
 <template>
 <div class="view" v-loading="isLoading">
-    <tool-bar-component :projectId="iminfo.iModelId" :versionName="iminfo.versionName" :contextId="iminfo.contextId" :accessToken="iminfo.accessToken">
+    <tool-bar-component :projectId="iminfo.iModelId" :url="iminfo.url" :versionName="iminfo.versionName" :contextId="iminfo.contextId" :accessToken="iminfo.accessToken">
     </tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
     <el-dialog
@@ -73,7 +73,8 @@ export default {
         window.eventHub.$on('categories_viewList_change',this.categoryChange);
     },
     mounted(){
-     this.main();
+     window.eventHub.$on('iModel_startup_finish',this.main)
+     //this.main();
     },
     beforeDestroy(){
         if (this.theViewPort){
@@ -103,7 +104,10 @@ export default {
         async loginAndOpenImodel(state) {
             this.progress = this.randomNum(5,20);
             const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
-            IModelApp.iModelClient = imbcontext.client;
+            
+            
+            //IModelApp.iModelClient = imbcontext.client; register tool
+            
             IModelApp.authorizationClient = new IModelBankAuthorizationClient({
                 "sub": "userid",
                 "email": "email@organization.org",
@@ -112,6 +116,7 @@ export default {
                 "org": "orgid",
                 "org_name": "organization"
             });
+            
             // Open the iModel
             state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
             state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
@@ -119,8 +124,10 @@ export default {
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
             1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
             const requestContext = await AuthorizedFrontendRequestContext.create();
+            debugger;
             const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
             let changeSetCount = selectedChangeSets.length;
+            console.log('state',state)
             this.progress = this.randomNum(40,50);
         },
         async buildViewList(state, configurations) {

@@ -18,7 +18,7 @@
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
         <!-- <clipComponent></clipComponent> -->
-        <regeisterToolComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
+        <regeisterToolComponent :projectId="projectId" :url="url" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
         <isolateComponent></isolateComponent>
         <measureComponent></measureComponent>
         <tileprogressComponent></tileprogressComponent>
@@ -58,7 +58,7 @@ export default {
     data () {
         return {};
     },
-    props:['projectId','versionName','contextId','accessToken'],
+    props:['projectId','url','versionName','contextId','accessToken'],
     components: {
         openFileComponent,
         modelComponent,

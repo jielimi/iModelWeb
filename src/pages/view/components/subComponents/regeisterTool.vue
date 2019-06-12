@@ -11,6 +11,7 @@ import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin} from "@be
 import markComponent from './redMark/redMark'
 import graffitiComponent from './graffiti'
 import tipComponent from './tip'
+import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 
 export default {
     name: 'registerTool',
@@ -23,7 +24,7 @@ export default {
         graffitiComponent,
         tipComponent
     },
-    props:['projectId', 'contextId', 'accessToken','versionName'],
+    props:['projectId','url', 'contextId', 'accessToken','versionName'],
     created () {
         this.iModelStartup();
     },
@@ -43,11 +44,15 @@ export default {
                         opts.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
                         opts.notifications = that.$refs.tip.notifications();
                         opts.tileAdmin = TileAdmin.create(DisplayTestApp.tileAdminProps);
+                        
+                        const imbcontext= new IModelBankAccessContext(that.projectId, that.url, IModelApp.hubDeploymentEnv);
+                        opts.imodelClient = imbcontext.client;
                         IModelApp.startup(opts);
                         const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
-                    },0)
+                        window.eventHub.$emit('iModel_startup_finish');
+                    })
                 }
 
                 static setActiveSnapModes(snaps) {
