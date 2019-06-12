@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { IModelApp, SnapMode, AccuSnap, NotificationManager} from "@bentley/imodeljs-frontend";
+import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin} from "@bentley/imodeljs-frontend";
 import markComponent from './redMark/redMark'
 import graffitiComponent from './graffiti'
 import tipComponent from './tip'
@@ -28,29 +28,35 @@ export default {
         this.iModelStartup();
     },
     methods: {
-        
-       iModelStartup() {
-           let that = this;
+        iModelStartup(){
+            let that = this;
+            class DisplayTestApp {
+                static tileAdminProps = {
+                    retryInterval: 50,
+                    enableInstancing: true,
+                };
 
-            class SVTIModelApp extends IModelApp {
-                static onStartup() {
-                    const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
-                  
-                     setTimeout(()=>{
-                      IModelApp.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
-                      IModelApp.notifications = that.$refs.tip.notifications();
-                      that.$refs.redMark.register(toolNamespace);
-                      that.$refs.graffiti.register(toolNamespace);
-                    })
+                static startup(opts) {
+                    opts = opts ? opts : {};
+                    
+                    setTimeout(()=>{
+                        opts.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
+                        opts.notifications = that.$refs.tip.notifications();
+                        opts.tileAdmin = TileAdmin.create(DisplayTestApp.tileAdminProps);
+                        IModelApp.startup(opts);
+                        const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
+                        that.$refs.redMark.register(toolNamespace);
+                        that.$refs.graffiti.register(toolNamespace);
+                    },0)
                 }
+
                 static setActiveSnapModes(snaps) {
-                    IModelApp.accuSnap.setActiveSnapModes(snaps);
+                        IModelApp.accuSnap.setActiveSnapModes(snaps);
                 }
                 static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
             }
-            debugger;
-            SVTIModelApp.startup();
-       }
+            DisplayTestApp.startup();
+        }
     }
 }
 </script>
