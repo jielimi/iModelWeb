@@ -15,7 +15,7 @@ let RPC = {
          [IModelTileRpcInterface, SnapshotIModelRpcInterface , IModelReadRpcInterface]);
         
         for (const definition of rpcConfiguration.interfaces())
-          RpcOperation.forEach(definition, (operation) => operation.policy.token = (_request) => new IModelToken("test", "test", "test", "test", OpenMode.Readonly));
+        RpcOperation.forEach(definition, (operation) => operation.policy.token = (request) => (request.findTokenPropsParameter() || new IModelToken("test", "test", "test", "test", OpenMode.Readonly)));
     }
 }
 
