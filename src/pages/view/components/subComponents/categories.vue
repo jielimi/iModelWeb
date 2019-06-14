@@ -38,11 +38,26 @@ export default {
             this.categoryList = [];
             this.checkList = [];
             this.checkCodeList = [];
-            let view = this.GLOBAL_DATA.activeViewState.viewState;
-            let ecsql = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM " + (view.is3d() ? "BisCore.SpatialCategory" : "BisCore.DrawingCategory");
+
+            const selectUsedSpatialCategoryIds = "SELECT DISTINCT Category.Id as CategoryId from BisCore.GeometricElement3d WHERE Category.Id IN (SELECT ECInstanceId from BisCore.SpatialCategory)";
+            const selectUsedDrawingCategoryIds = "SELECT DISTINCT Category.Id as CategoryId from BisCore.GeometricElement2d WHERE Model.Id=? AND Category.Id IN (SELECT ECInstanceId from BisCore.DrawingCategory)";
+            const selectCategoryProps = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM ";
+            const selectSpatialCategoryProps = selectCategoryProps + "BisCore.SpatialCategory WHERE ECInstanceId IN (" + selectUsedSpatialCategoryIds + ")";
+            const selectDrawingCategoryProps = selectCategoryProps + "BisCore.DrawingCategory WHERE ECInstanceId IN (" + selectUsedDrawingCategoryIds + ")";
+
+            const view = this.GLOBAL_DATA.theViewPort.view;
+            const ecsql = view.is3d() ? selectSpatialCategoryProps : selectDrawingCategoryProps;
+            const bindings = view.is2d() ? [view.baseModelId] : undefined;
+           
+
+            for await (const row of view.iModel.query(`${ecsql} LIMIT 1000`, bindings)) {
+                this.categoryList.push(row);
+            }
+            // let view = this.GLOBAL_DATA.activeViewState.viewState;
+            // let ecsql = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM " + (view.is3d() ? "BisCore.SpatialCategory" : "BisCore.DrawingCategory");
             
-            const bindings = view.is2d() ? [ view.baseModelId ] : undefined;
-            this.categoryList = Array.from(await view.iModel.queryPage(ecsql, bindings, { size: 1000 }));
+            // const bindings = view.is2d() ? [ view.baseModelId ] : undefined;
+            // this.categoryList = Array.from(await view.iModel.queryPage(ecsql, bindings, { size: 1000 }));
             this.checkList = Array.from(view.categorySelector.categories);
             let that = this;
             this.categoryList.forEach(function(val,index){
