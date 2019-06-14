@@ -134,6 +134,7 @@ export default {
             const config = undefined !== configurations ? configurations : {};
             const viewQueryParams = { wantPrivate: false };
             const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
+            
             if (viewSpecs.length > 0){
                 let viewSpec = viewSpecs[0];
                 const viewState = await state.iModelConnection.views.load(viewSpec.id);
@@ -146,6 +147,7 @@ export default {
             const parent = document.getElementById("imodelview");
             if (parent) {
                 await this.buildViewList(state);
+                
                 if (!this.theViewPort){
                     // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);

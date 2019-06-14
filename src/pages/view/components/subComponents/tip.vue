@@ -125,13 +125,14 @@ export default {
                 }
                 get isToolTipSupported() { return true; }
                 _showToolTip(el, message, pt, options) {
-                    if(typeof(message) !== 'string' || message.indexOf('Element.Id') === -1){
+                    
+                    if(typeof(message.innerHTML) !== 'string' || message.innerHTML.indexOf('Element.Id') === -1){
                         that.showToolTip = false;
                         return;
                     }
                     that.showToolTip = true;
                     that.baseInfo = {};
-                    that.message = message;
+                    that.message = message.innerHTML;
                     that.message = that.message.replace(new RegExp(',','gm'), '<br>');
                     that.message = that.message.replace(new RegExp('<b>','gm'), '');
                     that.message = that.message.replace(new RegExp('</b>','gm'), '');
@@ -141,8 +142,8 @@ export default {
                     that.baseInfo.type = arr[1].substring(arr[1].indexOf(':')+1);
                     that.baseInfo.category = arr[2].substring(arr[2].indexOf(':')+1);
                     that.baseInfo.model = arr[3].substring(arr[3].indexOf(':')+1);
-                    if(message.indexOf('</b>') !== -1) {
-                        let id = message.split('</b>')[1].split(",")[0].trim();
+                    if(message.innerHTML.indexOf('</b>') !== -1) {
+                        let id = message.innerHTML.split('</b>')[1].split(",")[0].trim();
                     
                         var test = {
                             changeSetId: "b981c0e09fe2bc1259d7f1c852def830ff2bdb28",    
