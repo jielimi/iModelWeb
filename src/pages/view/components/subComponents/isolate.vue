@@ -6,12 +6,26 @@
         			<span>Color</span>
         			<input type="color" :disabled="!colorActive" value="#ffffff" @change="handleColorChange">
         		</el-checkbox>
+        		<el-checkbox v-model="weightActive" @change="handleWeightCheckChange">
+        			<span>Weight</span>
+        			<input type="number" :disabled="!weightActive" class="weight" min="1" max="31" step="1" v-model="currWeight" @change="handleWeightChange">
+        		</el-checkbox>
+        		<el-form label-width="58px">
+					<el-form-item label="Style">
+						<el-select v-model="style" size="mini" @change="handleStyleChange">
+							<el-option v-for="item in entries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-form>
         		<el-checkbox v-model="transparencyActive" @change="handleTransparencyCheckChange">
         			<span>Transparency</span>
         			<input type="range" :disabled="!transparencyActive" class="range" min="0.0" max="1.0" step="0.05" value="0.0" @change="handleTransparencyChange">
         		</el-checkbox>
         		<el-checkbox v-model="ignoreMaterial" @change="handleIgnoreMaterialChange">
         			<span>Ignore Material</span>
+        		</el-checkbox>
+        		<el-checkbox v-model="nonLocatable" @change="handleNonLocatableChange">
+        			<span>Non-locatable</span>
         		</el-checkbox>
                 <hr />
                 <el-button-group>
@@ -26,7 +40,7 @@
 
 <script>
 import { dispose, Id64String, IDisposable } from "@bentley/bentleyjs-core";
-import { ColorByName, ColorDef, RgbColor } from "@bentley/imodeljs-common";
+import { ColorByName, ColorDef, LinePixels, RgbColor } from "@bentley/imodeljs-common";
 import { IModelApp, EmphasizeElements,FeatureOverrideProvider, FeatureSymbology  } from "@bentley/imodeljs-frontend";
 const provider = {
 	elementOvrs: new Map(),
@@ -46,11 +60,28 @@ export default {
     data () {
         return {
         	colorActive: false,
+        	weightActive: false,
+        	style: LinePixels.Invalid,
         	currColor: undefined,
+        	currWeight: 1,
         	transparencyActive: false,
         	currTransparency: 0,
         	isolating: false,
-        	ignoreMaterial: false
+        	ignoreMaterial: false,
+        	nonLocatable: false,
+        	entries: [
+				{ name: "Not overridden", value: LinePixels.Invalid },
+				{ name: "Solid", value: LinePixels.Solid },
+				{ name: "Hidden Line", value: LinePixels.HiddenLine },
+				{ name: "Invisible", value: LinePixels.Invisible },
+				{ name: "Code1", value: LinePixels.Code1 },
+				{ name: "Code2", value: LinePixels.Code2 },
+				{ name: "Code3", value: LinePixels.Code3 },
+				{ name: "Code4", value: LinePixels.Code4 },
+				{ name: "Code5", value: LinePixels.Code5 },
+				{ name: "Code6", value: LinePixels.Code6 },
+				{ name: "Code7", value: LinePixels.Code7 }
+			]
         };
     },
     components: {},
@@ -70,6 +101,20 @@ export default {
         	this.currColor = e.target.value;
         	this.updateAppearance('rgb',this.convertHexToRgb(e.target.value));
         },
+        handleWeightCheckChange(){
+    		if(this.weightActive){
+				this.updateAppearance('weight',parseInt(this.currWeight));
+        	}else{
+        		this.updateAppearance('weight',1);
+        	}
+    	},
+        handleWeightChange(e){
+        	this.updateAppearance('weight',this.currWeight);
+        },
+        handleStyleChange(e){
+        	let linePixels = LinePixels.Invalid !== this.style ? this.style : undefined;
+    		this.updateAppearance("linePixels", linePixels);
+        },
         handleTransparencyCheckChange(){
         	if(this.transparencyActive){
         		this.updateAppearance('transparency',parseFloat(this.currTransparency));
@@ -83,6 +128,9 @@ export default {
         },
         handleIgnoreMaterialChange(){
         	this.updateAppearance('ignoresMaterial',this.ignoreMaterial);
+        },
+        handleNonLocatableChange(){
+        	this.updateAppearance('nonLocatable',this.nonLocatable);
         },
         updateAppearance(field,value){
         	let props = provider.appearance.toJSON();
@@ -142,15 +190,25 @@ export default {
             .el-checkbox {
                 display: block;
                 margin-left: 15px;
-                margin-top: 5px;
+                margin-top: 10px;
             }
         }
         .el-checkbox {
         	display: inline-block;
+        	margin-top: 10px;
         }
         .range {
         	position: relative;
     		top: 7px;
+        }
+        .weight {
+        	width: 50px;
+        }
+        .el-form {
+        	margin-top: 10px;
+        }
+        .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
+        	margin-bottom: 0;
         }
         hr {
         	width: 95%;
