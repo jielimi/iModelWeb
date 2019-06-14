@@ -124,7 +124,7 @@ export default {
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
             1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
             const requestContext = await AuthorizedFrontendRequestContext.create();
-            debugger;
+            
             const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
             let changeSetCount = selectedChangeSets.length;
             console.log('state',state)

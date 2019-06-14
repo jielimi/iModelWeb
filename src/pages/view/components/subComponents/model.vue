@@ -44,7 +44,7 @@ export default {
             if(view.modelSelector){
                 this.hasModel = true;
                 const selector = view.modelSelector;
-                const query = { from: SpatialModelState.getClassFullName(), wantPrivate: false };
+                const query = { from: SpatialModelState.classFullName, wantPrivate: false };
                 this.modelList = await view.iModel.models.queryProps(query);
                 this.modelList.sort((lhs, rhs) => compareStringsOrUndefined(lhs.name, rhs.name));
 
