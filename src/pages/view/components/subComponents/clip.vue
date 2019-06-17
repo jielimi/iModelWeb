@@ -1,16 +1,39 @@
 <template>
     <div>
-        <i class="iconfont icon-cut" @click="clip"></i>
+        <i class="iconfont icon-cut1 isolote" @click="clip">
+             <div v-show="showPop" class="detail">
+                <el-form>
+                    <el-form-item label="Clip Type:">
+                        <el-select v-model="style" size="mini" @change="handleClipStyleChange">
+                            <el-option v-for="item in entries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+				</el-form>
+                <el-button-group>
+					<el-button size="mini" @click="define">Define</el-button>
+					<el-button size="mini" @click="edit">Edit</el-button>
+					<el-button size="mini" @click="clear">Clear</el-button>
+				</el-button-group>
+            </div>
+        </i>
     </div>
 </template>
 
 <script>
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { ClipVector, ClipShape, Point3d } from "@bentley/geometry-core";
+import { IModelApp, ViewClipDecorationProvider,Viewport, } from "@bentley/imodeljs-frontend";
+
 export default {
     name: 'clip',
     data () {
         return {
+            showPop:false,
+            style:'ViewClip.ByPlane',
+            entries: [
+                { name: "Plane", value: "ViewClip.ByPlane" },
+                { name: "Range", value: "ViewClip.ByRange" },
+                { name: "Element", value: "ViewClip.ByElement" },
+                { name: "Shape", value: "ViewClip.ByShape" },
+            ],
         };
     },
     components: {
@@ -19,24 +42,27 @@ export default {
     created () {},
     methods: {
         clip(){
-            
-            const points = [];
-            points[0] = Point3d.create(620.0, 197.0, 0.0);
-            points[1] = Point3d.create(682.0, 201.0, 0.0);
-            points[2] = Point3d.create(682.0, 246.0, 0.0);
-            points[3] = Point3d.create(620.0, 245.0, 0.0);
-            const s = ClipShape.createShape(points, 100.0, 200.0);
-            let clipVector ='';
-            
+            this.showPop = !this.showPop
+        },
+        handleClipStyleChange(){
 
-            if (undefined !== s) {
-                const clipShapes = [];
-                clipShapes[0] = s;
-                clipVector = ClipVector.createClipShapeClones(clipShapes);
+        },
+        setFocusToHome(){
+            const element = document.activeElement;
+            if (element && element !== document.body) {
+                element.blur();
+                document.body.focus();
             }
-           
-            this.GLOBAL_DATA.theViewPort.view.setViewClip(clipVector);
-            this.GLOBAL_DATA.theViewPort.synchWithView(true);
+        },
+        define(){
+            IModelApp.tools.run(this.style, ViewClipDecorationProvider.create()); setFocusToHome();
+
+        },
+        edit(){
+            ViewClipDecorationProvider.create().toggleDecoration(this.GLOBAL_DATA.theViewPort);
+        },
+        clear(){
+            IModelApp.tools.run("ViewClip.Clear", ViewClipDecorationProvider.create())
         }
     }
     
@@ -45,5 +71,27 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-
+.isolote {
+    position: relative;
+    .detail {
+        position: absolute;
+        text-align: center;
+        right: 0;
+        top: 45px;
+        z-index: 999;
+        width: 300px;
+        max-height: 350px;
+        overflow-y: auto;
+        padding-bottom: 10px;
+        text-align: left;
+        border: 1px solid #666;
+        background-color: #E9F2F9;
+        padding-top: 10px;
+        .el-checkbox {
+            display: block;
+            margin-left: 15px;
+            margin-top: 10px;
+        }
+    }
+}
 </style>

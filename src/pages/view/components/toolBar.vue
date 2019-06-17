@@ -17,7 +17,7 @@
         <settingComponent></settingComponent>
         <undoComponent></undoComponent>
         <redoComponent></redoComponent>
-        <!-- <clipComponent></clipComponent> -->
+        <clipComponent></clipComponent>
         <regeisterToolComponent :projectId="projectId" :url="url" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
         <isolateComponent></isolateComponent>
         <measureComponent></measureComponent>
@@ -28,24 +28,24 @@
 </template>
 <script>
  
- import openFileComponent from './subComponents/openFile'
- import modelComponent from './subComponents/model'
- import changeViewComponent from './subComponents/changeView'
- import categoriesComponent from './subComponents/categories'
- import fitToViewComponent from './subComponents/fitToView'
- import zoominComponent from './subComponents/zoomIn'
- import windowAreaComponent from './subComponents/windowArea'
- import walkComponent from './subComponents/walk'
- import rotateComponent from './subComponents/rotate'
- import gyroscopeComponent from './subComponents/gyroscope'
- import settingComponent from './subComponents/setting'
- import undoComponent from './subComponents/undo'
- import redoComponent from './subComponents/redo'
- import saveComponent from './subComponents/save'
- import hideComponent from './subComponents/hide'
- import showComponent from './subComponents/show'
-//  import clipComponent from './subComponents/clip'
- import regeisterToolComponent from './subComponents/regeisterTool'
+import openFileComponent from './subComponents/openFile'
+import modelComponent from './subComponents/model'
+import changeViewComponent from './subComponents/changeView'
+import categoriesComponent from './subComponents/categories'
+import fitToViewComponent from './subComponents/fitToView'
+import zoominComponent from './subComponents/zoomIn'
+import windowAreaComponent from './subComponents/windowArea'
+import walkComponent from './subComponents/walk'
+import rotateComponent from './subComponents/rotate'
+import gyroscopeComponent from './subComponents/gyroscope'
+import settingComponent from './subComponents/setting'
+import undoComponent from './subComponents/undo'
+import redoComponent from './subComponents/redo'
+import saveComponent from './subComponents/save'
+import hideComponent from './subComponents/hide'
+import showComponent from './subComponents/show'
+import clipComponent from './subComponents/clip'
+import regeisterToolComponent from './subComponents/regeisterTool'
 import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
@@ -76,7 +76,7 @@ export default {
         saveComponent,
         hideComponent,
         showComponent,
-        // clipComponent,
+        clipComponent,
         regeisterToolComponent,
         isolateComponent,
         tileprogressComponent,
