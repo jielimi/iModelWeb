@@ -33,12 +33,12 @@ export default {
             this.value = this.options[0].name
         },
         async selectChange(view){
+            this.value = view.name;
             if (!(view instanceof ViewState)) {
                 view = await  this.GLOBAL_DATA.activeViewState.iModelConnection.views.load(view.id);
             }
             await this.GLOBAL_DATA.theViewPort.changeView(view);
             await this.notify(view.clone());
-            this.value = view.name;
         },
         async notify(view) {
             this.GLOBAL_DATA.activeViewState.viewState = view;
