@@ -187,7 +187,7 @@
         let param = {
           projectName: this.projectForm.projectName
         };
-        this.$post('api/projectName', param).then(res => {
+        this.$post('api/project/name', param).then(res => {
           if (res.state !== 0) {
             callback(new Error('the name is exist'));
           } else {
@@ -262,7 +262,7 @@
         
         
         this.isLoading = true;
-        this.$get('api/projectList',{},param).then(res => {
+        this.$get('api/project/list',{},param).then(res => {
           this.isLoading = false;
           if (res.state === 0) {
             this.tableData = res.data.projectList;
@@ -338,7 +338,7 @@
               projectDescription: this.projectForm.projectDescription
             };
             this.confirmDisable = true;
-            this.$post('/api/project', param).then(res => {
+            this.$post('/api/project/instance', param).then(res => {
               this.confirmDisable = false;
               this.handleResult(res);
             });
@@ -355,7 +355,7 @@
               projectDescription: this.projectForm.projectDescription
             };
             this.confirmDisable = true;
-            this.$put('api/project', param).then(res => {
+            this.$put('api/project/instance', param).then(res => {
               this.confirmDisable = false;
               this.handleResult(res);
             });

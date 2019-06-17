@@ -47,7 +47,7 @@ export default {
                     versionName:this.versionName
                 }
 
-                this.$get('api/progress',{}, param).then(res => {
+                this.$get('api/version/progress',{}, param).then(res => {
                     if (res.state == 0) {
                         this.step = res.data.step -1 ;
                         this.description = res.data.description;

@@ -78,7 +78,7 @@ export default {
             this.material = '';
             this.extend = '';
             let that = this;
-            this.$get('api/detailMsg',{},param).then(res=>{
+            this.$get('api/view/detailMsg',{},param).then(res=>{
                 if(res.state === 0){
                     res.data.extraMsg.geom.forEach(function(ele){
                         if(ele.appearance){

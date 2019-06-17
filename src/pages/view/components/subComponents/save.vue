@@ -30,7 +30,7 @@ export default {
                 thumbnail: dataURL
             };
             
-            this.$post('api/thumbnail',param).then(res=>{
+            this.$post('api/common/thumbnail',param).then(res=>{
                 if(res.state != 0) {
                     console.log(res.message);
                 }

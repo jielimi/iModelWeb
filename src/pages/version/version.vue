@@ -217,7 +217,7 @@
         	projectId: this.projectId,
           versionName: this.versionForm.versionName
         };
-        this.$post('api/versionName', param).then(res => {
+        this.$post('api/version/name', param).then(res => {
           if (res.state !== 0) {
             callback(new Error('the name is exist'));
           } else {
@@ -310,7 +310,7 @@
       }
       removeProperty(param);
       	this.isLoading = true;
-        this.$get('api/versionList',{}, param).then(res => {
+        this.$get('api/version/list',{}, param).then(res => {
           this.isLoading = false;
           if (res.state === 0) {
             this.tableData = res.data.versionList;
@@ -396,7 +396,7 @@
               versionDescription: this.versionForm.versionDescription
             };
             this.confirmDisable = true;
-            this.$post('api/version', param).then(res => {
+            this.$post('api/version/instance', param).then(res => {
               this.handleResult(res);
             });
           }
@@ -417,7 +417,7 @@
           versionDescription: this.versionForm.versionDescription
         };
         this.confirmDisable = true;
-        this.$put('api/version', param).then(res => {
+        this.$put('api/version/instance', param).then(res => {
           this.handleResult(res);
         });""
       },
@@ -543,7 +543,7 @@
               type:'warning'
             })
           }else{
-              this.$get('api/steps',{},param).then(res=>{
+              this.$get('api/version/steps',{},param).then(res=>{
                 if(res.state == 0) {
                   that.steps = res.data.steps;
                   that.showProgress = true;
