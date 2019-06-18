@@ -52,14 +52,20 @@
     <div class="table-area">
       <div class="operate-area">
         <el-button type="primary" @click="createVersion">Add Version</el-button>
-        <!-- <el-button type="success" @click="Generate">Generate</el-button> -->
+        <el-button type="success" @click="versionCompare" :disabled="!(multipleSelection && multipleSelection.length==2)">Version Compare</el-button>
       </div>
       <el-table
+        ref="table"
         :data="tableData"
         border
         stripe
         style="width: 100%"
+        @selection-change="handleSelectionChange"
         :row-class-name="tableRowClassName">
+        <el-table-column
+             :selectable="checkSelectable"
+             type="selection">
+        </el-table-column>
         <el-table-column
           label="Index"
           width="60"
@@ -205,6 +211,9 @@
 <script>
   import { formatDate } from '@/utils/date';
   import uploadProgress from '@/components/uploadProgress'
+  import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
+  import { IModelApp } from "@bentley/imodeljs-frontend";
+
   export default {
     name: 'project',
     data() {
@@ -277,7 +286,8 @@
         referenceFileList: [],
         confirmDisable:false,
         showProgress:false,
-        steps:[]
+        steps:[],
+        multipleSelection : []
       };
     },
     created () {
@@ -287,6 +297,33 @@
       uploadProgress
     },
     methods: {
+      checkSelectable(row){
+        return row.generated;
+      },
+      versionCompare(){
+        if(this.multipleSelection && this.multipleSelection.length !=2 ){
+          return;
+        }
+        const imbcontext = new IModelBankAccessContext(this.projectId, this.multipleSelection[0].url, IModelApp.hubDeploymentEnv);
+
+        let param = {
+          projectId:this.projectId,
+          startversion:this.multipleSelection[0].name,
+          endversion:this.multipleSelection[1].name,
+          contextId:imbcontext.toIModelTokenContextId()
+        }
+
+        this.$get('api/version/difference',{}, param).then(res => {
+          this.isLoading = false;
+          if (res.state === 0) {
+           
+          }
+        });
+
+      },
+      handleSelectionChange(val){
+        this.multipleSelection = val;
+      },
       getVersionList (index) {
         let param = {
         	projectId: this.projectId,
