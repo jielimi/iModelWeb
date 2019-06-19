@@ -211,8 +211,8 @@
 <script>
   import { formatDate } from '@/utils/date';
   import uploadProgress from '@/components/uploadProgress'
-  import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
-  import { IModelApp } from "@bentley/imodeljs-frontend";
+  // import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
+  // import { IModelApp } from "@bentley/imodeljs-frontend";
 
   export default {
     name: 'project',
@@ -300,17 +300,19 @@
       checkSelectable(row){
         return row.generated;
       },
+      clearSelection () {
+        this.$refs.table.clearSelection();
+      },
       versionCompare(){
         if(this.multipleSelection && this.multipleSelection.length !=2 ){
           return;
         }
-        const imbcontext = new IModelBankAccessContext(this.projectId, this.multipleSelection[0].url, IModelApp.hubDeploymentEnv);
+        // const imbcontext = new IModelBankAccessContext(this.projectId, this.multipleSelection[0].url, IModelApp.hubDeploymentEnv);
 
         let param = {
           projectId:this.projectId,
-          startversion:this.multipleSelection[0].name,
-          endversion:this.multipleSelection[1].name,
-          contextId:imbcontext.toIModelTokenContextId()
+          startversion:this.multipleSelection[0].index < this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
+          endversion: this.multipleSelection[0].index > this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
         }
 
         this.$get('api/version/difference',{}, param).then(res => {
@@ -319,9 +321,10 @@
            
           }
         });
-
+        this.clearSelection();
       },
       handleSelectionChange(val){
+      
         this.multipleSelection = val;
       },
       getVersionList (index) {
