@@ -12,6 +12,6 @@ HitDetail.prototype.getToolTip = async function() {
 
     // Add "<br>" at the end of each line to cause them to come out on separate lines in the tooltip.
 
-    return msg;
+    return msg[0];
 
 };

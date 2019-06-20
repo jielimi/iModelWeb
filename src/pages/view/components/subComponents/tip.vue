@@ -125,36 +125,24 @@ export default {
                 }
                 get isToolTipSupported() { return true; }
                 _showToolTip(el, message, pt, options) {
-                    if(typeof(message.innerHTML) !== 'string' || message.innerHTML.indexOf('Element.Id') === -1){
-                        that.showToolTip = false;
-                        return;
-                    }
                     that.showToolTip = true;
                     that.baseInfo = {};
-                    that.message = message.innerHTML;
-                    that.message = that.message.replace(new RegExp(',','gm'), '<br>');
-                    that.message = that.message.replace(new RegExp('<b>','gm'), '');
-                    that.message = that.message.replace(new RegExp('</b>','gm'), '');
-                    that.message = that.message.replace(new RegExp(' ','gm'), '');
-                    let arr = that.message.split('<br>');
-                    that.baseInfo.id = arr[0].substring(arr[0].indexOf(':')+1);
-                    that.baseInfo.type = arr[1].substring(arr[1].indexOf(':')+1);
-                    that.baseInfo.category = arr[2].substring(arr[2].indexOf(':')+1);
-                    that.baseInfo.model = arr[3].substring(arr[3].indexOf(':')+1);
-                    if(message.innerHTML.indexOf('</b>') !== -1) {
-                        let id = message.innerHTML.split('</b>')[1].split(",")[0].trim();
-                    
-                        var test = {
-                            changeSetId: "b981c0e09fe2bc1259d7f1c852def830ff2bdb28",    
-                            key: "fc536f57-e3e5-4bf1-811d-0aebc644945e:b981c0e09fe2bc1259d7f1c852def830ff2bdb28:0",
-                            openMode: 1
-                        }
+                   
+                    that.baseInfo.id = message.Id;
+                    that.baseInfo.type = message.Type;
+                    that.baseInfo.category = message.Category;
+                    that.baseInfo.model = message.Model;
+
+                   
+                    if(message.Id){
                         let param = {
-                            id:id,
+                            id:message.Id,
                             imodeltoken:JSON.stringify(that.GLOBAL_DATA.activeViewState.iModelConnection.iModelToken)
                         };
                         that.getExtraParam(param);
                     }
+                    
+                    
                 }
             }
             return new Notifications();
