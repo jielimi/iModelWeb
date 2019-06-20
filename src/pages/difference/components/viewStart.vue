@@ -65,11 +65,7 @@ export default {
         }
     },
     mounted(){
-        const imbcontext= new IModelBankAccessContext(this.projectId, this.versionUrl, IModelApp.hubDeploymentEnv);
-        let opts={}
-        opts.imodelClient = imbcontext.client;
-        IModelApp.startup(opts);
-        this.main();
+        window.eventHub.$on('difference_imodel_startup',this.main);
     },
     methods: {
       async loginAndOpenImodel(state) {
@@ -117,14 +113,14 @@ export default {
                 if (!this.theViewPort){
                     // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                    this.GLOBAL_DATA.diffViewPort[0] = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
         },
         async main() {
             this.isLoading = true; 
-            RPC.init();
+            // RPC.init();
             
             try{
                 //this.progress = this.randomNum(0,5);
@@ -134,9 +130,9 @@ export default {
                 this.isLoading = false; 
                 return;
             }
-            this.GLOBAL_DATA.activeViewState = activeViewState;
+           
             await this.openView(activeViewState);
-            this.GLOBAL_DATA.activeViewState = activeViewState;
+            this.GLOBAL_DATA.diffActiveViewState[0] = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
             window.eventHub.$emit('categories_init');

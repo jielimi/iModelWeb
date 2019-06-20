@@ -172,7 +172,7 @@ export default {
                 this.isLoading = false; 
                 return;
             }
-            this.GLOBAL_DATA.activeViewState = activeViewState;
+           // this.GLOBAL_DATA.activeViewState = activeViewState;
             await this.openView(activeViewState);
             this.GLOBAL_DATA.activeViewState = activeViewState;
             this.isLoading = false; 
