@@ -42,3 +42,4 @@ Vue.prototype.GLOBAL_DATA = {
   activeViewState:{}
 };
 
+

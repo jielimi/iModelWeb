@@ -309,18 +309,33 @@
         }
         // const imbcontext = new IModelBankAccessContext(this.projectId, this.multipleSelection[0].url, IModelApp.hubDeploymentEnv);
 
-        let param = {
-          projectId:this.projectId,
-          startversion:this.multipleSelection[0].index < this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
-          endversion: this.multipleSelection[0].index > this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
-        }
+        let startVersion = this.multipleSelection[0].index < this.multipleSelection[1].index ? this.multipleSelection[0]:this.multipleSelection[1];
+        let endVersion = this.multipleSelection[0].index > this.multipleSelection[1].index ? this.multipleSelection[0]:this.multipleSelection[1];
+        let routeData = this.$router.resolve(
+          { path: 'difference', 
+            query: {
+              projectId: this.projectId,
+              startVersionName: startVersion.name,
+              startVersionUrl: startVersion.url,
+              endVersionName: endVersion.name,
+              endVersionUrl:endVersion.url
+              }
+          });
+        
+        window.open(routeData.href, '_blank'); 
 
-        this.$get('api/version/difference',{}, param).then(res => {
-          this.isLoading = false;
-          if (res.state === 0) {
+        // let param = {
+        //   projectId:this.projectId,
+        //   startversion:this.multipleSelection[0].index < this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
+        //   endversion: this.multipleSelection[0].index > this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
+        // }
+
+        // this.$get('api/version/difference',{}, param).then(res => {
+        //   this.isLoading = false;
+        //   if (res.state === 0) {
            
-          }
-        });
+        //   }
+        // });
         this.clearSelection();
       },
       handleSelectionChange(val){

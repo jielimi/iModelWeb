@@ -33,6 +33,11 @@ export default new Router({
       path: '/view',
       name: 'view',
       component: resolve => require(['@/pages/view/view'], resolve)
+    },
+    {
+      path: '/difference',
+      name: 'difference',
+      component: resolve => require(['@/pages/difference/difference'], resolve)
     }
     // {
     //   path: '/view',
