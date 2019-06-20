@@ -24,7 +24,7 @@ import differenceResult from './components/differenceResult'
 import viewStart from './components/viewStart'
 import viewEnd from './components/viewEnd'
 import RPC from '../../pages/view/rpc';
-import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin} from "@bentley/imodeljs-frontend";
+import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,TwoWayViewportSync} from "@bentley/imodeljs-frontend";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { setTimeout } from 'timers';
 
@@ -65,26 +65,13 @@ export default {
             
         },
         CanvasEvent(){
-           let that = this;
-            var viewStartCanvas = document.getElementById("imodelStart").getElementsByTagName("canvas")
-            var viewEndCanvas = document.getElementById("imodelEnd").getElementsByTagName("canvas")
-            viewEndCanvas[0].addEventListener("mousewheel",function(e){
-               
-               //console.log(that.GLOBAL_DATA.diffActiveViewState[0].viewState.camera)
-               const eyePoint = that.GLOBAL_DATA.diffActiveViewState[0].viewState.camera.getEyePoint();
-               const lens = that.GLOBAL_DATA.diffActiveViewState[0].viewState.camera.getLensAngle();
-               const focusDist = that.GLOBAL_DATA.diffActiveViewState[0].viewState.camera.getFocusDistance()
-               const origin = that.GLOBAL_DATA.diffActiveViewState[0].viewState.getOrigin();
-               const extents = that.GLOBAL_DATA.diffActiveViewState[0].viewState.getExtents();
-                // viewEndCanvas.dispatchEvent(e);
-                that.GLOBAL_DATA.diffActiveViewState[1].viewState.camera.setEyePoint(eyePoint);
-                that.GLOBAL_DATA.diffActiveViewState[1].viewState.camera.setLensAngle(lens);
-                that.GLOBAL_DATA.diffActiveViewState[1].viewState.camera.setFocusDistance(focusDist);
-                that.GLOBAL_DATA.diffActiveViewState[1].viewState.setOrigin(origin);
-                that.GLOBAL_DATA.diffActiveViewState[1].viewState.setExtents(extents);
-                that.GLOBAL_DATA.diffViewPort[1].synchWithView(true)
-
-            },false);
+            const vpConnection = new TwoWayViewportSync();
+            vpConnection.connect(this.GLOBAL_DATA.diffViewPort[0], this.GLOBAL_DATA.diffViewPort[1]);
+            this.GLOBAL_DATA.diffViewPort[0].synchWithView(true);
+        //    let that = this;
+        //     var viewStartCanvas = document.getElementById("imodelStart").getElementsByTagName("canvas")
+        //     var viewEndCanvas = document.getElementById("imodelEnd").getElementsByTagName("canvas")
+            
           
         }
        
