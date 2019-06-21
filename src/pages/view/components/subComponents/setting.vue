@@ -2,14 +2,25 @@
     <div>
         <i class="iconfont icon-Gear- setting" @click.self="detail">
             <div v-show="isShowDetail" class="detail" id="changeRenderModeMenu">
-                <el-select v-model="modeValue" @change="changeRenderMode" size="mini">
-                    <el-option
-                        v-for="mode in modeOptions"
-                        :key="mode.value"
-                        :label="mode.name"
-                        :value="mode.value">
-                    </el-option>
-                </el-select>
+                <el-form label-width="100px">
+                    <el-form-item label="Style:">
+                        <el-select v-model="style" size="mini" @change="handleStyleChange">
+                            <el-option v-for="item in styleEntries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <el-form label-width="100px">
+                    <el-form-item label="Render Mode:">
+                        <el-select v-model="modeValue" @change="changeRenderMode" size="mini">
+                            <el-option
+                                v-for="mode in modeOptions"
+                                :key="mode.value"
+                                :label="mode.name"
+                                :value="mode.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
                 <el-checkbox-group v-model="checkList">
                     <el-checkbox v-for="mode in options" :label="mode.id" :key="mode.id" @change="applyRenderModeChange($event,mode.id)">{{mode.text}}</el-checkbox>
                 </el-checkbox-group>
@@ -19,13 +30,24 @@
 </template>
 
 <script>
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { RenderMode } from "@bentley/imodeljs-common"
+import {
+  ViewState,
+  ViewState3d,
+  Viewport,
+  DisplayStyle3dState,
+  DisplayStyle2dState,
+  DisplayStyleState,
+} from "@bentley/imodeljs-frontend";
+import { RenderMode } from "@bentley/imodeljs-common";
 export default {
     name: 'setting',
     data () {
         return {
             isShowDetail: false,
+            view: '',
+            style: '',
+            styleEntries: [],
+            displayStyles: new Map(),
             showSkybox: false,
             showGroundplane: false,
             modeValue: RenderMode.SmoothShade,
@@ -62,11 +84,43 @@ export default {
         
     },
     created () {
-        window.eventHub.$on('render_mode_init',this.updateRenderModeOptionsMap);
+        window.eventHub.$on('render_mode_init',this.initSetting);
     },
     methods: {
         detail() {
             this.isShowDetail = !this.isShowDetail;
+        },
+        initSetting(){
+            this.view = this.GLOBAL_DATA.theViewPort.view;
+            this.initStylePicker();
+            this.updateRenderModeOptionsMap();
+        },
+        async initStylePicker(){
+            this.styleEntries = [];
+            this.displayStyles = new Map();
+            let is3d = this.view.is3d();
+            let sqlName = is3d ? DisplayStyle3dState.classFullName : DisplayStyle2dState.classFullName;
+            let displayStyleProps = await this.view.iModel.elements.queryProps({ from: sqlName, where: "IsPrivate=FALSE" });
+            let promises = [];
+            for (const displayStyleProp of displayStyleProps) {
+                this.styleEntries.push({ name: displayStyleProp.code.value, value: displayStyleProp.id });
+                let displayStyle;
+                if (is3d){
+                    displayStyle = new DisplayStyle3dState(displayStyleProp, this.view.iModel);
+                }
+                else{
+                    displayStyle = new DisplayStyle2dState(displayStyleProp, this.view.iModel);
+                }
+                // ###TODO: Is there such a concept as "2d reality models"???
+                promises.push(displayStyle.loadContextRealityModels());
+                this.displayStyles.set(displayStyleProp.id, displayStyle);
+            }
+            this.style = this.view.displayStyle.id;
+            await Promise.all(promises);
+        },
+        handleStyleChange(id){
+            this.GLOBAL_DATA.theViewPort.displayStyle = this.displayStyles.get(id);
+            this.GLOBAL_DATA.theViewPort.invalidateScene();
         },
         updateRenderModeOptionsMap() {
             let skybox = false;
@@ -82,7 +136,6 @@ export default {
                 const env = view.getDisplayStyle3d().environment;
                 skybox = env.sky.display;
                 groundplane = env.ground.display;
-                
             }else{
                 this.options.pop();
                 this.options.pop();
@@ -92,7 +145,6 @@ export default {
             const viewflags = this.GLOBAL_DATA.theViewPort.view.viewFlags;
             const lights = viewflags.sourceLights || viewflags.solarLight || viewflags.cameraLights;
             this.checkList = [];
-            
             this.updateRenderModeOption("acsTriad", viewflags.acsTriad, this.renderModeOptions.flags);
             this.updateRenderModeOption("fill", viewflags.fill, this.renderModeOptions.flags);
             this.updateRenderModeOption("grid", viewflags.grid, this.renderModeOptions.flags);
@@ -111,7 +163,6 @@ export default {
                 this.updateRenderModeOption("sky", skybox, this.renderModeOptions.flags);
                 this.updateRenderModeOption("ground", groundplane, this.renderModeOptions.flags);
             }
-            
             this.renderModeOptions.mode = viewflags.renderMode;
             this.modeValue = viewflags.renderMode;
         },
@@ -161,8 +212,8 @@ export default {
             left: 0;
             top: 45px;
             z-index: 999;
-            width: 200px;
-            max-height: 350px;
+            width: 320px;
+            max-height: 400px;
             overflow-y: auto;
             padding-bottom: 10px;
             text-align: left;
