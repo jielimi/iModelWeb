@@ -9,12 +9,17 @@
         <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelEnd'"></view-start>
         <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelStart'"></view-end>
     </div>
-    <div class="test">
-        <el-button
+    <div class="sync">
+        <el-button v-show="isSync"
               type="primary"
               size="mini"
-              @click="CanvasEvent()">test
-            </el-button>
+              @click="sync()">Sync
+        </el-button>
+        <el-button v-show="!isSync"
+              type="primary"
+              size="mini"
+              @click="unSync()">unSync
+        </el-button>
     </div>
   </div>
 </template>
@@ -32,6 +37,8 @@ export default {
     name:'difference',
     data(){
         return{
+            vpConnection:new TwoWayViewportSync(),
+            isSync:true,
             startVersionName: this.$route.query.startVersionName,
             startVersionUrl:this.$route.query.startVersionUrl,
             endVersionName: this.$route.query.endVersionName,
@@ -62,17 +69,18 @@ export default {
             setTimeout(function(){
                 window.eventHub.$emit('difference_imodel_startup');
             })
+            //this.CanvasEvent();
             
         },
-        CanvasEvent(){
-            const vpConnection = new TwoWayViewportSync();
-            vpConnection.connect(this.GLOBAL_DATA.diffViewPort[0], this.GLOBAL_DATA.diffViewPort[1]);
-            this.GLOBAL_DATA.diffViewPort[0].synchWithView(true);
-        //    let that = this;
-        //     var viewStartCanvas = document.getElementById("imodelStart").getElementsByTagName("canvas")
-        //     var viewEndCanvas = document.getElementById("imodelEnd").getElementsByTagName("canvas")
-            
-          
+        sync(){
+            this.isSync = !this.isSync;
+            //const vpConnection = new TwoWayViewportSync();
+            this.vpConnection.connect(this.GLOBAL_DATA.diffViewPort[0], this.GLOBAL_DATA.diffViewPort[1]);
+            // this.GLOBAL_DATA.diffViewPort[0].synchWithView(true);
+        },
+        unSync(){
+             this.isSync = !this.isSync;
+             this.vpConnection.disconnect();
         }
        
     }
@@ -111,7 +119,9 @@ export default {
         }
     }
 };
-.test{
+.sync{
+    right: 25px;
+    top:20px;
     position:absolute;
 }
 </style>
