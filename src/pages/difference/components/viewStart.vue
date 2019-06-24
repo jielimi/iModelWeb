@@ -1,5 +1,20 @@
 <template>
-     <div class="view-area" :id=id></div>
+    <div class="inherit">
+        <div class="view-area" :id=id></div>
+        <el-dialog
+        title=""
+        width="20%"
+        :visible.sync="isLoading"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :show-close="false"
+        center>
+        <div>
+            <el-progress :text-inside="true" :stroke-width="18" :percentage=progress status="success"></el-progress>
+        </div>
+    </el-dialog>
+    </div>
+     
 </template>
 
 <script>
@@ -68,8 +83,21 @@ export default {
         window.eventHub.$on('difference_imodel_startup',this.main);
     },
     methods: {
+        randomNum(minNum,maxNum){ 
+            switch(arguments.length){ 
+                case 1: 
+                    return parseInt(Math.random()*minNum+1,10); 
+                break; 
+                case 2: 
+                    return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
+                break; 
+                    default: 
+                        return 0; 
+                    break; 
+            } 
+        },
       async loginAndOpenImodel(state) {
-            // this.progress = this.randomNum(5,20);
+            this.progress = this.randomNum(5,20);
            
             const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
             
@@ -90,7 +118,7 @@ export default {
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
             1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
           
-            // this.progress = this.randomNum(40,50);
+            this.progress = this.randomNum(40,50);
         },
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
@@ -120,12 +148,11 @@ export default {
         },
         async main() {
             this.isLoading = true; 
-            // RPC.init();
             
             try{
-                //this.progress = this.randomNum(0,5);
+                this.progress = this.randomNum(0,5);
                 await this.loginAndOpenImodel(activeViewState);
-                //this.progress = this.randomNum(80,95);
+                this.progress = this.randomNum(80,95);
             } catch (reason){
                 this.isLoading = false; 
                 return;
@@ -146,8 +173,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-.view-area{
+.inherit{
     position: relative;
+    width: calc(50% - 10px);
+    height: 500px;
+}
+.view-area{
+    width: 100%;
+    height: 500px;
+    background-color:#FFFFFF;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 </style>

@@ -1,14 +1,15 @@
 <template>
   <div class="box">
-    <div class="difference-area">
-        <difference-result :projectId="projectId" :startVersionName="startVersionName" 
-        :endVersionName="endVersionName">
-        </difference-result>
-    </div>
+    
     <div class="views-area">
         <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelEnd'"></view-start>
         <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelStart'"></view-end>
     </div>
+    <!-- <div class="difference-area">
+        <difference-result :projectId="projectId" :startVersionName="startVersionName" 
+        :endVersionName="endVersionName">
+        </difference-result>
+    </div> -->
     <div class="sync">
         <el-button v-show="isSync"
               type="primary"
@@ -20,6 +21,12 @@
               size="mini"
               @click="unSync()">unSync
         </el-button>
+    </div>
+    <div class="mark">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
   </div>
 </template>
@@ -69,26 +76,43 @@ export default {
             setTimeout(function(){
                 window.eventHub.$emit('difference_imodel_startup');
             })
-            //this.CanvasEvent();
-            
         },
         sync(){
             this.isSync = !this.isSync;
-            //const vpConnection = new TwoWayViewportSync();
             this.vpConnection.connect(this.GLOBAL_DATA.diffViewPort[0], this.GLOBAL_DATA.diffViewPort[1]);
-            // this.GLOBAL_DATA.diffViewPort[0].synchWithView(true);
         },
         unSync(){
              this.isSync = !this.isSync;
              this.vpConnection.disconnect();
         }
-       
     }
 }
 </script>
 
 
 <style lang="less" scoped>
+.mark{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    div{
+        width: 10px;
+        height: 10px;
+    }
+    div:first-child{
+        background: #3CB371;
+    }
+    div:nth-child(2){
+        background: #DC143C;
+    }
+    div:nth-child(3){
+        background: #FFFF00;
+    }
+    div:nth-child(4){
+        background: #87CEEB;
+    }
+
+}
 .box{
     display: flex;
     justify-content: flex-start;
@@ -102,25 +126,23 @@ export default {
     }
     .views-area{
         display: flex;
-        padding: 0px 10px;
-        width: calc(100% - 80px);
-        flex-direction: column;
-        align-items: stretch;
-        align-content: stretch;
-        div:first-child{
-            height: calc(50% - 10px);
+        padding: 10px;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        .view-area{
+            position: relative;
+            width: calc(50% - 10px);
+            height: 500px;
             background-color:#FFFFFF;
-            margin: 10px 0;
+            padding: 5px;
+            box-sizing: border-box;
         }
-        div:nth-child(2){
-           height: calc(50% - 10px);
-           background-color:#FFFFFF;
-           margin-bottom: 10px;
-        }
-    }
+  }
+    
 };
 .sync{
-    right: 25px;
+    left: 25px;
     top:20px;
     position:absolute;
 }
