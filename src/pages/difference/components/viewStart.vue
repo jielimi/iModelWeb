@@ -18,14 +18,13 @@
 </template>
 
 <script>
-import RPC from '../../../pages/view/rpc';
-
 import { ScreenViewport } from '@bentley/imodeljs-frontend';
 import { IModelVersion } from '@bentley/imodeljs-common'
 
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
+import { handleColorChange, clear } from "./color"
 
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
@@ -81,8 +80,19 @@ export default {
     },
     mounted(){
         window.eventHub.$on('difference_imodel_startup',this.main);
+        window.eventHub.$on('diff_show_color',this.color);
     },
     methods: {
+        color(elements){
+            console.log(elements);
+            if(elements.add.length > 0){
+
+            }
+             
+            if(elements.beforeModify.length > 0){
+                handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
+            }
+        },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 
                 case 1: 
@@ -165,6 +175,7 @@ export default {
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
             window.eventHub.$emit('render_model_init');
+        
         }
     }
 }

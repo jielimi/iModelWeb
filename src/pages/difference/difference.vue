@@ -5,11 +5,11 @@
         <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelEnd'"></view-start>
         <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelStart'"></view-end>
     </div>
-    <!-- <div class="difference-area">
+    <div class="difference-area">
         <difference-result :projectId="projectId" :startVersionName="startVersionName" 
         :endVersionName="endVersionName">
         </difference-result>
-    </div> -->
+    </div>
     <div class="sync">
         <el-button v-show="isSync"
               type="primary"
@@ -20,6 +20,11 @@
               type="primary"
               size="mini"
               @click="unSync()">unSync
+        </el-button>
+        <el-button
+              type="primary"
+              size="mini"
+              @click="color()">color
         </el-button>
     </div>
     <div class="mark">
@@ -50,7 +55,13 @@ export default {
             startVersionUrl:this.$route.query.startVersionUrl,
             endVersionName: this.$route.query.endVersionName,
             endVersionUrl: this.$route.query.endVersionUrl,
-            projectId: this.$route.query.projectId
+            projectId: this.$route.query.projectId,
+            elements:{
+                add:[],
+                delete:[],
+                beforeModify:['0x20000000022'],
+                afterModify:['0x20000000022']
+            }
         }
     },
     components:{
@@ -84,6 +95,9 @@ export default {
         unSync(){
              this.isSync = !this.isSync;
              this.vpConnection.disconnect();
+        },
+        color(){
+             window.eventHub.$emit('diff_show_color',this.elements);
         }
     }
 }
@@ -115,15 +129,18 @@ export default {
 }
 .box{
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     width: 100%;
     height: 100%;
     background-color: #88C5FB;
-    .difference-area{
-        width: 200px;
+    .difference-area {
+        width: 100%;
+        height: calc(100% - 550px);
+        overflow-y: auto;
         background-color:#FFFFFF; 
-        align-self: stretch;
-    }
+        align-self: stretch; 
+    } 
     .views-area{
         display: flex;
         padding: 10px;
