@@ -81,17 +81,24 @@ export default {
     mounted(){
         window.eventHub.$on('difference_imodel_startup',this.main);
         window.eventHub.$on('diff_show_color',this.color);
+        window.eventHub.$on('diff_remove_color',this.removeColor);
     },
     methods: {
         color(elements){
-            console.log(elements);
-            if(elements.add.length > 0){
+            for(var i = 0;i<elements.add.length;i++ ){
+                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(elements.add[i]);
+            } 
+            handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[0])
 
-            }
-             
-            if(elements.beforeModify.length > 0){
-                handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
-            }
+            this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
+
+            for(var i = 0;i<elements.afterModify.length;i++ ){
+                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(elements.beforeModify[i]);
+            } 
+            handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
+        },
+        removeColor(){
+            clear(this.GLOBAL_DATA.diffViewPort[0]);
         },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 

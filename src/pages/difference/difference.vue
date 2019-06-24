@@ -21,10 +21,15 @@
               size="mini"
               @click="unSync()">unSync
         </el-button>
-        <el-button
+        <el-button v-show="isColor"
               type="primary"
               size="mini"
               @click="color()">color
+        </el-button>
+        <el-button v-show="!isColor"
+              type="primary"
+              size="mini"
+              @click="removecolor()">remove color
         </el-button>
     </div>
     <div class="mark">
@@ -51,13 +56,14 @@ export default {
         return{
             vpConnection:new TwoWayViewportSync(),
             isSync:true,
+            isColor:true,
             startVersionName: this.$route.query.startVersionName,
             startVersionUrl:this.$route.query.startVersionUrl,
             endVersionName: this.$route.query.endVersionName,
             endVersionUrl: this.$route.query.endVersionUrl,
             projectId: this.$route.query.projectId,
             elements:{
-                add:[],
+                add:['0x20000000023'],
                 delete:[],
                 beforeModify:['0x20000000022'],
                 afterModify:['0x20000000022']
@@ -97,7 +103,12 @@ export default {
              this.vpConnection.disconnect();
         },
         color(){
+            this.isColor = !this.isColor;
              window.eventHub.$emit('diff_show_color',this.elements);
+        },
+        removecolor(){
+            this.isColor = !this.isColor;
+             window.eventHub.$emit('diff_remove_color');
         }
     }
 }
