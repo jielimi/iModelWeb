@@ -177,6 +177,9 @@ export default {
     position: relative;
     width: calc(50% - 10px);
     height: 500px;
+    .el-dialog__wrapper{
+        position: absolute;
+    }
 }
 .view-area{
     width: 100%;
