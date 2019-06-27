@@ -21,9 +21,29 @@
                         </el-select>
                     </el-form-item>
                 </el-form>
-                <el-checkbox-group v-model="checkList">
-                    <el-checkbox v-for="mode in options" :label="mode.id" :key="mode.id" @change="applyRenderModeChange($event,mode.id)">{{mode.text}}</el-checkbox>
-                </el-checkbox-group>
+                <el-collapse v-model="activeName" accordion>
+                    <el-collapse-item title="View Flags" name="1">
+                        <el-checkbox-group v-model="checkList">
+                            <el-checkbox v-for="mode in options" :label="mode.label" :key="mode.label" v-show="!(mode.only3d && !is3d)" @change="handelViewFlagChange($event,mode.label)">{{mode.flag}}</el-checkbox>
+                        </el-checkbox-group>
+                        <div class="shadowWrap">
+                            <el-checkbox v-model="shadowActive"  @change="handleShadowCheckChange">
+                                <span>Shadows</span>
+                            </el-checkbox>
+                            <div class="colorWrap" v-show="shadowActive">
+                                <span>Shadow Color</span>
+                                <input type="color" :value="currentShadowColor" @change="handleShadowColorChange">
+                            </div>
+                        </div>
+                        
+                    </el-collapse-item>
+                    <el-collapse-item title="Edge Display" name="2">
+                        <div>简化流程：设计简洁直观的操作流程；</div>
+                    </el-collapse-item>
+                    <el-collapse-item title="Environment" name="3">
+                        <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+                    </el-collapse-item>
+                </el-collapse>
             </div>
         </i>
     </div>
@@ -38,18 +58,21 @@ import {
   DisplayStyle2dState,
   DisplayStyleState,
 } from "@bentley/imodeljs-frontend";
-import { RenderMode } from "@bentley/imodeljs-common";
+import { RenderMode, ViewFlags, ColorDef } from "@bentley/imodeljs-common";
 export default {
     name: 'setting',
     data () {
         return {
             isShowDetail: false,
             view: '',
+            is3d: '',
             style: '',
             styleEntries: [],
             displayStyles: new Map(),
-            showSkybox: false,
-            showGroundplane: false,
+            activeName: '2',
+            scratchViewFlags: new ViewFlags(),
+            shadowActive: false,
+            currentShadowColor: '#FFFFFF',
             modeValue: RenderMode.SmoothShade,
             renderModeOptions: {
                 flags: new Map(),
@@ -63,20 +86,18 @@ export default {
             ],
             checkList: [],
             options: [
-                {"id": "acsTriad", "text": "ACS Triad"},
-                {"id": "fill", "text": "Fill"},
-                {"id": "grid", "text": "Grid"},
-                {"id": "textures", "text": "Textures"},
-                {"id": "visibleEdges", "text": "Visible Edges"},
-                {"id": "hiddenEdges", "text": "Hidden Edges"},
-                {"id": "materials", "text": "Materials"},
-                {"id": "lights", "text": "Lights"},
-                {"id": "monochrome", "text": "Monochrome"},
-                {"id": "constructions", "text": "Constructions"},
-                {"id": "transparency", "text": "Transparency"},
-                {"id": "weights", "text": "Line Weight"},
-                {"id": "styles", "text": "Line Styles"},
-                {"id": "backgroundMap", "text": "Background Map"}
+                {"label": "acsTriad", "flag": "ACS Triad","only3d": false},
+                {"label": "grid", "flag": "Grid","only3d": false},
+                {"label": "fill", "flag": "Fill","only3d": false},
+                {"label": "materials", "flag": "Materials","only3d": false},
+                {"label": "textures", "flag": "Textures","only3d": false},
+                {"label": "monochrome", "flag": "Monochrome","only3d": false},
+                {"label": "constructions", "flag": "Constructions","only3d": false},
+                {"label": "transparency", "flag": "Transparency","only3d": false},
+                {"label": "weights", "flag": "Line Weight","only3d": false},
+                {"label": "styles", "flag": "Line Styles","only3d": false},
+                {"label": "clipVolume", "flag": "Clip Volume","only3d": true},
+                {"label": "forceSurfaceDiscard", "flag": "Force Surface Discard","only3d": true}
             ]
         };
     },
@@ -92,8 +113,9 @@ export default {
         },
         initSetting(){
             this.view = this.GLOBAL_DATA.theViewPort.view;
+            this.is3d = this.view.is3d();
             this.initStylePicker();
-            this.updateRenderModeOptionsMap();
+            this.addViewFlagAttribute();
         },
         async initStylePicker(){
             this.styleEntries = [];
@@ -122,79 +144,55 @@ export default {
             this.GLOBAL_DATA.theViewPort.displayStyle = this.displayStyles.get(id);
             this.GLOBAL_DATA.theViewPort.invalidateScene();
         },
-        updateRenderModeOptionsMap() {
-            let skybox = false;
-            let groundplane = false;
-            if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
-                if(!this.showSkybox){
-                    this.options.push({"id": "sky", "text": "Sky box"});
-                    this.options.push({"id": "ground", "text": "Ground Plane"});
+        addViewFlagAttribute(label, flag){
+            const viewflags = this.view.viewFlags;
+            let that = this;
+            this.options.forEach(function(value,index){
+                // that.options.set(value.label,viewflags[value.label]);
+                if(viewflags[value.label]){
+                    that.checkList.push(value.label);
                 }
-                this.showSkybox = true;
-                this.showGroundplane = true;
-                const view = this.GLOBAL_DATA.theViewPort.view;
-                const env = view.getDisplayStyle3d().environment;
-                skybox = env.sky.display;
-                groundplane = env.ground.display;
-            }else{
-                this.options.pop();
-                this.options.pop();
-                this.showSkybox = false;
-                this.showGroundplane = false;
-            }
-            const viewflags = this.GLOBAL_DATA.theViewPort.view.viewFlags;
-            const lights = viewflags.sourceLights || viewflags.solarLight || viewflags.cameraLights;
-            this.checkList = [];
-            this.updateRenderModeOption("acsTriad", viewflags.acsTriad, this.renderModeOptions.flags);
-            this.updateRenderModeOption("fill", viewflags.fill, this.renderModeOptions.flags);
-            this.updateRenderModeOption("grid", viewflags.grid, this.renderModeOptions.flags);
-            this.updateRenderModeOption("textures", viewflags.textures, this.renderModeOptions.flags);
-            this.updateRenderModeOption("visibleEdges", viewflags.visibleEdges, this.renderModeOptions.flags);
-            this.updateRenderModeOption("hiddenEdges", viewflags.hiddenEdges, this.renderModeOptions.flags);
-            this.updateRenderModeOption("materials", viewflags.materials, this.renderModeOptions.flags);
-            this.updateRenderModeOption("lights", lights, this.renderModeOptions.flags);
-            this.updateRenderModeOption("monochrome", viewflags.monochrome, this.renderModeOptions.flags);
-            this.updateRenderModeOption("constructions", viewflags.constructions, this.renderModeOptions.flags);
-            this.updateRenderModeOption("weights", viewflags.weights, this.renderModeOptions.flags);
-            this.updateRenderModeOption("styles", viewflags.styles, this.renderModeOptions.flags);
-            this.updateRenderModeOption("transparency", viewflags.transparency, this.renderModeOptions.flags);
-            this.updateRenderModeOption("backgroundMap", viewflags.backgroundMap, this.renderModeOptions.flags);
-            if (this.GLOBAL_DATA.theViewPort.view.is3d()) {
-                this.updateRenderModeOption("sky", skybox, this.renderModeOptions.flags);
-                this.updateRenderModeOption("ground", groundplane, this.renderModeOptions.flags);
-            }
-            this.renderModeOptions.mode = viewflags.renderMode;
-            this.modeValue = viewflags.renderMode;
+            });
+            this.addShadowsToggle();
         },
-        updateRenderModeOption(id,enabled,options){
-            options.set(id, enabled);
-            if(enabled){
-                this.checkList.push(id);
+        addShadowsToggle(){
+            if (this.GLOBAL_DATA.theViewPort.view.is3d()){
+                this.currentShadowColor = this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color;
             }
+            let that = this;
+            this.GLOBAL_DATA.theViewPort.onDisplayStyleChanged.addListener(function(vp){
+                that.updateShadowUI(vp.view)
+            });
         },
-        applyRenderModeChange($event,mode){
-            if(mode === 'sky' || mode === 'groundplane'){
-                const view3d = this.GLOBAL_DATA.theViewPort.view;
-                const style = view3d.getDisplayStyle3d();
-                const env = style.environment;
-                env[mode].display = $event;
-                view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
-                const viewPort = this.GLOBAL_DATA.theViewPort
-                viewPort.synchWithView(true);
-            }else {
-                const vf = this.GLOBAL_DATA.theViewPort.viewFlags;
-                vf[mode] = $event;
-                this.GLOBAL_DATA.theViewPort.viewFlags = vf;
-                const viewPort = this.GLOBAL_DATA.theViewPort
-                viewPort.synchWithView(true);
+        handleShadowCheckChange($event){
+            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this._scratchViewFlags);
+            vf.shadows = $event;
+            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            this.sync();
+        },
+        updateShadowUI(view){
+            if (view.is3d()){
+                this.currentShadowColor = view.getDisplayStyle3d().settings.solarShadowsSettings.color;
             }
+            // this.currentShadowColor = undefined === this.currentShadowColor ? "#FFFFFF" : this.currentShadowColor.toHexString();
+        },
+        handleShadowColorChange(e){
+            this.currentShadowColor = e.target.value;
+            this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color = new ColorDef(this.currentShadowColor);
+            this.sync();
+        },
+        handelViewFlagChange($event,label){
+            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            vf[label] = $event;
+            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            this.sync();
         },
         changeRenderMode(thing){
-            const view = this.GLOBAL_DATA.theViewPort
-            const activeView = this.GLOBAL_DATA.activeViewState.viewState;
-
-             view.viewFlags.renderMode = Number.parseInt(thing, 10);
-             view.synchWithView(true);
+            this.view.viewFlags.renderMode = Number.parseInt(thing, 10);
+            this.sync();
+        },
+        sync() {
+            this.GLOBAL_DATA.theViewPort.synchWithView(true);
         }
     }
 }
@@ -223,6 +221,15 @@ export default {
                 display: block;
                 margin-left: 15px;
                 margin-top: 5px;
+            }
+            .shadowWrap {
+                position: relative;
+                margin-bottom: 10px;
+                .colorWrap {
+                    position: absolute;
+                    right: 10px;
+                    top: -4px;
+                }
             }
         }
     }
