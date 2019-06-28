@@ -185,7 +185,7 @@ export default {
 .sync{
     position: absolute;
     top: 20px;
-    left: 100px;
+    left: 120px;
 }
 
 .mark{
