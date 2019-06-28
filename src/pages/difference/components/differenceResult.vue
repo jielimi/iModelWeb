@@ -11,6 +11,11 @@
               size="mini"
               @click="removecolor()">remove color
         </el-button>
+        <!-- <div class="mark">
+          <div>Insert</div>
+          <div>Delete</div>
+          <div>Modify</div>        
+        </div> -->
     </div>
       <el-tabs type="border-card">
         <el-tab-pane label="Add">
@@ -181,6 +186,26 @@ export default {
     position: absolute;
     top: 20px;
     left: 100px;
+}
+
+.mark{
+    position: absolute;
+    right: -25px;
+    top: 0;
+
+    div{
+        width: 10px;
+        height: 10px;
+    }
+    div:first-child{
+        background: #3CB371;
+    }
+    div:nth-child(2){
+        background: #DC143C;
+    }
+    div:nth-child(3){
+        background: #FFFF00;
+    }
 }
 
 </style>

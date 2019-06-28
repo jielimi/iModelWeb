@@ -21,23 +21,13 @@
               size="mini"
               @click="unSync()">unSync
         </el-button>
-        <!-- <el-button v-show="isColor"
-              type="primary"
-              size="mini"
-              @click="color()">color
-        </el-button>
-        <el-button v-show="!isColor"
-              type="primary"
-              size="mini"
-              @click="removecolor()">remove color
-        </el-button> -->
     </div>
-    <div class="mark">
+    <!-- <div class="mark">
         <div></div>
         <div></div>
         <div></div>
         <div></div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -56,18 +46,11 @@ export default {
         return{
             vpConnection:new TwoWayViewportSync(),
             isSync:true,
-            // isColor:true,
             startVersionName: this.$route.query.startVersionName,
             startVersionUrl:this.$route.query.startVersionUrl,
             endVersionName: this.$route.query.endVersionName,
             endVersionUrl: this.$route.query.endVersionUrl,
-            projectId: this.$route.query.projectId,
-            // elements:{
-            //     add:['0x20000000023'],
-            //     delete:[],
-            //     beforeModify:['0x20000000022'],
-            //     afterModify:['0x20000000022']
-            // }
+            projectId: this.$route.query.projectId
         }
     },
     components:{
@@ -103,41 +86,31 @@ export default {
         unSync(){
              this.isSync = !this.isSync;
              this.vpConnection.disconnect();
-        },
-        // color(){
-        //     this.isColor = !this.isColor;
-        //      window.eventHub.$emit('diff_show_color',this.elements);
-        // },
-        // removecolor(){
-        //     this.isColor = !this.isColor;
-        //      window.eventHub.$emit('diff_remove_color');
-        // }
+        }
     }
 }
 </script>
 
 
 <style lang="less" scoped>
-.mark{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    div{
-        width: 10px;
-        height: 10px;
-    }
-    div:first-child{
-        background: #3CB371;
-    }
-    div:nth-child(2){
-        background: #DC143C;
-    }
-    div:nth-child(3){
-        background: #FFFF00;
-    }
-   
-
-}
+// .mark{
+//     position: absolute;
+//     bottom: 0;
+//     right: 0;
+//     div{
+//         width: 10px;
+//         height: 10px;
+//     }
+//     div:first-child{
+//         background: #3CB371;
+//     }
+//     div:nth-child(2){
+//         background: #DC143C;
+//     }
+//     div:nth-child(3){
+//         background: #FFFF00;
+//     }
+// }
 .box{
     display: flex;
     flex-wrap: wrap;
