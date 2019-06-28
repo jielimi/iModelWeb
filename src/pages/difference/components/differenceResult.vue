@@ -5,7 +5,7 @@
             <!-- <el-table
               :data="tableDataAdd.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))" -->
             <el-table
-              :data="tableDataAdd.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))"
+              :data="tableDataInsert.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))"
               border
               style="width: 50%">
               <el-table-column
@@ -13,12 +13,6 @@
                 label="id"
                 width="180">
               </el-table-column>
-              <!-- <el-table-column
-                prop="detail"
-                label="detail"
-                width="180">
-              </el-table-column> -->
-              
               <el-table-column label="Location">
                 <!-- <template slot="header" slot-scope="scope">
                   <el-input
@@ -105,7 +99,7 @@ export default {
      data() {
       return {
          search: '',
-         tableDataAdd: [],
+         tableDataInsert: [],
          tableDataUpdate:[],
          tableDataDelete:[]
       }
@@ -123,6 +117,9 @@ export default {
       
     },
     methods: {
+      AddFocusElement(row){
+        //window.eventHub.$emit('diff_viewport_insert',row.id);
+      },
       formatterColumnBefore(row, column) {
         return JSON.stringify(row.before.geometryStream[0].appearance);
       },
@@ -139,7 +136,7 @@ export default {
           this.$get('api/version/differences',{}, param).then(res => {
             this.isLoading = false;
               if (res.state === 0) {
-                this.tableDataAdd = res.data.insert;
+                this.tableDataInsert = res.data.insert;
                 this.tableDataUpdate = res.data.update;
                 this.tableDataDelete = res.data.delete;
               }

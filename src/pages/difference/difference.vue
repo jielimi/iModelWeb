@@ -97,6 +97,8 @@ export default {
         sync(){
             this.isSync = !this.isSync;
             this.vpConnection.connect(this.GLOBAL_DATA.diffViewPort[0], this.GLOBAL_DATA.diffViewPort[1]);
+            IModelApp.tools.run("View.Rotate", this.GLOBAL_DATA.diffViewPort[1])
+            IModelApp.tools.run("View.Rotate", this.GLOBAL_DATA.diffViewPort[0])
         },
         unSync(){
              this.isSync = !this.isSync;
