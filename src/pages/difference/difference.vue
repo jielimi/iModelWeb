@@ -148,11 +148,11 @@ export default {
     height: 100%;
     background-color: #88C5FB;
     .difference-area {
-        width: 100%;
+        margin-left: 10px;
+        width: calc(100% - 20px);
         height: calc(100% - 550px);
         overflow-y: auto;
         background-color:#FFFFFF; 
-        align-self: stretch; 
     } 
     .views-area{
         display: flex;
