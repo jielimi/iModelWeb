@@ -1,5 +1,17 @@
 <template>
     <div>
+      <div class="sync">
+        <el-button v-show="isColor"
+              type="primary"
+              size="mini"
+              @click="color()">color
+        </el-button>
+        <el-button v-show="!isColor"
+              type="primary"
+              size="mini"
+              @click="removecolor()">remove color
+        </el-button>
+    </div>
       <el-tabs type="border-card">
         <el-tab-pane label="Add">
             <!-- <el-table
@@ -98,10 +110,13 @@ export default {
     name: 'differenceResult',
      data() {
       return {
+        isColor:true,
          search: '',
          tableDataInsert: [],
          tableDataUpdate:[],
-         tableDataDelete:[]
+         tableDataDelete:[],
+         result:{}
+         
       }
     },
     props:['projectId','startVersionName','endVersionName'],
@@ -113,10 +128,15 @@ export default {
         this.getResult();
         
     },
-    watch: {
-      
-    },
     methods: {
+      color(){
+          this.isColor = !this.isColor;
+            window.eventHub.$emit('diff_show_color',this.result);
+      },
+      removecolor(){
+          this.isColor = !this.isColor;
+            window.eventHub.$emit('diff_remove_color');
+      },
       AddFocusElement(row){
         window.eventHub.$emit('diff_viewport_insert',row.id);
       },
@@ -145,6 +165,7 @@ export default {
                 this.tableDataInsert = res.data.insert;
                 this.tableDataUpdate = res.data.update;
                 this.tableDataDelete = res.data.delete;
+                this.result = res.data;
               }
           });
           
@@ -156,5 +177,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
+.sync{
+    position: absolute;
+    top: 20px;
+    left: 100px;
+}
 
 </style>

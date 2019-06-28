@@ -25,7 +25,7 @@ import { IModelVersion } from '@bentley/imodeljs-common'
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
-
+import { handleColorChange, clear } from "./color"
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
         this._userInfo = UserInfo.fromJson(jsonObj);
@@ -82,8 +82,26 @@ export default {
         window.eventHub.$on('difference_imodel_startup',this.main);
         window.eventHub.$on('diff_viewport_delete',this.focusElement);
         window.eventHub.$on('diff_viewport_update',this.focusElement);
+        window.eventHub.$on('diff_show_color',this.color);
+        window.eventHub.$on('diff_remove_color',this.removeColor);
     },
     methods: {
+        color(result){
+            for(var i = 0;i<result.delete.length;i++ ){
+                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.delete[i].id);
+            } 
+            handleColorChange("#DC143C",this.GLOBAL_DATA.diffViewPort[1])
+
+            this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
+
+            for(var i = 0;i<result.update.length;i++ ){
+                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.update[i].id);
+            } 
+            handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[1])
+        },
+        removeColor(){
+            clear(this.GLOBAL_DATA.diffViewPort[1]);
+        },
         focusElement(id){
             this.GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
         },

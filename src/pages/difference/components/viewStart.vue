@@ -89,18 +89,18 @@ export default {
         focusElement(id){
             this.GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
         },
-        color(elements){
-            for(var i = 0;i<elements.add.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(elements.add[i]);
+        color(result){
+            for(var i = 0;i<result.insert.length;i++ ){
+                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.insert[i].id);
             } 
-            handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
 
             this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
 
-            for(var i = 0;i<elements.afterModify.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(elements.beforeModify[i]);
+            for(var i = 0;i<result.update.length;i++ ){
+                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.update[i].id);
             } 
-            handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[0])
         },
         removeColor(){
             clear(this.GLOBAL_DATA.diffViewPort[0]);
