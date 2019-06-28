@@ -118,7 +118,13 @@ export default {
     },
     methods: {
       AddFocusElement(row){
-        //window.eventHub.$emit('diff_viewport_insert',row.id);
+        window.eventHub.$emit('diff_viewport_insert',row.id);
+      },
+      UpdateFocusElement(row){
+        window.eventHub.$emit('diff_viewport_update',row.id);
+      },
+      DeleteFocusElement(row){
+        window.eventHub.$emit('diff_viewport_delete',row.id);
       },
       formatterColumnBefore(row, column) {
         return JSON.stringify(row.before.geometryStream[0].appearance);

@@ -80,8 +80,13 @@ export default {
     },
     mounted(){
         window.eventHub.$on('difference_imodel_startup',this.main);
+        window.eventHub.$on('diff_viewport_delete',this.focusElement);
+        window.eventHub.$on('diff_viewport_update',this.focusElement);
     },
     methods: {
+        focusElement(id){
+            this.GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
+        },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 
                 case 1: 

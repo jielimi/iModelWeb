@@ -82,8 +82,13 @@ export default {
         window.eventHub.$on('difference_imodel_startup',this.main);
         window.eventHub.$on('diff_show_color',this.color);
         window.eventHub.$on('diff_remove_color',this.removeColor);
+        window.eventHub.$on('diff_viewport_insert',this.focusElement);
+        window.eventHub.$on('diff_viewport_update',this.focusElement);
     },
     methods: {
+        focusElement(id){
+            this.GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
+        },
         color(elements){
             for(var i = 0;i<elements.add.length;i++ ){
                 this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(elements.add[i]);
