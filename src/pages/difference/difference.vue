@@ -62,12 +62,7 @@ export default {
             endVersionName: this.$route.query.endVersionName,
             endVersionUrl: this.$route.query.endVersionUrl,
             projectId: this.$route.query.projectId,
-            elements:{
-                add:['0x20000000023'],
-                delete:[],
-                beforeModify:['0x20000000022'],
-                afterModify:['0x20000000022']
-            }
+           
         }
     },
     components:{
