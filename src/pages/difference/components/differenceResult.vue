@@ -2,33 +2,30 @@
     <div>
       <el-tabs type="border-card">
         <el-tab-pane label="Add">
+            <!-- <el-table
+              :data="tableDataAdd.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))" -->
             <el-table
-              :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-              height="200"
+              :data="tableDataAdd.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))"
               border
-              style="width: 100%">
+              style="width: 50%">
               <el-table-column
-                prop="date"
-                label="日期"
+                prop="id"
+                label="id"
                 width="180">
               </el-table-column>
-              <el-table-column
-                prop="name"
-                label="姓名"
+              <!-- <el-table-column
+                prop="detail"
+                label="detail"
                 width="180">
-              </el-table-column>
-              <el-table-column
-                prop="address"
-                label="地址">
-              </el-table-column>
+              </el-table-column> -->
               
-              <el-table-column label="操作">
-                <template slot="header" slot-scope="scope">
+              <el-table-column label="Location">
+                <!-- <template slot="header" slot-scope="scope">
                   <el-input
                     v-model="search"
                     size="mini"
-                    placeholder="输入关键字搜索"/>
-                </template>
+                    placeholder="search"/>
+                </template> -->
                 
                 <template slot-scope="scope">
                   <el-button
@@ -38,16 +35,66 @@
                 </template>
             </el-table-column>
             </el-table>
-         
         </el-tab-pane>
-        <el-tab-pane label="Modify">2</el-tab-pane>
-        <el-tab-pane label="Delete">3</el-tab-pane>
+        <el-tab-pane label="Update">
+          <el-table
+              :data="tableDataUpdate"
+              border
+              style="width: 80%">
+              <el-table-column
+                prop="id"
+                label="id"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                prop="before"
+                label="before"
+                width="180"
+                :formatter="formatterColumnBefore">
+              </el-table-column>
+              <el-table-column
+                prop="after"
+                label="after"
+                width="180"
+                :formatter="formatterColumnAfter">
+              </el-table-column>
+              <el-table-column
+                prop="class"
+                label="class"
+                width="180">
+              </el-table-column>
+              <el-table-column label="Location">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    @click="UpdateFocusElement(scope.row)">focus
+                  </el-button>
+                </template>
+            </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="Delete">
+          <el-table
+              :data="tableDataDelete"
+              border
+              style="width: 50%">
+              <el-table-column
+                prop="id"
+                label="id"
+                width="180">
+              </el-table-column>
+              <el-table-column label="Location">
+               
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    @click="DeleteFocusElement(scope.row)">focus
+                  </el-button>
+                </template>
+            </el-table-column>
+            </el-table>
+        </el-tab-pane>
       </el-tabs>
-        <!-- <el-input
-        placeholder="input keyword to filter"
-        v-model="filterText">
-        </el-input> -->
-        
     </div>
 </template>
 
@@ -58,35 +105,9 @@ export default {
      data() {
       return {
          search: '',
-         tableData: [{
-          date: '2016-05-03',
-          name: 'yezi1',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: 'yezi122',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '444',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '555',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }]
+         tableDataAdd: [],
+         tableDataUpdate:[],
+         tableDataDelete:[]
       }
     },
     props:['projectId','startVersionName','endVersionName'],
@@ -102,22 +123,29 @@ export default {
       
     },
     methods: {
-        getResult(){
-             let param = {
-              projectId:this.projectId,
-              startversion:'3',
-              endversion: '4'
-            }
-           
+      formatterColumnBefore(row, column) {
+        return JSON.stringify(row.before.geometryStream[0].appearance);
+      },
+      formatterColumnAfter(row, column) {
+        return JSON.stringify(row.after.geometryStream[0].appearance);
+      },
+      getResult(){
+            let param = {
+            projectId:this.projectId,
+            startversion:this.endVersionName,
+            endversion: this.startVersionName
+          }
 
-            this.$get('api/version/differences',{}, param).then(res => {
-              this.isLoading = false;
-                if (res.state === 0) {
-                
-                }
-            });
-            
-        }
+          this.$get('api/version/differences',{}, param).then(res => {
+            this.isLoading = false;
+              if (res.state === 0) {
+                this.tableDataAdd = res.data.insert;
+                this.tableDataUpdate = res.data.update;
+                this.tableDataDelete = res.data.delete;
+              }
+          });
+          
+      }
     }
 }
 
