@@ -38,7 +38,33 @@
                         
                     </el-collapse-item>
                     <el-collapse-item title="Edge Display" name="2">
-                        <div>简化流程：设计简洁直观的操作流程；</div>
+                        <div>
+                            <el-checkbox v-model="showVisibleEdges"  @change="handleVisibleEdgesCheckChange">
+                                <span>Visible Edges</span>
+                            </el-checkbox>
+                            <div v-show="showVisibleEdges">
+                                <el-checkbox v-model="transparencyActive" @change="handleTransparencyCheckChange">
+                                    <span>Transparency</span>
+                                    <input type="range" :disabled="!transparencyActive" v-model="currTransparency" class="range" min="0.0" max="1.0" step="0.05" @change="handleTransparencyChange">
+                                </el-checkbox>
+                                <el-checkbox v-model="colorActive" @change="handleColorCheckChange">
+                                    <span>Color</span>
+                                    <input type="color" :disabled="!colorActive" v-model="currColor" @change="handleColorChange">
+                                </el-checkbox>
+                                <el-checkbox v-model="weightActive" @change="handleWeightCheckChange">
+                                    <span>Weight</span>
+                                    <input type="number" :disabled="!weightActive" class="weight" min="1" max="31" step="1" v-model="currWeight" @change="handleWeightChange">
+                                </el-checkbox>
+                                <el-form label-width="58px">
+                                    <el-form-item label="Style">
+                                        <el-select v-model="pattern" size="mini" @change="handleVisibleStyleChange">
+                                            <el-option v-for="item in entries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </div>
+
                     </el-collapse-item>
                     <el-collapse-item title="Environment" name="3">
                         <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
@@ -58,7 +84,7 @@ import {
   DisplayStyle2dState,
   DisplayStyleState,
 } from "@bentley/imodeljs-frontend";
-import { RenderMode, ViewFlags, ColorDef } from "@bentley/imodeljs-common";
+import { RenderMode, ViewFlags, ColorDef, HiddenLine, LinePixels } from "@bentley/imodeljs-common";
 export default {
     name: 'setting',
     data () {
@@ -98,7 +124,28 @@ export default {
                 {"label": "styles", "flag": "Line Styles","only3d": false},
                 {"label": "clipVolume", "flag": "Clip Volume","only3d": true},
                 {"label": "forceSurfaceDiscard", "flag": "Force Surface Discard","only3d": true}
-            ]
+            ],
+            showVisibleEdges: false,
+            transparencyActive: false,
+            currTransparency: '0.0',
+            colorActive: false,
+            currColor: '#FFFFFF',
+            weightActive: false,
+            currWeight: 1,
+            entries: [
+                { name: "Not overridden", value: LinePixels.Invalid },
+                { name: "Solid", value: LinePixels.Solid },
+                { name: "Hidden Line", value: LinePixels.HiddenLine },
+                { name: "Invisible", value: LinePixels.Invisible },
+                { name: "Code1", value: LinePixels.Code1 },
+                { name: "Code2", value: LinePixels.Code2 },
+                { name: "Code3", value: LinePixels.Code3 },
+                { name: "Code4", value: LinePixels.Code4 },
+                { name: "Code5", value: LinePixels.Code5 },
+                { name: "Code6", value: LinePixels.Code6 },
+                { name: "Code7", value: LinePixels.Code7 }
+            ],
+            pattern: LinePixels.Invalid
         };
     },
     components: {
@@ -116,6 +163,7 @@ export default {
             this.is3d = this.view.is3d();
             this.initStylePicker();
             this.addViewFlagAttribute();
+            this.initEdgeDisplay();
         },
         async initStylePicker(){
             this.styleEntries = [];
@@ -165,7 +213,7 @@ export default {
             });
         },
         handleShadowCheckChange($event){
-            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this._scratchViewFlags);
+            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf.shadows = $event;
             this.GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
@@ -176,8 +224,8 @@ export default {
             }
             // this.currentShadowColor = undefined === this.currentShadowColor ? "#FFFFFF" : this.currentShadowColor.toHexString();
         },
-        handleShadowColorChange(e){
-            this.currentShadowColor = e.target.value;
+        handleShadowColorChange($event){
+            this.currentShadowColor = $event.target.value;
             this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color = new ColorDef(this.currentShadowColor);
             this.sync();
         },
@@ -189,6 +237,74 @@ export default {
         },
         changeRenderMode(thing){
             this.view.viewFlags.renderMode = Number.parseInt(thing, 10);
+            this.sync();
+        },
+        initEdgeDisplay(){
+            const hlSettings = this.view.is3d() ? this.view.getDisplayStyle3d().settings.hiddenLineSettings : HiddenLine.Settings.defaults;
+            this.currTransparency = hlSettings.transparencyThreshold.toString();
+            this.currColor = hlSettings.visible.color ? hlSettings.visible.color.toHexString() : "#FFFFFF";
+            this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid
+        },
+        handleVisibleEdgesCheckChange($event){
+            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            vf.visibleEdges = $event;
+            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            this.sync();
+        },
+        handleTransparencyCheckChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleTransparencyChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleColorCheckChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleColorChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleWeightCheckChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleWeightChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleVisibleStyleChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        updateEdgeDisplayItem(){
+            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLEdgeSettings = oldHLSettings.visible;
+            this.updateEdgeDisplay(
+                parseFloat(this.currTransparency),
+                this.colorActive ? new ColorDef(this.currColor) : (oldHLEdgeSettings.ovrColor ? oldHLEdgeSettings.color : undefined),
+                parseInt(this.pattern, 10),
+                this.weightActive ? parseInt(this.currWeight) : oldHLEdgeSettings.width,
+                false);
+        },
+        updateEdgeDisplay(transThresh,color,pattern,width,hiddenEdge){
+            const oldHLSettings = this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const newHLSettings = HiddenLine.Settings.fromJSON({
+                visible: hiddenEdge ? oldHLSettings.visible : HiddenLine.Style.fromJSON({
+                    ovrColor: color ? true : false,
+                    color,
+                    pattern,
+                    width
+                }),
+                hidden: !hiddenEdge ? HiddenLine.Style.fromJSON({
+                    ovrColor: oldHLSettings.hidden.ovrColor,
+                    color: oldHLSettings.hidden.color,
+                    pattern: oldHLSettings.hidden.pattern,
+                    width: (oldHLSettings.hidden.width === undefined || (width !== undefined && oldHLSettings.hidden.width <= width) ? oldHLSettings.hidden.width : width), // verify hidden width <= visible width
+                }) : HiddenLine.Style.fromJSON({
+                    ovrColor: color ? true : false,
+                    color,
+                    pattern,
+                    width: (width === undefined || (oldHLSettings.visible.width !== undefined && width <= oldHLSettings.visible.width) ? width : oldHLSettings.visible.width), // verify hidden width <= visible width
+                }, true),
+                transThreshold: transThresh
+            });
+            this.view.getDisplayStyle3d().settings.hiddenLineSettings = newHLSettings;
             this.sync();
         },
         sync() {
@@ -230,6 +346,10 @@ export default {
                     right: 10px;
                     top: -4px;
                 }
+            }
+            .range {
+                position: relative;
+                top: 7px;
             }
         }
     }
