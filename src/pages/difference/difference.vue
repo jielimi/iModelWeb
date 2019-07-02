@@ -93,24 +93,7 @@ export default {
 
 
 <style lang="less" scoped>
-// .mark{
-//     position: absolute;
-//     bottom: 0;
-//     right: 0;
-//     div{
-//         width: 10px;
-//         height: 10px;
-//     }
-//     div:first-child{
-//         background: #3CB371;
-//     }
-//     div:nth-child(2){
-//         background: #DC143C;
-//     }
-//     div:nth-child(3){
-//         background: #FFFF00;
-//     }
-// }
+
 .box{
     display: flex;
     flex-wrap: wrap;

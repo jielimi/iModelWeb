@@ -87,15 +87,16 @@ export default {
     },
     methods: {
         color(result){
+            
             for(var i = 0;i<result.delete.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.delete[i].id);
+                this.GLOBAL_DATA.diffActiveViewState[1].iModelConnection.selectionSet.elements.add(result.delete[i].id);
             } 
             handleColorChange("#DC143C",this.GLOBAL_DATA.diffViewPort[1])
 
-            this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
+            this.GLOBAL_DATA.diffActiveViewState[1].iModelConnection.selectionSet.elements.clear();
 
             for(var i = 0;i<result.update.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.update[i].id);
+                this.GLOBAL_DATA.diffActiveViewState[1].iModelConnection.selectionSet.elements.add(result.update[i].id);
             } 
             handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[1])
         },
@@ -103,7 +104,7 @@ export default {
             clear(this.GLOBAL_DATA.diffViewPort[1]);
         },
         focusElement(id){
-            this.GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
+            this.GLOBAL_DATA.diffViewPort[1].zoomToElements(id);
         },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 
