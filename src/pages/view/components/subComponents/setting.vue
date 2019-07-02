@@ -64,10 +64,58 @@
                                 </el-form>
                             </div>
                         </div>
-
+                        <div>
+                            <el-checkbox v-model="showHiddenEdges" :disabled="!showVisibleEdges"  @change="handleHiddenEdgesCheckChange">
+                                <span>Hidden Edges</span>
+                            </el-checkbox>
+                            <div v-show="showHiddenEdges && showVisibleEdges">
+                                <el-checkbox v-model="hiddenWeightActive" @change="handleHiddenWeightCheckChange">
+                                    <span>Weight</span>
+                                    <input type="number" :disabled="!hiddenWeightActive" class="weight" min="1" max="31" step="1" v-model="currHiddenWeight" @change="handleHiddenWeightChange">
+                                </el-checkbox>
+                                <el-form label-width="58px">
+                                    <el-form-item label="Style">
+                                        <el-select v-model="hiddenPattern" size="mini" @change="handleHiddenStyleChange">
+                                            <el-option v-for="item in entries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </div>
                     </el-collapse-item>
                     <el-collapse-item title="Environment" name="3">
-                        <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+                        <el-checkbox v-model="showSkyBox"  @change="handleShowSkyBoxCheckChange">
+                            <span>Sky Box</span>
+                        </el-checkbox>
+                        <div v-show="showSkyBox">
+                            <el-radio-group v-model="radio">
+                                <el-radio :label="'2colors'">2 Colors</el-radio>
+                                <el-radio :label="'4colors'">4 Colors</el-radio>
+                            </el-radio-group>
+                            <div class="color-group">
+                                <span class="color-label">Sky Color</span>
+                                <input type="color" v-model="currColor" @change="handleColorChange">
+                                <span class="color-label">Zenith Color</span>
+                                <input type="color" v-model="currColor" @change="handleColorChange">
+                            </div>
+                            <div class="color-group">
+                                <span class="color-label">Ground Color</span>
+                                <input type="color" v-model="currColor" @change="handleColorChange">
+                                <span class="color-label">Nadir Color</span>
+                                <input type="color" v-model="currColor" @change="handleColorChange">
+                            </div>
+                            <div>
+                                <span class="transparency-label">Sky Exponent</span>
+                                <input type="range" class="range" min="0.0" max="1.0" step="0.05" value="0.0" @change="handleTransparencyChange">
+                            </div>
+                            <div>
+                                <span class="transparency-label">Ground Exponent</span>
+                                <input type="range" class="range" min="0.0" max="1.0" step="0.05" value="0.0" @change="handleTransparencyChange">
+                            </div>
+                        </div>
+                        <el-checkbox v-model="showGroundPlane"  @change="handleShowGroundPlaneChange">
+                            <span>Ground Plane</span>
+                        </el-checkbox>
                     </el-collapse-item>
                 </el-collapse>
             </div>
@@ -77,6 +125,9 @@
 
 <script>
 import {
+  Environment,
+  SkyBox,
+  SkyGradient,
   ViewState,
   ViewState3d,
   Viewport,
@@ -95,7 +146,7 @@ export default {
             style: '',
             styleEntries: [],
             displayStyles: new Map(),
-            activeName: '2',
+            activeName: '',
             scratchViewFlags: new ViewFlags(),
             shadowActive: false,
             currentShadowColor: '#FFFFFF',
@@ -126,12 +177,15 @@ export default {
                 {"label": "forceSurfaceDiscard", "flag": "Force Surface Discard","only3d": true}
             ],
             showVisibleEdges: false,
+            showHiddenEdges: false,
             transparencyActive: false,
             currTransparency: '0.0',
             colorActive: false,
             currColor: '#FFFFFF',
             weightActive: false,
+            hiddenWeightActive: false,
             currWeight: 1,
+            currHiddenWeight: 1,
             entries: [
                 { name: "Not overridden", value: LinePixels.Invalid },
                 { name: "Solid", value: LinePixels.Solid },
@@ -145,7 +199,11 @@ export default {
                 { name: "Code6", value: LinePixels.Code6 },
                 { name: "Code7", value: LinePixels.Code7 }
             ],
-            pattern: LinePixels.Invalid
+            pattern: LinePixels.Invalid,
+            hiddenPattern: LinePixels.Invalid,
+            showSkyBox: false,
+            showGroundPlane: false,
+            radio: '4colors'
         };
     },
     components: {
@@ -244,10 +302,17 @@ export default {
             this.currTransparency = hlSettings.transparencyThreshold.toString();
             this.currColor = hlSettings.visible.color ? hlSettings.visible.color.toHexString() : "#FFFFFF";
             this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid
+            this.hiddenPattern = hlSettings.hidden.pattern ? hlSettings.hidden.pattern : LinePixels.Invalid
         },
         handleVisibleEdgesCheckChange($event){
             const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf.visibleEdges = $event;
+            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            this.sync();
+        },
+        handleHiddenEdgesCheckChange($event){
+            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            vf.hiddenEdges = $event;
             this.GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
         },
@@ -266,23 +331,65 @@ export default {
         handleWeightCheckChange($event){
             this.updateEdgeDisplayItem();
         },
-        handleWeightChange($event){
-            this.updateEdgeDisplayItem();
-        },
-        handleVisibleStyleChange($event){
-            this.updateEdgeDisplayItem();
-        },
-        updateEdgeDisplayItem(){
+        handleHiddenWeightCheckChange($event){
             const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const oldHLEdgeSettings = oldHLSettings.visible;
+            const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
             this.updateEdgeDisplay(
                 parseFloat(this.currTransparency),
                 this.colorActive ? new ColorDef(this.currColor) : (oldHLEdgeSettings.ovrColor ? oldHLEdgeSettings.color : undefined),
                 parseInt(this.pattern, 10),
+                parseInt(this.hiddenPattern, 10),
                 this.weightActive ? parseInt(this.currWeight) : oldHLEdgeSettings.width,
+                this.hiddenWeightActive ? parseInt(this.currHiddenWeight) : oldHLEdgeSettingsHidden.width,
+                true);
+        },
+        handleWeightChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleHiddenWeightChange($event){
+            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLEdgeSettings = oldHLSettings.visible;
+            const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
+            this.updateEdgeDisplay(
+                parseFloat(this.currTransparency),
+                this.colorActive ? new ColorDef(this.currColor) : (oldHLEdgeSettings.ovrColor ? oldHLEdgeSettings.color : undefined),
+                parseInt(this.pattern, 10),
+                parseInt(this.hiddenPattern, 10),
+                this.weightActive ? parseInt(this.currWeight) : oldHLEdgeSettings.width,
+                this.hiddenWeightActive ? parseInt(this.currHiddenWeight) : oldHLEdgeSettingsHidden.width,
+                true);
+        },
+        handleVisibleStyleChange($event){
+            this.updateEdgeDisplayItem();
+        },
+        handleHiddenStyleChange($event){
+            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLEdgeSettings = oldHLSettings.visible;
+            const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
+            this.updateEdgeDisplay(
+                parseFloat(this.currTransparency),
+                this.colorActive ? new ColorDef(this.currColor) : (oldHLEdgeSettings.ovrColor ? oldHLEdgeSettings.color : undefined),
+                parseInt(this.pattern, 10),
+                parseInt(this.hiddenPattern, 10),
+                this.weightActive ? parseInt(this.currWeight) : oldHLEdgeSettings.width,
+                this.hiddenWeightActive ? parseInt(this.currHiddenWeight) : oldHLEdgeSettingsHidden.width,
+                true);
+        },
+        updateEdgeDisplayItem(){
+            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLEdgeSettings = oldHLSettings.visible;
+            const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
+            this.updateEdgeDisplay(
+                parseFloat(this.currTransparency),
+                this.colorActive ? new ColorDef(this.currColor) : (oldHLEdgeSettings.ovrColor ? oldHLEdgeSettings.color : undefined),
+                parseInt(this.pattern, 10),
+                parseInt(this.hiddenPattern, 10),
+                this.weightActive ? parseInt(this.currWeight) : oldHLEdgeSettings.width,
+                this.hiddenWeightActive ? parseInt(this.currHiddenWeight) : oldHLEdgeSettingsHidden.width,
                 false);
         },
-        updateEdgeDisplay(transThresh,color,pattern,width,hiddenEdge){
+        updateEdgeDisplay(transThresh,color,pattern,hiddenPattern,width,hiddenWidth,hiddenEdge){
             const oldHLSettings = this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const newHLSettings = HiddenLine.Settings.fromJSON({
                 visible: hiddenEdge ? oldHLSettings.visible : HiddenLine.Style.fromJSON({
@@ -299,13 +406,19 @@ export default {
                 }) : HiddenLine.Style.fromJSON({
                     ovrColor: color ? true : false,
                     color,
-                    pattern,
-                    width: (width === undefined || (oldHLSettings.visible.width !== undefined && width <= oldHLSettings.visible.width) ? width : oldHLSettings.visible.width), // verify hidden width <= visible width
+                    pattern: hiddenPattern,
+                    width: (hiddenWidth === undefined || (oldHLSettings.visible.width !== undefined && hiddenWidth <= oldHLSettings.visible.width) ? hiddenWidth : oldHLSettings.visible.width), // verify hidden width <= visible width
                 }, true),
                 transThreshold: transThresh
             });
             this.view.getDisplayStyle3d().settings.hiddenLineSettings = newHLSettings;
             this.sync();
+        },
+        handleShowSkyBoxCheckChange($event){
+
+        },
+        handleShowGroundPlaneChange($event){
+
         },
         sync() {
             this.GLOBAL_DATA.theViewPort.synchWithView(true);
@@ -337,6 +450,23 @@ export default {
                 display: block;
                 margin-left: 15px;
                 margin-top: 5px;
+            }
+            .el-radio-group {
+                display: block;
+                margin-left: 15px;
+            }
+            .color-group {
+                margin-top: 5px;
+            }
+            .color-label {
+                display: inline-block;
+                width: 75px;
+                text-align: right;
+            }
+            .transparency-label {
+                display: inline-block;
+                width: 96px;
+                text-align: right;
             }
             .shadowWrap {
                 position: relative;
