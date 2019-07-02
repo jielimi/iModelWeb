@@ -123,7 +123,7 @@ export default {
         	}
         },
         handleTransparencyChange(e){
-        	this.currColor = e.target.value;
+        	this.currTransparency = e.target.value;
         	this.updateAppearance('transparency',parseFloat(e.target.value));
         },
         handleIgnoreMaterialChange(){
