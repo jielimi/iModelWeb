@@ -88,29 +88,30 @@
                             <span>Sky Box</span>
                         </el-checkbox>
                         <div v-show="showSkyBox">
-                            <el-radio-group v-model="radio">
+                            <el-radio-group v-model="radio" @change="handelRadioChange">
                                 <el-radio :label="'2colors'">2 Colors</el-radio>
                                 <el-radio :label="'4colors'">4 Colors</el-radio>
                             </el-radio-group>
                             <div class="color-group">
                                 <span class="color-label">Sky Color</span>
-                                <input type="color" v-model="currColor" @change="handleColorChange">
-                                <span class="color-label">Zenith Color</span>
-                                <input type="color" v-model="currColor" @change="handleColorChange">
-                            </div>
-                            <div class="color-group">
+                                <input type="color" v-model="skyColor" @change="handleSkyColorChange">
                                 <span class="color-label">Ground Color</span>
-                                <input type="color" v-model="currColor" @change="handleColorChange">
+                                <input type="color" v-model="groundColor" @change="handleGroundColorChange">
+                                
+                            </div>
+                            <div class="color-group" v-show="radio==='4colors'">
+                                <span class="color-label">Zenith Color</span>
+                                <input type="color" v-model="zenithColor" @change="handleZenithColorChange">
                                 <span class="color-label">Nadir Color</span>
-                                <input type="color" v-model="currColor" @change="handleColorChange">
+                                <input type="color" v-model="nadirColor" @change="handleNadirColorChange">
                             </div>
                             <div>
                                 <span class="transparency-label">Sky Exponent</span>
-                                <input type="range" class="range" min="0.0" max="1.0" step="0.05" value="0.0" @change="handleTransparencyChange">
+                                <input type="range" class="range" min="0.0" max="20.0" step="0.25" v-model="skyTransparency" @change="handleSkyExponentChange">
                             </div>
                             <div>
                                 <span class="transparency-label">Ground Exponent</span>
-                                <input type="range" class="range" min="0.0" max="1.0" step="0.05" value="0.0" @change="handleTransparencyChange">
+                                <input type="range" class="range" min="0.0" max="20.0" step="0.25" v-model="groundTransparency" @change="handleGroundExponentChange">
                             </div>
                         </div>
                         <el-checkbox v-model="showGroundPlane"  @change="handleShowGroundPlaneChange">
@@ -203,7 +204,13 @@ export default {
             hiddenPattern: LinePixels.Invalid,
             showSkyBox: false,
             showGroundPlane: false,
-            radio: '4colors'
+            radio: '2colors',
+            skyColor: '#FFFFFF',
+            groundColor: '#FFFFFF',
+            zenithColor: '#FFFFFF',
+            nadirColor: '#FFFFFF',
+            skyTransparency: '0.0',
+            groundTransparency: '0.0'
         };
     },
     components: {
@@ -222,6 +229,7 @@ export default {
             this.initStylePicker();
             this.addViewFlagAttribute();
             this.initEdgeDisplay();
+            this.initEnvironment();
         },
         async initStylePicker(){
             this.styleEntries = [];
@@ -414,11 +422,81 @@ export default {
             this.view.getDisplayStyle3d().settings.hiddenLineSettings = newHLSettings;
             this.sync();
         },
+        initEnvironment(){
+            let currentEnvironment;
+            if (this.view.is3d()) {
+                const view3d = this.view;
+                const style = view3d.getDisplayStyle3d();
+                const env = style.environment.sky;
+                this.showSkyBox = env.display;
+                if (env instanceof SkyGradient){
+                    currentEnvironment = env;
+                }
+            }
+            this.radio = (undefined !== currentEnvironment && currentEnvironment.twoColor) ? "2colors" : "4colors";
+            this.skyColor = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.skyColor.toHexString();
+            this.groundColor = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.groundColor.toHexString();
+            this.zenithColor = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.zenithColor.toHexString();
+            this.nadirColor = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.nadirColor.toHexString();
+            this.skyTransparency = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.skyExponent.toString();
+            this.groundTransparency = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.groundExponent.toString();
+        },
         handleShowSkyBoxCheckChange($event){
-
+            const view3d = this.view;
+            const style = view3d.getDisplayStyle3d();
+            const env = style.environment;
+            env['sky'].display = $event;
+            view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
+            this.sync();
+        },
+        handelRadioChange(value){
+            this.updateEnvironment({ twoColor: value === "2colors" });
+        },
+        handleSkyColorChange(e){
+            this.updateEnvironment({ skyColor: new ColorDef(e.target.value) });
+        },
+        handleGroundColorChange(e){
+            this.updateEnvironment({ groundColor: new ColorDef(e.target.value) })
+        },
+        handleZenithColorChange(e){
+            this.updateEnvironment({ zenithColor: new ColorDef(e.target.value) })
+        },
+        handleNadirColorChange(e){
+            this.updateEnvironment({ nadirColor: new ColorDef(e.target.value) })
+        },
+        handleSkyExponentChange(e){
+            this.updateEnvironment({ skyExponent: parseFloat(e.target.value) });
+        },
+        handleGroundExponentChange(e){
+            this.updateEnvironment({ groundExponent: parseFloat(e.target.value) });
         },
         handleShowGroundPlaneChange($event){
-
+            const view3d = this.view;
+            const style = view3d.getDisplayStyle3d();
+            const env = style.environment;
+            env['ground'].display = $event;
+            view3d.getDisplayStyle3d().environment = env; // setter converts it to JSON
+            this.sync();
+        },
+        updateEnvironment(newEnv){
+            const oldEnv = this.view.getDisplayStyle3d().environment;
+            const oldSkyEnv = oldEnv.sky;
+            newEnv = {
+              display: oldSkyEnv.display,
+              twoColor: undefined !== newEnv.twoColor ? newEnv.twoColor : oldSkyEnv.twoColor,
+              zenithColor: undefined !== newEnv.zenithColor ? new ColorDef(newEnv.zenithColor) : oldSkyEnv.zenithColor,
+              skyColor: undefined !== newEnv.skyColor ? new ColorDef(newEnv.skyColor) : oldSkyEnv.skyColor,
+              groundColor: undefined !== newEnv.groundColor ? new ColorDef(newEnv.groundColor) : oldSkyEnv.groundColor,
+              nadirColor: undefined !== newEnv.nadirColor ? new ColorDef(newEnv.nadirColor) : oldSkyEnv.nadirColor,
+              skyExponent: undefined !== newEnv.skyExponent ? newEnv.skyExponent : oldSkyEnv.skyExponent,
+              groundExponent: undefined !== newEnv.groundExponent ? newEnv.groundExponent : oldSkyEnv.groundExponent,
+            };
+            this.view.getDisplayStyle3d().environment = new Environment(
+                {
+                    sky: new SkyGradient(newEnv),
+                    ground: oldEnv.ground
+                });
+            this.sync();
         },
         sync() {
             this.GLOBAL_DATA.theViewPort.synchWithView(true);
