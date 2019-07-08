@@ -112,7 +112,7 @@ export default {
             for(var i = 0;i<result.update.length;i++ ){
                 this.GLOBAL_DATA.diffActiveViewState[1].iModelConnection.selectionSet.elements.add(result.update[i].id);
             } 
-            handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[1])
+            handleColorChange("#FCD037",this.GLOBAL_DATA.diffViewPort[1])
         },
         removeColor(){
             clear(this.GLOBAL_DATA.diffViewPort[1]);
