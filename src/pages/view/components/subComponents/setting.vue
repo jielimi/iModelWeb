@@ -119,6 +119,39 @@
                         </el-checkbox>
                     </el-collapse-item>
                 </el-collapse>
+                <el-checkbox class="occlusion" v-model="showOcclusion" @change="handleOcclusionCheckChange">
+                    <span>Ambient Occlusion</span>
+                </el-checkbox>
+                <el-form v-show="showOcclusion">
+                    <div>
+                        <span class="occlusion-label">Bias:</span>
+                        <input type="range" class="occlusion-range" v-model="aoBias" min="0.0" max="1.0" step="0.025" @change="handelBiasChange">
+                    </div>
+                    <div>
+                        <span class="occlusion-label">Length Cap:</span>
+                        <input type="range" class="occlusion-range" v-model="aoZLengthCap" min="0.0" max="0.25" step="0.000025" @change="handelZLengthCapChange">
+                    </div>
+                    <div>
+                        <span class="occlusion-label">Intensity:</span>
+                        <input type="range" class="occlusion-range" v-model="aoIntensity" min="1.0" max="16.0" step="0.1" @change="handelIntensityChange">
+                    </div>
+                    <div>
+                        <span class="occlusion-label">Step:</span>
+                        <input type="range" class="occlusion-range" v-model="aoTexelStepSize" min="1.0" max="5.0" step="0.005" @change="handelTexelStepSizeChange">
+                    </div>
+                    <div>
+                        <span class="occlusion-label">Blur Delta:</span>
+                        <input type="range" class="occlusion-range" v-model="aoBlurDelta" min="0.5" max="1.5" step="0.0001" @change="handelBlurDeltaChange">
+                    </div>
+                    <div>
+                        <span class="occlusion-label">Blur Sigma:</span>
+                        <input type="range" class="occlusion-range" v-model="aoBlurSigma" min="0.5" max="5.0" step="0.0001" @change="handelBlurSigmaChange">
+                    </div>
+                    <div>
+                        <span class="occlusion-label">Blur Step:</span>
+                        <input type="range" class="occlusion-range" v-model="aoBlurTexelStepSize" min="1.0" max="5.0" step="0.005" @change="handelBlurTexelStepSizeChange">
+                    </div>
+                </el-form>
             </div>
         </i>
     </div>
@@ -136,7 +169,7 @@ import {
   DisplayStyle2dState,
   DisplayStyleState,
 } from "@bentley/imodeljs-frontend";
-import { RenderMode, ViewFlags, ColorDef, HiddenLine, LinePixels } from "@bentley/imodeljs-common";
+import { RenderMode, ViewFlags, ColorDef, HiddenLine, LinePixels, AmbientOcclusion } from "@bentley/imodeljs-common";
 export default {
     name: 'setting',
     data () {
@@ -210,7 +243,15 @@ export default {
             zenithColor: '#FFFFFF',
             nadirColor: '#FFFFFF',
             skyTransparency: '0.0',
-            groundTransparency: '0.0'
+            groundTransparency: '0.0',
+            showOcclusion: false,
+            aoBias:'0.0',
+            aoZLengthCap:'0.0',
+            aoIntensity:'0.0',
+            aoTexelStepSize:'0.0',
+            aoBlurDelta:'0.0',
+            aoBlurSigma:'0.0',
+            aoBlurTexelStepSize:'0.0'
         };
     },
     components: {
@@ -230,6 +271,7 @@ export default {
             this.addViewFlagAttribute();
             this.initEdgeDisplay();
             this.initEnvironment();
+            this.initOcclusion();
         },
         async initStylePicker(){
             this.styleEntries = [];
@@ -498,6 +540,57 @@ export default {
                 });
             this.sync();
         },
+        initOcclusion(){
+
+        },
+        handleOcclusionCheckChange($event){
+            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            vf.ambientOcclusion = $event;
+            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            this.sync();
+        },
+        handelBiasChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(parseFloat(value));
+        },
+        handelZLengthCapChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(undefined, parseFloat(value));
+        },
+        handelIntensityChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(undefined, undefined, parseFloat(value));
+        },
+        handelTexelStepSizeChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(undefined, undefined, undefined, parseFloat(value));
+        },
+        handelBlurDeltaChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(undefined, undefined, undefined, undefined, parseFloat(value));
+        },
+        handelBlurSigmaChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(undefined, undefined, undefined, undefined, undefined, parseFloat(value));
+        },
+        handelBlurTexelStepSizeChange($event){
+            let value = $event.target.value;
+            this.updateAmbientOcclusion(undefined, undefined, undefined, undefined, undefined, undefined, parseFloat(value));
+        },
+        updateAmbientOcclusion(newBias, newZLengthCap, newIntensity, newTexelStepSize, newBlurDelta, newBlurSigma, newBlurTexelStepSize){
+            const oldAOSettings = this.view.getDisplayStyle3d().settings.ambientOcclusionSettings;
+            const newAOSettings = AmbientOcclusion.Settings.fromJSON({
+                bias: newBias !== undefined ? newBias : oldAOSettings.bias,
+                zLengthCap: newZLengthCap !== undefined ? newZLengthCap : oldAOSettings.zLengthCap,
+                intensity: newIntensity !== undefined ? newIntensity : oldAOSettings.intensity,
+                texelStepSize: newTexelStepSize !== undefined ? newTexelStepSize : oldAOSettings.texelStepSize,
+                blurDelta: newBlurDelta !== undefined ? newBlurDelta : oldAOSettings.blurDelta,
+                blurSigma: newBlurSigma !== undefined ? newBlurSigma : oldAOSettings.blurSigma,
+                blurTexelStepSize: newBlurTexelStepSize !== undefined ? newBlurTexelStepSize : oldAOSettings.blurTexelStepSize,
+            });
+            this.view.getDisplayStyle3d().settings.ambientOcclusionSettings = newAOSettings;
+            this.sync();
+        },
         sync() {
             this.GLOBAL_DATA.theViewPort.synchWithView(true);
         }
@@ -554,6 +647,24 @@ export default {
                     right: 10px;
                     top: -4px;
                 }
+            }
+            .occlusion {
+                margin-left: 10px;
+            }
+            .occlusion-label {
+                display: inline-block;
+                margin-left: 20px;
+                width: 70px;
+                text-align: right;
+                font-size: 13px;
+                color: #666;
+                &:hover {
+                    color: #666;
+                }
+            }
+            .occlusion-range {
+                position: relative;
+                top: 7px;
             }
             .range {
                 position: relative;
