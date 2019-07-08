@@ -32,16 +32,14 @@
     
     </div>
     <div class="views-area">
-        <!-- <view-compare :projectId="projectId" :versionName="startVersionName" :versionUrl="startVersionUrl" :id="'imodelStart'"></view-compare>
-        <view-compare :projectId="projectId" :versionName="endVersionName" :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-compare> -->
         <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelStart'"></view-start>
         <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-end>
     </div>
-    <div class="difference-area">
+    <!-- <div class="difference-area">
         <difference-result :projectId="projectId" :startVersionName="startVersionName" 
         :endVersionName="endVersionName" ref="result">
         </difference-result>
-    </div>
+    </div> -->
 
   </div>
 </template>
@@ -145,6 +143,7 @@ export default {
 }
 .views-title-content{
     width: 100%;
+    height: 80px;
     text-align: left;
     box-sizing: border-box;
     padding: 10px 20px;
@@ -164,7 +163,7 @@ export default {
     
 }
 .box{
-    display: flex;
+    box-sizing: border-box;
     padding: 10px;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -183,14 +182,6 @@ export default {
         width: 100%;
         flex-direction: row;
         justify-content: space-between;
-        .view-area{
-            position: relative;
-            width: calc(50% - 20px);
-            height: 600px;
-            background-color:#FFFFFF;
-            padding: 5px;
-            box-sizing: border-box;
-        }
   }
     
 };

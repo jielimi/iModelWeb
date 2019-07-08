@@ -229,14 +229,14 @@ export default {
 .inherit{
     position: relative;
     width: calc(50% - 10px);
-    height: 500px;
+    height: 630px;
     .el-dialog__wrapper{
         position: absolute;
     }
 }
 .view-area{
     width: 100%;
-    height: 500px;
+    height: 640px;
     background-color:#FFFFFF;
     padding: 5px;
     box-sizing: border-box;
