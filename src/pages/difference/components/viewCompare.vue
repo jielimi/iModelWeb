@@ -48,6 +48,7 @@ export default {
     name: 'differenceResult',
     data () {
        return{
+            version:this.id == 'imodelStart' ? 0:1,
             isLoading:false,
             theViewPort:undefined,
             configuration:{
@@ -55,7 +56,6 @@ export default {
             },
             progress:2,
             iminfo:{
-                version:this.id == 'imodelStart' ? 0:1,
                 "url": this.versionUrl,
                 "iModelId": this.projectId,
                 "versionName":this.versionName,
@@ -163,7 +163,19 @@ export default {
                 await this.buildViewList(state);
                 
                 if (!this.theViewPort){
-                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                    this.theViewPort = ScreenViewport.create(parent, state.viewState);
+                    this.GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
+                }
+                IModelApp.viewManager.addViewport(this.theViewPort);
+            }
+        },
+        async  openView1(state) {
+            // find the canvas.
+            const parent = document.getElementById(this.id);
+            if (parent) {
+                await this.buildViewList(state);
+                
+                if (!this.theViewPort){
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
                     this.GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
                 }
@@ -181,8 +193,16 @@ export default {
                 this.isLoading = false; 
                 return;
             }
+            let that = this;
            
+            
             await this.openView(activeViewState);
+            if(this.version == 0){
+                await this.openView(activeViewState);
+            }else{
+                await this.openView1(activeViewState);
+            }
+            
             this.GLOBAL_DATA.diffActiveViewState[this.version] = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
