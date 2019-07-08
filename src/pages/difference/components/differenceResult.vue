@@ -130,12 +130,10 @@ export default {
     },
     methods: {
       color(){
-          this.isColor = !this.isColor;
-            window.eventHub.$emit('diff_show_color',this.result);
+          window.eventHub.$emit('diff_show_color',this.result);
       },
       removecolor(){
-          this.isColor = !this.isColor;
-            window.eventHub.$emit('diff_remove_color');
+          window.eventHub.$emit('diff_remove_color');
       },
       AddFocusElement(row){
         window.eventHub.$emit('diff_viewport_insert',row.id);

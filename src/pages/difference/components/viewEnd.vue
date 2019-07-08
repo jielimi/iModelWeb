@@ -60,6 +60,8 @@ export default {
     name: 'differenceResult',
     data () {
        return{
+            options: [],
+            value: '',
             isLoading:false,
             theViewPort:undefined,
             configuration:{

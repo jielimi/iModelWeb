@@ -1,6 +1,29 @@
 <template>
   <div class="box">
+    <div class="views-title">
+        <span>
+            Version:{{startVersionName}} compare Version:{{endVersionName}}
+        </span>
+        <el-button v-show="isSync"
+              type="primary"
+              @click="sync()">Sync
+        </el-button>
+        <el-button v-show="!isSync"
+              type="primary"
+              
+              @click="unSync()">unSync
+        </el-button>
+        
+        <el-button v-show="isColor"
+              type="primary"
+              @click="color()">color
+        </el-button>
+        <el-button v-show="!isColor"
+              type="primary"
+              @click="removecolor()">remove color
+        </el-button>
     
+    </div>
     <div class="views-area">
         <!-- <view-compare :projectId="projectId" :versionName="startVersionName" :versionUrl="startVersionUrl" :id="'imodelStart'"></view-compare>
         <view-compare :projectId="projectId" :versionName="endVersionName" :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-compare> -->
@@ -9,21 +32,10 @@
     </div>
     <div class="difference-area">
         <difference-result :projectId="projectId" :startVersionName="startVersionName" 
-        :endVersionName="endVersionName">
+        :endVersionName="endVersionName" ref="result">
         </difference-result>
     </div>
-    <!-- <div class="sync">
-        <el-button v-show="isSync"
-              type="primary"
-              size="mini"
-              @click="sync()">Sync
-        </el-button>
-        <el-button v-show="!isSync"
-              type="primary"
-              size="mini"
-              @click="unSync()">unSync
-        </el-button>
-    </div> -->
+
     <!-- <div class="mark">
         <div></div>
         <div></div>
@@ -49,6 +61,7 @@ export default {
         return{
             vpConnection:new TwoWayViewportSync(),
             isSync:true,
+            isColor:true,
             startVersionName: this.$route.query.startVersionName,
             startVersionUrl:this.$route.query.startVersionUrl,
             endVersionName: this.$route.query.endVersionName,
@@ -71,6 +84,14 @@ export default {
     },
     
     methods:{
+        removecolor(){
+            this.isColor = !this.isColor;
+            this.$refs.result.removecolor();
+        },
+        color(){
+            this.isColor = !this.isColor
+            this.$refs.result.color();
+        },
         main(){
             const imbcontext= new IModelBankAccessContext(this.projectId, this.startVersionUrl, IModelApp.hubDeploymentEnv);
             let opts={}
@@ -98,14 +119,35 @@ export default {
 
 
 <style lang="less" scoped>
-
+@import "../../assets/css/color.less";
+.views-title{
+    width: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    background-color: @whiteBGColor;
+    border: 1px solid @defaultBorderColor;
+    margin-bottom: 10px;
+    span{
+        font-size: 16px;
+        margin-right: 20px;
+    }
+    button{
+        width: 100px;
+        height: 30px;
+    }
+    .button+.button {
+     margin-left: 0px;
+    }
+}
 .box{
     display: flex;
+    padding: 10px;
     flex-wrap: wrap;
     justify-content: flex-start;
     width: 100%;
     height: 100%;
-    background-color: #88C5FB;
+    background-color:@cyan;
     .difference-area {
         margin-left: 10px;
         width: calc(100% - 20px);
@@ -115,14 +157,13 @@ export default {
     } 
     .views-area{
         display: flex;
-        padding: 10px;
         width: 100%;
         flex-direction: row;
         justify-content: space-between;
         .view-area{
             position: relative;
-            width: calc(50% - 10px);
-            height: 500px;
+            width: calc(50% - 20px);
+            height: 600px;
             background-color:#FFFFFF;
             padding: 5px;
             box-sizing: border-box;
