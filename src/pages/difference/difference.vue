@@ -1,27 +1,34 @@
 <template>
   <div class="box">
-    <div class="views-title">
-        <span>
+    <div class="views-title-content">
+         <div style="text-align: center;">
+            <span class="title">
             Version:{{startVersionName}} compare Version:{{endVersionName}}
-        </span>
-        <el-button v-show="isSync"
+            </span>
+        </div>
+
+        <el-button v-if="isSync"
               type="primary"
               @click="sync()">Sync
         </el-button>
-        <el-button v-show="!isSync"
+        <el-button v-if="!isSync"
               type="primary"
-              
               @click="unSync()">unSync
         </el-button>
         
         <el-button v-show="isColor"
               type="primary"
-              @click="color()">color
+              @click="color()">Color
         </el-button>
         <el-button v-show="!isColor"
               type="primary"
-              @click="removecolor()">remove color
+              @click="removecolor()">Remove Color
         </el-button>
+        <div class="mark">
+            <div class="square"></div>Add
+            <div class="square"></div>Delete
+            <div class="square"></div>Modify
+        </div>
     
     </div>
     <div class="views-area">
@@ -36,12 +43,6 @@
         </difference-result>
     </div>
 
-    <!-- <div class="mark">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-    </div> -->
   </div>
 </template>
 
@@ -120,7 +121,29 @@ export default {
 
 <style lang="less" scoped>
 @import "../../assets/css/color.less";
-.views-title{
+
+.square{
+    width: 20px;
+    height: 20px;
+}
+.mark{
+    vertical-align: bottom;
+    display: inline-block;
+    div{
+        display: inline-block;
+        margin-right:5px; 
+    }
+    div:nth-child(1){
+        background-color: @green;
+    }
+    div:nth-child(2){
+        background-color: @red;
+    }
+    div:nth-child(3){
+        background-color: @yellow;
+    }
+}
+.views-title-content{
     width: 100%;
     text-align: left;
     box-sizing: border-box;
@@ -128,17 +151,17 @@ export default {
     background-color: @whiteBGColor;
     border: 1px solid @defaultBorderColor;
     margin-bottom: 10px;
-    span{
+    .title{
         font-size: 16px;
-        margin-right: 20px;
+        margin-left: 60px;
+        font-weight: 600;
+        vertical-align: middle;
     }
     button{
         width: 100px;
         height: 30px;
     }
-    .button+.button {
-     margin-left: 0px;
-    }
+    
 }
 .box{
     display: flex;
