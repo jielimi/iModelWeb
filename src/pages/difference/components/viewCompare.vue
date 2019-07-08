@@ -1,6 +1,9 @@
 <template>
     <div class="inherit">
-        <div class="view-area" :id=id></div>
+        <div class="view-area" :id=id>
+            <div class="tool-bar">
+            </div>
+        </div>
         <el-dialog
         title=""
         width="20%"
@@ -206,9 +209,9 @@ export default {
             this.GLOBAL_DATA.diffActiveViewState[this.version] = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
-            window.eventHub.$emit('categories_init');
-            window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init');
+            // window.eventHub.$emit('categories_init');
+            // window.eventHub.$emit('render_mode_init');
+            // window.eventHub.$emit('render_model_init');
             
         }
     }
@@ -233,5 +236,13 @@ export default {
     padding: 5px;
     box-sizing: border-box;
 }
-
+.tool-bar{
+    height: 35px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
 </style>

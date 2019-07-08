@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div class="sync">
+      <!-- <div class="sync">
         <el-button v-show="isColor"
               type="primary"
               size="mini"
@@ -11,12 +11,7 @@
               size="mini"
               @click="removecolor()">remove color
         </el-button>
-        <!-- <div class="mark">
-          <div>Insert</div>
-          <div>Delete</div>
-          <div>Modify</div>        
-        </div> -->
-    </div>
+    </div> -->
       <el-tabs type="border-card">
         <el-tab-pane label="Add">
             <!-- <el-table

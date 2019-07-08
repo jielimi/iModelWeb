@@ -2,17 +2,17 @@
   <div class="box">
     
     <div class="views-area">
-        <view-compare :projectId="projectId" :versionName="startVersionName" :versionUrl="startVersionUrl" :id="'imodelStart'"></view-compare>
-        <view-compare :projectId="projectId" :versionName="endVersionName" :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-compare>
-        <!-- <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelEnd'"></view-start>
-        <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelStart'"></view-end> -->
+        <!-- <view-compare :projectId="projectId" :versionName="startVersionName" :versionUrl="startVersionUrl" :id="'imodelStart'"></view-compare>
+        <view-compare :projectId="projectId" :versionName="endVersionName" :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-compare> -->
+        <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelStart'"></view-start>
+        <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-end>
     </div>
     <div class="difference-area">
         <difference-result :projectId="projectId" :startVersionName="startVersionName" 
         :endVersionName="endVersionName">
         </difference-result>
     </div>
-    <div class="sync">
+    <!-- <div class="sync">
         <el-button v-show="isSync"
               type="primary"
               size="mini"
@@ -23,7 +23,7 @@
               size="mini"
               @click="unSync()">unSync
         </el-button>
-    </div>
+    </div> -->
     <!-- <div class="mark">
         <div></div>
         <div></div>
