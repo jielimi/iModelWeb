@@ -2,8 +2,10 @@
   <div class="box">
     
     <div class="views-area">
-        <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelEnd'"></view-start>
-        <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelStart'"></view-end>
+        <view-compare :projectId="projectId" :versionName="startVersionName" :versionUrl="startVersionUrl" :id="'imodelStart'"></view-compare>
+        <view-compare :projectId="projectId" :versionName="endVersionName" :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-compare>
+        <!-- <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelEnd'"></view-start>
+        <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelStart'"></view-end> -->
     </div>
     <div class="difference-area">
         <difference-result :projectId="projectId" :startVersionName="startVersionName" 
@@ -35,6 +37,7 @@
 import differenceResult from './components/differenceResult'
 import viewStart from './components/viewStart'
 import viewEnd from './components/viewEnd'
+import viewCompare from './components/viewCompare'
 import RPC from '../../pages/view/rpc';
 import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,TwoWayViewportSync} from "@bentley/imodeljs-frontend";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
@@ -56,7 +59,9 @@ export default {
     components:{
         differenceResult,
         viewStart,
-        viewEnd
+        viewEnd,
+        viewCompare
+
     },
     created(){
        
