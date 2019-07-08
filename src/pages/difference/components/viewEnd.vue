@@ -1,5 +1,17 @@
 <template>
      <div class="inherit">
+        <div class="tool-bar">
+                <div class="change-view">
+                    <el-select v-model="value" placeholder="Select" @change="selectChange">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item">
+                        </el-option>
+                    </el-select>
+                </div>
+        </div>
         <div class="view-area" :id=id></div>
         <el-dialog
         title=""
@@ -144,6 +156,17 @@ export default {
           
             this.progress = this.randomNum(40,50);
         },
+        async selectChange(view){
+            this.value = view.name;
+            if (!(view instanceof ViewState)) {
+                view = await  this.GLOBAL_DATA.diffActiveViewState[1].iModelConnection.views.load(view.id);
+            }
+            await this.GLOBAL_DATA.diffViewPort[1].changeView(view);
+            await this.notify(view.clone());
+        },
+        async notify(view) {
+            this.GLOBAL_DATA.diffActiveViewState[0].viewState = view;
+        },
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
             const viewQueryParams = { wantPrivate: false };
@@ -154,7 +177,9 @@ export default {
                 const viewState = await state.iModelConnection.views.load(viewSpec.id);
                 state.viewState = viewState;
             }
-            window.eventHub.$emit('viewList_init', viewSpecs);
+            this.options = viewSpecs;
+            this.value = this.options[0].name
+            //window.eventHub.$emit('viewList_init', viewSpecs);
         },
         async  openView(state) {
             // find the canvas.
@@ -214,5 +239,13 @@ export default {
     padding: 5px;
     box-sizing: border-box;
 }
+.tool-bar{
+    position: absolute;
+    z-index: 10;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
 
 </style>
