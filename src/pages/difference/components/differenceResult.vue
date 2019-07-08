@@ -1,38 +1,18 @@
 <template>
     <div>
-      <!-- <div class="sync">
-        <el-button v-show="isColor"
-              type="primary"
-              size="mini"
-              @click="color()">color
-        </el-button>
-        <el-button v-show="!isColor"
-              type="primary"
-              size="mini"
-              @click="removecolor()">remove color
-        </el-button>
-    </div> -->
       <el-tabs type="border-card">
         <el-tab-pane label="Add">
-            <!-- <el-table
-              :data="tableDataAdd.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))" -->
             <el-table
               :data="tableDataInsert.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))"
               border
-              style="width: 50%">
+              style="width: 50%"
+              max-height="250">
               <el-table-column
                 prop="id"
                 label="id"
                 width="180">
               </el-table-column>
               <el-table-column label="Location">
-                <!-- <template slot="header" slot-scope="scope">
-                  <el-input
-                    v-model="search"
-                    size="mini"
-                    placeholder="search"/>
-                </template> -->
-                
                 <template slot-scope="scope">
                   <el-button
                     size="mini"
@@ -90,7 +70,6 @@
                 width="180">
               </el-table-column>
               <el-table-column label="Location">
-               
                 <template slot-scope="scope">
                   <el-button
                     size="mini"

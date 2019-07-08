@@ -41,11 +41,14 @@
         </difference-result>
     </div> -->
   <div class="search">
-      <el-button icon="el-icon-search" circle @click="showDiff = !showDiff"></el-button>
+      <el-button icon="el-icon-search" circle @click="showDiff = true"></el-button>
   </div>
 
   <el-collapse-transition>
     <div v-show="showDiff" class="difference-area">
+        <div class="close">
+            <el-button icon="el-icon-close" circle @click="showDiff = false"></el-button>
+        </div>
        <difference-result :projectId="projectId" :startVersionName="startVersionName" 
         :endVersionName="endVersionName" ref="result">
         </difference-result>
@@ -69,7 +72,7 @@ export default {
     name:'difference',
     data(){
         return{
-            showDiff:true,
+            showDiff:false,
             vpConnection:new TwoWayViewportSync(),
             isSync:true,
             isColor:true,
@@ -136,8 +139,12 @@ export default {
     left: 20px;
     bottom: 20px;
 }
-
-
+.close{
+    position: absolute;
+    right: calc(50% - 16px);
+    top: 5px;
+    z-index: 10;
+}
 .square{
     width: 20px;
     height: 20px;
@@ -191,8 +198,7 @@ export default {
     .difference-area {
         position: absolute;
         width: 1000px;
-        height: 400px;
-        bottom: 0;
+        bottom: 14px;
         right: calc(50% - 500px);
         background-color:#FFFFFF; 
         overflow-y: auto;
