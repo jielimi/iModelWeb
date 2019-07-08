@@ -229,7 +229,7 @@ export default {
 .inherit{
     position: relative;
     width: calc(50% - 10px);
-    height: 630px;
+    height: 640px;
     .el-dialog__wrapper{
         position: absolute;
     }
