@@ -32,14 +32,11 @@
     
     </div>
     <div class="views-area">
+        <viewToolTip ref='tip'></viewToolTip>
         <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelStart'"></view-start>
         <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-end>
     </div>
-    <!-- <div class="difference-area">
-        <difference-result :projectId="projectId" :startVersionName="startVersionName" 
-        :endVersionName="endVersionName" ref="result">
-        </difference-result>
-    </div> -->
+ 
   <div class="search">
       <el-button icon="el-icon-search" circle @click="showDiff = true"></el-button>
   </div>
@@ -63,6 +60,7 @@ import differenceResult from './components/differenceResult'
 import viewStart from './components/viewStart'
 import viewEnd from './components/viewEnd'
 import viewCompare from './components/viewCompare'
+import viewToolTip from './components/viewToolTip'
 import RPC from '../../pages/view/rpc';
 import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,TwoWayViewportSync} from "@bentley/imodeljs-frontend";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
@@ -87,8 +85,7 @@ export default {
         differenceResult,
         viewStart,
         viewEnd,
-        viewCompare
-
+        viewToolTip
     },
     created(){
        
@@ -98,6 +95,33 @@ export default {
     },
     
     methods:{
+        iModelStartup(){
+            let that = this;
+            class DisplayTestApp {
+                static tileAdminProps = {
+                    retryInterval: 50,
+                    enableInstancing: true,
+                };
+
+                static startup(opts) {
+                    opts = opts ? opts : {};
+                    
+                    setTimeout(()=>{
+                        opts.notifications = that.$refs.tip.notifications();
+                        
+                        const imbcontext= new IModelBankAccessContext(that.projectId, that.startVersionUrl, IModelApp.hubDeploymentEnv);
+                        opts.imodelClient = imbcontext.client;
+                        IModelApp.startup(opts);
+                    })
+                }
+
+                static setActiveSnapModes(snaps) {
+                        IModelApp.accuSnap.setActiveSnapModes(snaps);
+                }
+                static setActiveSnapMode(snap) { this.setActiveSnapModes([snap]); }
+            }
+            DisplayTestApp.startup();
+        },
         removecolor(){
             this.isColor = !this.isColor;
             this.$refs.result.removecolor();
@@ -107,10 +131,11 @@ export default {
             this.$refs.result.color();
         },
         main(){
-            const imbcontext= new IModelBankAccessContext(this.projectId, this.startVersionUrl, IModelApp.hubDeploymentEnv);
-            let opts={}
-            opts.imodelClient = imbcontext.client;
-            IModelApp.startup(opts);
+            // const imbcontext= new IModelBankAccessContext(this.projectId, this.startVersionUrl, IModelApp.hubDeploymentEnv);
+            // let opts={}
+            // opts.imodelClient = imbcontext.client;
+            // IModelApp.startup(opts);
+            this.iModelStartup();
             
             RPC.init();
             setTimeout(function(){
