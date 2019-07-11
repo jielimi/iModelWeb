@@ -23,6 +23,7 @@
         <measureComponent></measureComponent>
         <tileprogressComponent></tileprogressComponent>
         <shadowComponent></shadowComponent>
+        <treeComponent></treeComponent>
         
     </div>
 </template>
@@ -50,6 +51,7 @@ import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
+import treeComponent from './subComponents/tree'
 
 
 
@@ -81,7 +83,8 @@ export default {
         isolateComponent,
         tileprogressComponent,
         measureComponent,
-        shadowComponent
+        shadowComponent,
+        treeComponent
     },
     created () {
     },
