@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-layers-1 tree" @click.self="showTree = !showTree">
+        <i class="iconfont icon-tree tree " @click.self="showTree = !showTree">
             <div v-show="showTree" class="detail">
                 <el-input
                     placeholder="filter"
