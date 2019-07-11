@@ -14,8 +14,23 @@
                     :data="treeData"
                     :props="defaultProps"
                     accordion
-                    @node-click="handleNodeClick"
                     ref="tree">
+
+                    <span class="custom-tree-node" slot-scope="{ node, data }">
+                        <span>{{ node.label }}</span>
+                        <span>
+                        <i class="el-icon-location" v-if="node.data.isElem"
+                        @click="() => focusElement(data)"
+                        >
+                        </i>
+                        <!-- <el-button v-if="node.isLeaf"
+                            type="text"
+                            size="mini"
+                            @click="() => append(data)">
+                            Append
+                        </el-button> -->
+                        </span>
+                    </span>
                 </el-tree>
             </div>
         </i>
@@ -35,7 +50,7 @@ export default {
             defaultProps: {
                 children: 'children',
                 label: 'name',
-                isLeaf: 'leaf'
+                isLeaf: 'leaf',
             },
             filterText:''
         };
@@ -52,6 +67,10 @@ export default {
         window.eventHub.$on('render_model_init',this.buildTree);
     },
     methods: {
+       async focusElement(data){
+            //this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements.add(data.id)
+            await this.GLOBAL_DATA.theViewPort.zoomToElements(data.id);
+        },
        async getElemByCatelogyId(id){
             const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE category.id=${id} `;
             const view = this.GLOBAL_DATA.theViewPort.view;
@@ -60,7 +79,8 @@ export default {
                 let elem = {
                     id:row.id,
                     name:row.id,
-                    leaf: true
+                    isElem:true,
+                    leaf:true
                 }
                 elems.push(elem) 
             }
@@ -68,6 +88,7 @@ export default {
             
         },
         async loadNode(node, resolve) {
+            console.log(node)
             if(node.level === 0){
                 return resolve(this.treeData)
             }
@@ -80,7 +101,7 @@ export default {
                 let elems = await this.getElemByCatelogyId(node.data.id);
                 return resolve(elems)
             }
-            console.log(node);
+            
         },
         filterNode(value, data) {
             if (!value) return true;
@@ -142,7 +163,7 @@ export default {
             left: 0;
             top: 45px;
             z-index: 999;
-            width: 200px;
+            width: 280px;
             max-height: 350px;
             overflow-y: auto;
             padding-bottom: 10px;
