@@ -1,12 +1,14 @@
 <template>
     <div>
-        <i class="iconfont icon-layers-1 tree" @click="showTree = !showTree">
+        <i class="iconfont icon-layers-1 tree" @click.self="showTree = !showTree">
             <div v-show="showTree" class="detail">
-                <!-- <el-input
+                <el-input
                     placeholder="filter"
                     v-model="filterText">
-                </el-input> -->
+                </el-input>
                <el-tree 
+                    lazy
+                    :load="loadNode"
                     class="filter-tree"
                     :filter-node-method="filterNode"
                     :data="treeData"
@@ -32,7 +34,8 @@ export default {
             showTree:false,
             defaultProps: {
                 children: 'children',
-                label: 'name'
+                label: 'name',
+                isLeaf: 'leaf'
             },
             filterText:''
         };
@@ -49,12 +52,42 @@ export default {
         window.eventHub.$on('render_model_init',this.buildTree);
     },
     methods: {
+       async getElemByCatelogyId(id){
+            const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE category.id=${id} `;
+            const view = this.GLOBAL_DATA.theViewPort.view;
+            let elems = [];
+            for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
+                let elem = {
+                    id:row.id,
+                    name:row.id,
+                    leaf: true
+                }
+                elems.push(elem) 
+            }
+            return elems;
+            
+        },
+        async loadNode(node, resolve) {
+            if(node.level === 0){
+                return resolve(this.treeData)
+            }
+
+            if(node.level === 1){
+                return resolve(node.data.children)
+            }
+
+            if(node.level === 2){
+                let elems = await this.getElemByCatelogyId(node.data.id);
+                return resolve(elems)
+            }
+            console.log(node);
+        },
         filterNode(value, data) {
             if (!value) return true;
             return data.name.indexOf(value) !== -1;
         },
         handleNodeClick(data){
-            console.log(data);
+            //console.log(data);
 
         },
         async findCategoryByModelId(modelId){
@@ -70,8 +103,7 @@ export default {
             for await (const row of view.iModel.query(`${selectSpatialCategoryProps} LIMIT 1000`, undefined)) {
                 let categolyElem = {
                     name:row.code,
-                    id:row.id,
-                    category:true
+                    id:row.id
                 }
                 this.categoryList.push(categolyElem);
             }
