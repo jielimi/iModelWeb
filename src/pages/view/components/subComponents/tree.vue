@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-tree tree " @click.self="showTree = !showTree">
+        <i class="iconfont icon-tree tree" v-show="is3d" @click.self="showTree = !showTree">
             <div v-show="showTree" class="detail">
                 <el-input
                     placeholder="filter"
@@ -44,6 +44,7 @@ export default {
     name: 'tree',
     data () {
         return {
+            is3d: false,
             modelList:[],
             treeData:[],
             showTree:false,
@@ -156,6 +157,10 @@ export default {
         
         },
         async buildTree(){
+            this.is3d = this.GLOBAL_DATA.theViewPort.view.is3d();
+            if(!this.is3d){
+                return;
+            }
             const view = this.GLOBAL_DATA.theViewPort.view;
             const selector = view.modelSelector;
             const query = { from: SpatialModelState.classFullName, wantPrivate: false };
