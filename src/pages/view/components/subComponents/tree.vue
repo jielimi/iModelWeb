@@ -19,16 +19,14 @@
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                         <span>{{ node.label }}</span>
                         <span>
-                        <i class="el-icon-location" v-if="node.data.isElem"
+                        <!-- <i class="el-icon-location" v-if="node.data.isElem"
                         @click="() => focusElement(data)"
                         >
+                        </i> -->
+                        <i class="el-icon-location" 
+                        @click="() => test(data)"
+                        >
                         </i>
-                        <!-- <el-button v-if="node.isLeaf"
-                            type="text"
-                            size="mini"
-                            @click="() => append(data)">
-                            Append
-                        </el-button> -->
                         </span>
                     </span>
                 </el-tree>
@@ -68,9 +66,16 @@ export default {
         window.eventHub.$on('render_model_init',this.buildTree);
     },
     methods: {
+       async test(data){
+           let id = '0x2000000081e';
+           const view = this.GLOBAL_DATA.theViewPort.view;
+           const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE ECInstanceId=${id} `
+            for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
+                console.log("rowtest",row)
+            }
+       },
        async focusElement(data){
-            //this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements.add(data.id)
-            await this.GLOBAL_DATA.theViewPort.zoomToElements(data.id);
+            this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements.add(data.id)
         },
        async getElemByParentId(id){
             const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE parent.id=${id} `

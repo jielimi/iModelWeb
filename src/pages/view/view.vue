@@ -99,15 +99,12 @@ export default {
                     break; 
             } 
         },
-        // categoryChange () {
-        // },
+        
         async loginAndOpenImodel(state) {
             this.progress = this.randomNum(5,20);
             const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
             
-            
-            //IModelApp.iModelClient = imbcontext.client; register tool
-            
+                     
             IModelApp.authorizationClient = new IModelBankAuthorizationClient({
                 "sub": "userid",
                 "email": "email@organization.org",
@@ -123,11 +120,8 @@ export default {
             this.iminfo.contextId = imbcontext.toIModelTokenContextId();
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
             1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
-            // const requestContext = await AuthorizedFrontendRequestContext.create();
             
-            // const selectedChangeSets = await IModelApp.iModelClient.changeSets.get(requestContext, this.iminfo.iModelId, new ChangeSetQuery().getVersionChangeSets(this.iminfo.versionId));
-            // let changeSetCount = selectedChangeSets.length;
-            console.log('state',state)
+            
             this.progress = this.randomNum(40,50);
         },
         async buildViewList(state, configurations) {
