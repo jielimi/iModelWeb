@@ -71,24 +71,42 @@ export default {
             //this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements.add(data.id)
             await this.GLOBAL_DATA.theViewPort.zoomToElements(data.id);
         },
+       async getElemByParentId(id){
+            const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE parent.id=${id} `
+            const view = this.GLOBAL_DATA.theViewPort.view;
+            let elems = [];
+            for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
+                if(row.hasOwnProperty("parent")){
+                        let elem = {
+                        id:row.id,
+                        name:row.id,
+                        isElem:true,
+                    }
+                    elems.push(elem) 
+                }
+            }
+            return elems;
+       }, 
        async getElemByCatelogyId(id){
             const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE category.id=${id} `;
             const view = this.GLOBAL_DATA.theViewPort.view;
             let elems = [];
             for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
-                let elem = {
-                    id:row.id,
-                    name:row.id,
-                    isElem:true,
-                    leaf:true
+                console.log("row",row);
+
+                if(!row.hasOwnProperty("parent")){
+                        let elem = {
+                        id:row.id,
+                        name:row.id,
+                        isElem:true
+                    }
+                    elems.push(elem) 
                 }
-                elems.push(elem) 
             }
             return elems;
-            
         },
         async loadNode(node, resolve) {
-            console.log(node)
+           
             if(node.level === 0){
                 return resolve(this.treeData)
             }
@@ -99,6 +117,11 @@ export default {
 
             if(node.level === 2){
                 let elems = await this.getElemByCatelogyId(node.data.id);
+                return resolve(elems)
+            }
+
+            if(node.level >= 3){
+                let elems = await this.getElemByParentId(node.data.id);
                 return resolve(elems)
             }
             
