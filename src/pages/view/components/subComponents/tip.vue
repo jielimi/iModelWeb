@@ -37,6 +37,14 @@
                     </tr>
                 </table>
             </el-collapse-item>
+            <el-collapse-item title="ExtendData" name="5" v-if="extendData">
+                <table>
+                    <tr v-for="(value, key, index) in extendData">
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                </table>
+            </el-collapse-item>
             <el-collapse-item title="Material" name="5" v-if="material">
             </el-collapse-item>
             <el-collapse-item title="Extend" name="6" v-if="extend">
@@ -63,7 +71,8 @@ export default {
             geometry: '',
             rawData: '',
             material: '',
-            extend: ''
+            extend: '',
+            extendData:''
         };
     },
     components: {},
@@ -96,6 +105,7 @@ export default {
                     that.rawData = {};
                     that.rawData.bBoxHigh = res.data.extraMsg.raw.bBoxHigh;
                     that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
+                    that.extendData = res.data.extraMsg.extend;
                 }
             })
        },

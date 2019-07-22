@@ -1,6 +1,7 @@
 import { HitDetail, IModelApp } from "@bentley/imodeljs-frontend";
 
 HitDetail.prototype.getToolTip = async function() {
+  
     
     if (!this.isElementHit)
 

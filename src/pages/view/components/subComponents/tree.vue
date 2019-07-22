@@ -69,7 +69,7 @@ export default {
        async test(data){
            let id = '0x2000000081e';
            const view = this.GLOBAL_DATA.theViewPort.view;
-           const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE ECInstanceId=${id} `
+           const searchElemSql = `SELECT * FROM BisCore.Element WHERE ECInstanceId=${id} `
             for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
                 console.log("rowtest",row)
             }

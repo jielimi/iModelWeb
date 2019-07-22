@@ -23,8 +23,7 @@
         <measureComponent></measureComponent>
         <tileprogressComponent></tileprogressComponent>
         <shadowComponent></shadowComponent>
-        <!-- <treeComponent></treeComponent> -->
-        
+        <treeComponent></treeComponent>
     </div>
 </template>
 <script>
