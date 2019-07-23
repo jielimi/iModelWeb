@@ -68,7 +68,10 @@ export default {
     },
     methods: {
        async focusElement(data){
+            const view = this.GLOBAL_DATA.theViewPort.view;
             await this.GLOBAL_DATA.theViewPort.zoomToElements(data.id);
+            view.iModel.hilited.clear();
+            view.iModel.hilited.setHilite(data.id,true)
         },
        async getElemByParentId(data){
             let searchElemSql;

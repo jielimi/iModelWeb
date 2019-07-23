@@ -67,7 +67,7 @@ export default {
             const vp = this.GLOBAL_DATA.theViewPort;
             const view = this.GLOBAL_DATA.theViewPort.view;
             const selector = view.modelSelector;
-            console.log(selector);
+           
             let checked = this.checkNameList.indexOf(name) >= 0 ? true : false;
             let model = view.iModel.models.getLoaded(id);
             if(undefined === model){
