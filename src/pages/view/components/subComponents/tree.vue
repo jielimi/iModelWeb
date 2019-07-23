@@ -19,14 +19,14 @@
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                         <span>{{ node.label }}</span>
                         <span>
-                        <!-- <i class="el-icon-location" v-if="node.data.isElem"
+                        <i class="el-icon-location" v-if="node.data.isElem "
                         @click="() => focusElement(data)"
                         >
-                        </i> -->
-                        <i class="el-icon-location" 
+                        </i>
+                        <!-- <i class="el-icon-location" 
                         @click="() => test(data)"
                         >
-                        </i>
+                        </i> -->
                         </span>
                     </span>
                 </el-tree>
@@ -38,6 +38,7 @@
 <script>
 import { IModelApp,Viewport, SpatialViewState, SpatialModelState } from "@bentley/imodeljs-frontend";
 import { compareStringsOrUndefined } from "@bentley/bentleyjs-core";
+import { arch } from 'os';
 export default {
     name: 'tree',
     data () {
@@ -66,19 +67,16 @@ export default {
         window.eventHub.$on('render_model_init',this.buildTree);
     },
     methods: {
-       async test(data){
-           let id = '0x2000000081e';
-           const view = this.GLOBAL_DATA.theViewPort.view;
-           const searchElemSql = `SELECT * FROM BisCore.Element WHERE ECInstanceId=${id} `
-            for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
-                console.log("rowtest",row)
-            }
-       },
        async focusElement(data){
-            this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements.add(data.id)
+            await this.GLOBAL_DATA.theViewPort.zoomToElements(data.id);
         },
-       async getElemByParentId(id){
-            const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE parent.id=${id} `
+       async getElemByParentId(data){
+            let searchElemSql;
+            if (data.categoryId){
+                searchElemSql = `SELECT * FROM BisCore.GeometricElement3d WHERE parent.id=${data.id} AND category.id=${data.categoryId} ` //cell
+            }else {
+                searchElemSql = `SELECT * FROM BisCore.GeometricElement3d WHERE parent.id=${data.id}`
+            }
             const view = this.GLOBAL_DATA.theViewPort.view;
             let elems = [];
             for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
@@ -86,48 +84,68 @@ export default {
                         let elem = {
                         id:row.id,
                         name:row.id,
-                        isElem:true,
+                        isElem:row.geometryStream ? true:false,
+                        hasParent:true
                     }
                     elems.push(elem) 
                 }
             }
             return elems;
        }, 
-       async getElemByCatelogyId(id){
-            const searchElemSql = `SELECT * FROM BisCore.PhysicalElement WHERE category.id=${id} `;
+       async getCellByCatelogyId(id){
+            const searchElemSql = `SELECT * FROM BisCore.GeometricElement3d WHERE category.id=${id} `;
             const view = this.GLOBAL_DATA.theViewPort.view;
+            let elem = '';
             let elems = [];
+            let elemArray = [];
+        
             for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
-                console.log("row",row);
-
                 if(!row.hasOwnProperty("parent")){
-                        let elem = {
-                        id:row.id,
-                        name:row.id,
-                        isElem:true
+                        
+                    if(elemArray.indexOf(row.id) == -1){
+                        elemArray.push(row.id);
                     }
-                    elems.push(elem) 
+                }else{
+                     if(elemArray.indexOf(row.parent.id) == -1){
+                        elemArray.push(row.parent.id);
+                    }
                 }
+            }
+
+            for(let i = 0;i < elemArray.length;i++){
+                let EcInstanceId = elemArray[i]
+                const searchElemSql = `SELECT * FROM BisCore.GeometricElement3d WHERE EcInstanceId=${EcInstanceId} `;
+                let row = '';
+                for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
+                  elem = {
+                    id:row.id,
+                    categoryId:id,
+                    name:row.userLabel || row.className,
+                    isElem:row.geometryStream ? true:false,
+                    hasParent:row.parent ? true:false,
+                    }
+                }
+                elems.push(elem)
             }
             return elems;
         },
         async loadNode(node, resolve) {
            
             if(node.level === 0){
-                return resolve(this.treeData)
+                return resolve(this.treeData)  // model
             }
 
             if(node.level === 1){
-                return resolve(node.data.children)
+                return resolve(node.data.children) //category
             }
 
             if(node.level === 2){
-                let elems = await this.getElemByCatelogyId(node.data.id);
+                let elems = await this.getCellByCatelogyId(node.data.id); //cell
                 return resolve(elems)
             }
 
             if(node.level >= 3){
-                let elems = await this.getElemByParentId(node.data.id);
+                let elems = await this.getElemByParentId(node.data); // element
                 return resolve(elems)
             }
             
