@@ -21,6 +21,16 @@
                 </template>
             </el-table-column>
             </el-table>
+            <el-pagination
+                   background
+                   @size-change="addhandleSizeChange"
+                   @current-change="addhandleCurrentChange"
+                   :current-page="addReq.pageIndex"
+                   :page-sizes="[5, 10, 20, 50]"
+                   :page-size="addReq.pageSize"
+                   layout=" prev, pager, next,total,sizes"
+                   :total="addReq.totalNum">
+        </el-pagination>
         </el-tab-pane>
         <el-tab-pane label="Update">
           <el-table
@@ -58,6 +68,16 @@
                 </template>
             </el-table-column>
             </el-table>
+            <el-pagination
+                   background
+                   @size-change="modifyhandleSizeChange"
+                   @current-change="modifyhandleCurrentChange"
+                   :current-page="modifyReq.pageIndex"
+                   :page-sizes="[5, 10, 20, 50]"
+                   :page-size="modifyReq.pageSize"
+                   layout=" prev, pager, next,total,sizes"
+                   :total="modifyReq.totalNum">
+          </el-pagination>
         </el-tab-pane>
         <el-tab-pane label="Delete">
           <el-table
@@ -78,6 +98,17 @@
                 </template>
             </el-table-column>
             </el-table>
+
+            <el-pagination
+                   background
+                   @size-change="delhandleSizeChange"
+                   @current-change="delhandleCurrentChange"
+                   :current-page="delReq.pageIndex"
+                   :page-sizes="[5, 10, 20, 50]"
+                   :page-size="delReq.pageSize"
+                   layout=" prev, pager, next,total,sizes"
+                   :total="delReq.totalNum">
+          </el-pagination>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -94,8 +125,22 @@ export default {
          tableDataInsert: [],
          tableDataUpdate:[],
          tableDataDelete:[],
-         result:{}
-         
+         result:{},
+         addReq:{
+           pageIndex:1,
+           pageSize:10,
+           totalNum:0
+         },
+         delReq:{
+           pageIndex:1,
+           pageSize:10,
+           totalNum:0
+         },
+         modifyReq:{
+           pageIndex:1,
+           pageSize:10,
+           totalNum:0
+         }
       }
     },
     props:['projectId','startVersionName','endVersionName'],
@@ -108,6 +153,53 @@ export default {
         
     },
     methods: {
+      addhandleSizeChange(val,type) {
+        this.addReq.pageIndex = 1;
+        this.addReq.pageSize = val;
+        this.getTableResult(0, this.addReq, this.tableDataInsert);
+      },
+      addhandleCurrentChange(val) {
+        this.addReq.pageIndex = val;
+        this.getTableResult(0, this.addReq, this.tableDataInsert);
+      },
+      modifyhandleSizeChange(val,type) {
+        this.modifyReq.pageIndex = 1;
+        this.modifyReq.pageSize = val;
+        this.getTableResult(1, this.modifyReq, this.tableDataModify);
+      },
+      modifyhandleCurrentChange(val) {
+        this.modifyReq.pageIndex = val;
+        this.getTableResult(1, this.addReq, this.tableDataModify);
+      },
+      delhandleSizeChange(val,type) {
+        this.addReq.pageIndex = 1;
+        this.addReq.pageSize = val;
+        this.getTableResult(2, this.delReq, this.tableDataDelete);
+      },
+      delhandleCurrentChange(val) {
+        this.addReq.pageIndex = val;
+        this.getTableResult(2, this.delReq, this.tableDataDelete);
+      },
+      getTableResult(type,req,table){
+        let param = {
+                    projectId:this.projectId,
+                    startversion:this.endVersionName,
+                    endversion: this.startVersionName,
+                    changeType:type,
+                    pageIndex:req.pageIndex,
+                    pageSize:req.pageSize
+                  }
+
+        this.$get('api/version/differences',{}, param).then(res => {
+            this.isLoading = false;
+              if (res.state === 0) {
+                table = res.data;
+                req.pageSize = res.pagination.pageSize? res.pagination.pageSize:10;
+                req.pageIndex = res.pagination.pageIndex? res.pagination.pageIndex:1;
+                req.totalNum = res.pagination.totalNum;
+              }
+          });
+      },
       color(){
           window.eventHub.$emit('diff_show_color',this.result);
       },
@@ -129,6 +221,8 @@ export default {
       formatterColumnAfter(row, column) {
         return JSON.stringify(row.after.geometryStream[0].appearance);
       },
+      
+      
       getResult(){
             let param = {
             projectId:this.projectId,
