@@ -58,9 +58,13 @@ export default {
             }
         },
         async resetStandaloneIModel(filename) {
+           
                 IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort, false);
+                
                 await this.clearViews();
+                 
                 await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
+                
                 await this.openView(this.GLOBAL_DATA.activeViewState);
 
                 window.eventHub.$emit('categories_init');
@@ -87,6 +91,7 @@ export default {
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
             const viewQueryParams = { wantPrivate: false };
+            
             const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
             
             if (viewSpecs.length > 0){
@@ -101,8 +106,14 @@ export default {
             const parent = document.getElementById("imodelview");
             if (parent) {
                 await this.buildViewList(state);
-                this.theViewPort = ScreenViewport.create(parent, state.viewState); 
-                this.GLOBAL_DATA.theViewPort = this.theViewPort;
+               
+                // this.theViewPort = ScreenViewport.create(parent, state.viewState); 
+                // this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                if (!this.theViewPort){
+                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
+                    this.theViewPort = ScreenViewport.create(parent, state.viewState);
+                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
         },
