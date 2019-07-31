@@ -170,6 +170,8 @@
 
 <script>
   import { formatDate } from '@/utils/date';
+  import { IModelVersion } from '@bentley/imodeljs-common'
+  
   export default {
     name: 'project',
     data() {
@@ -385,9 +387,8 @@
       },
       openOnlineFile() {
         let routeData = this.$router.resolve({ path: 'view', query: {projectId: "233e1f55-561d-42a4-8e80-d6f91743863e",
-        versionName: this.onlineViewForm.versionName,versionId: "4a7c8708-58fd-4d1c-8b95-b1bc3915ab80",url: this.onlineViewForm.url}});
+        versionName: this.onlineViewForm.versionName? this.onlineViewForm.versionName:IModelVersion.latest(),versionId: "4a7c8708-58fd-4d1c-8b95-b1bc3915ab80",url: this.onlineViewForm.url}});
         window.open(routeData.href, '_blank');
-
       }
     }
   };
