@@ -151,6 +151,8 @@ export default {
             }
         },
         async main() {
+         
+
             this.isLoading = true; 
             RPC.init();
             if(this.$route.query && this.$route.query.isStandalone){

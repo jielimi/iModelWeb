@@ -172,7 +172,7 @@ export default {
             const view = this.GLOBAL_DATA.theViewPort.view;
 
             for await (const row of view.iModel.query(`${selectSpatialCategoryProps} LIMIT 1000`, undefined)) {
-             debugger;
+             
               let categolyElem = {
                     name:row.code,
                     id:row.id
