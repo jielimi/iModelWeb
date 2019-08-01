@@ -43,8 +43,8 @@
         </el-form-item>
         <el-form-item label="Type:" :label-width="formLabelWidth"  prop="versionType">
           <div v-if="isNewVersion">
-            <el-radio v-model="versionForm.versionType" :label="1">Normal</el-radio>
-            <el-radio v-model="versionForm.versionType" :label="2">Reality Model</el-radio>
+            <el-radio v-model="versionForm.versionType" :label="0">Normal</el-radio>
+            <el-radio v-model="versionForm.versionType" :label="1">Reality Model</el-radio>
           </div>
           <div v-else>
             <span>{{versionForm.versionType}}</span>
@@ -93,10 +93,11 @@
           prop="description"
           label="Version Description">
         </el-table-column>
-        <!-- <el-table-column
-          prop="type"
-          label="Version Type">
-        </el-table-column> -->
+        <el-table-column
+          prop="versionType"
+          label="Version Type"
+          :formatter="typeFormat">
+        </el-table-column>
         <el-table-column
           align="center"
           prop="thumbnail"
@@ -264,7 +265,7 @@
         versionForm: {
           versionName: '',
           versionDescription: '',
-          versionType:1
+          versionType:0
         },
         rules: {
           versionName: [
@@ -484,6 +485,15 @@
           const dateMat= new Date(daterc);
           return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
         }
+      },
+      typeFormat(row, column, cellValue, index){
+        const  data= row[column.property];
+        if(data == 0){
+          return 'Normal'
+        }else{
+          return 'Realty Model'
+        }
+
       },
       uploadFiles (row) {
       		this.uploadParams.data.projectId = this.projectId;
