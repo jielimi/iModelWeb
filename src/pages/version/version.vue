@@ -41,6 +41,15 @@
             v-model.trim="versionForm.versionDescription">
           </el-input>
         </el-form-item>
+        <el-form-item label="Type:" :label-width="formLabelWidth"  prop="versionType">
+          <div v-if="isNewVersion">
+            <el-radio v-model="versionForm.versionType" :label="0">Normal</el-radio>
+            <el-radio v-model="versionForm.versionType" :label="1">Reality Model</el-radio>
+          </div>
+          <div v-else>
+            <span>{{versionForm.versionType}}</span>
+          </div>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancle">Cancle</el-button>
@@ -83,6 +92,11 @@
         <el-table-column
           prop="description"
           label="Version Description">
+        </el-table-column>
+        <el-table-column
+          prop="versionType"
+          label="Version Type"
+          :formatter="typeFormat">
         </el-table-column>
         <el-table-column
           align="center"
@@ -250,7 +264,8 @@
         date: this.setDate(),
         versionForm: {
           versionName: '',
-          versionDescription: ''
+          versionDescription: '',
+          versionType:0
         },
         rules: {
           versionName: [
@@ -324,18 +339,6 @@
         
         window.open(routeData.href, '_blank'); 
 
-        // let param = {
-        //   projectId:this.projectId,
-        //   startversion:this.multipleSelection[0].index < this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
-        //   endversion: this.multipleSelection[0].index > this.multipleSelection[1].index ? this.multipleSelection[0].name:this.multipleSelection[1].name,
-        // }
-
-        // this.$get('api/version/difference',{}, param).then(res => {
-        //   this.isLoading = false;
-        //   if (res.state === 0) {
-           
-        //   }
-        // });
         this.clearSelection();
       },
       handleSelectionChange(val){
@@ -389,9 +392,7 @@
         this.req.pageIndex = 1;
         this.getVersionList();
       },
-      // handleDelete () {
-      //   console.log('hi');
-      // },
+      
       handleSizeChange(val) {
         this.req.pageIndex = 1;
         this.req.pageSize = val;
@@ -448,7 +449,8 @@
             let param = {
             	projectId: this.projectId,
               versionName: this.versionForm.versionName,
-              versionDescription: this.versionForm.versionDescription
+              versionDescription: this.versionForm.versionDescription,
+              versionType:this.versionForm.versionType
             };
             this.confirmDisable = true;
             this.$post('api/version/instance', param).then(res => {
@@ -483,6 +485,15 @@
           const dateMat= new Date(daterc);
           return formatDate(dateMat,"yyyy-MM-dd hh:mm:ss");
         }
+      },
+      typeFormat(row, column, cellValue, index){
+        const  data= row[column.property];
+        if(data == 0){
+          return 'Normal'
+        }else{
+          return 'Realty Model'
+        }
+
       },
       uploadFiles (row) {
       		this.uploadParams.data.projectId = this.projectId;
