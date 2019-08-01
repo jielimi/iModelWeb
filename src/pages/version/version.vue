@@ -595,7 +595,8 @@
       Generate(row) {
         let param = {
         	projectId: this.projectId,
-          versionName: row.name
+          versionName: row.name,
+          versionType:row.versionType
         }; 
 
         this.versionNameForGen = row.name;
