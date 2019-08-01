@@ -1,4 +1,6 @@
 import { HitDetail, IModelApp } from "@bentley/imodeljs-frontend";
+import { RealityModelTileClient } from "@bentley/imodeljs-frontend/lib/tile/RealityModelTileTree";
+import { Guid } from "@bentley/bentleyjs-core";
 
 HitDetail.prototype.getToolTip = async function() {
   
@@ -15,4 +17,22 @@ HitDetail.prototype.getToolTip = async function() {
 
     return msg[0];
 
+};
+
+RealityModelTileClient.prototype.parseUrl = function(url) {
+    const urlParts = url.split("/").map((entry) => entry.replace(/%2D/g, "-"));
+    const tilesId = urlParts.find(Guid.isGuid);
+    let props;
+    if (undefined !== tilesId) {
+        let projectId = urlParts.find((val) => val.includes("--"));
+        if (projectId !== undefined) {
+            projectId = projectId.split("--")[1];
+            // ###TODO This is a temporary workaround for accessing the reality meshes with a test account
+            // The hardcoded project id corresponds to a project setup to yied access to the test account which is linked to the tileId
+            if (projectId === "Server")
+                projectId = "fb1696c8-c074-4c76-a539-a5546e048cc6";
+            props = { projectId, tilesId };
+        }            
+    }
+    return props;
 };
