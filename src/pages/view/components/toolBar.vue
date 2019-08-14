@@ -24,6 +24,7 @@
         <tileprogressComponent></tileprogressComponent>
         <shadowComponent></shadowComponent>
         <treeComponent></treeComponent>
+        <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent>
     </div>
 </template>
 <script>
@@ -51,6 +52,7 @@ import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
 import treeComponent from './subComponents/tree'
+import versionUpdateComponent from './subComponents/versionUpdate'
 
 
 
@@ -83,7 +85,8 @@ export default {
         tileprogressComponent,
         measureComponent,
         shadowComponent,
-        treeComponent
+        treeComponent,
+        versionUpdateComponent
     },
     created () {
     },
