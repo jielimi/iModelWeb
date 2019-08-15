@@ -3,7 +3,7 @@
       <el-tabs type="border-card">
         <el-tab-pane label="Add">
             <el-table
-              :data="tableDataInsert.filter(data => !search || data.id.toLowerCase().includes(search.toLowerCase()))"
+              :data="insertData"
               border
               style="width: 50%"
               max-height="250">
@@ -34,7 +34,7 @@
         </el-tab-pane>
         <el-tab-pane label="Update">
           <el-table
-              :data="tableDataUpdate"
+              :data="updateData"
               border
               style="width: 100%">
               <el-table-column
@@ -42,7 +42,7 @@
                 label="id"
                 width="180">
               </el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 prop="before"
                 label="before"
                 width="180"
@@ -53,7 +53,7 @@
                 label="after"
                 width="180"
                 :formatter="formatterColumnAfter">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 prop="class"
                 label="class"
@@ -70,18 +70,18 @@
             </el-table>
             <el-pagination
                    background
-                   @size-change="modifyhandleSizeChange"
-                   @current-change="modifyhandleCurrentChange"
-                   :current-page="modifyReq.pageIndex"
+                   @size-change="updatehandleSizeChange"
+                   @current-change="updatehandleCurrentChange"
+                   :current-page="updateReq.pageIndex"
                    :page-sizes="[5, 10, 20, 50]"
-                   :page-size="modifyReq.pageSize"
+                   :page-size="updateReq.pageSize"
                    layout=" prev, pager, next,total,sizes"
-                   :total="modifyReq.totalNum">
+                   :total="updateReq.totalNum">
           </el-pagination>
         </el-tab-pane>
         <el-tab-pane label="Delete">
           <el-table
-              :data="tableDataDelete"
+              :data="deleteData"
               border
               style="width: 50%">
               <el-table-column
@@ -125,6 +125,9 @@ export default {
          tableDataInsert: [],
          tableDataUpdate:[],
          tableDataDelete:[],
+         insertData:[],
+         updateData:[],
+         deleteData:[],
          result:{},
          addReq:{
            pageIndex:1,
@@ -136,7 +139,7 @@ export default {
            pageSize:10,
            totalNum:0
          },
-         modifyReq:{
+         updateReq:{
            pageIndex:1,
            pageSize:10,
            totalNum:0
@@ -150,55 +153,40 @@ export default {
     created () {},
     mounted(){
         this.getResult();
-        
     },
     methods: {
-      addhandleSizeChange(val,type) {
+      addhandleSizeChange(val) {
         this.addReq.pageIndex = 1;
         this.addReq.pageSize = val;
-        this.getTableResult(0, this.addReq, this.tableDataInsert);
+        this.insertData = this.tableDataInsert.slice(0,this.addReq.pageSize);
       },
       addhandleCurrentChange(val) {
         this.addReq.pageIndex = val;
-        this.getTableResult(0, this.addReq, this.tableDataInsert);
+        let start = (val-1)*this.addReq.pageSize;
+        let end = start + this.addReq.pageSize;
+        this.insertData = this.tableDataInsert.slice(start,end)
       },
-      modifyhandleSizeChange(val,type) {
-        this.modifyReq.pageIndex = 1;
-        this.modifyReq.pageSize = val;
-        this.getTableResult(1, this.modifyReq, this.tableDataModify);
+      updatehandleSizeChange(val) {
+        this.updateReq.pageIndex = 1;
+        this.updateReq.pageSize = val;
+        this.updateData = this.tableDataUpdate.slice(0,this.updateReq.pageSize);
       },
-      modifyhandleCurrentChange(val) {
-        this.modifyReq.pageIndex = val;
-        this.getTableResult(1, this.addReq, this.tableDataModify);
+      updatehandleCurrentChange(val) {
+        this.updateReq.pageIndex = val;
+        let start = (val-1)*this.updateReq.pageSize;
+        let end = start + this.updateReq.pageSize;
+        this.updateData = this.tableDataUpdate.slice(start,end)
       },
-      delhandleSizeChange(val,type) {
+      delhandleSizeChange(val) {
         this.addReq.pageIndex = 1;
         this.addReq.pageSize = val;
-        this.getTableResult(2, this.delReq, this.tableDataDelete);
+        this.deleteData = this.tableDataDelete.slice(0,this.delReq.pageSize);
       },
       delhandleCurrentChange(val) {
-        this.addReq.pageIndex = val;
-        this.getTableResult(2, this.delReq, this.tableDataDelete);
-      },
-      getTableResult(type,req,table){
-        let param = {
-                    projectId:this.projectId,
-                    startversion:this.endVersionName,
-                    endversion: this.startVersionName,
-                    changeType:type,
-                    pageIndex:req.pageIndex,
-                    pageSize:req.pageSize
-                  }
-
-        this.$get('api/version/differences',{}, param).then(res => {
-            this.isLoading = false;
-              if (res.state === 0) {
-                table = res.data;
-                req.pageSize = res.pagination.pageSize? res.pagination.pageSize:10;
-                req.pageIndex = res.pagination.pageIndex? res.pagination.pageIndex:1;
-                req.totalNum = res.pagination.totalNum;
-              }
-          });
+        this.delReq.pageIndex = val;
+        let start = (val-1)*this.delReq.pageSize;
+        let end = start + this.delReq.pageSize;
+        this.deleteData = this.tableDataUpdate.slice(start,end)
       },
       color(){
           window.eventHub.$emit('diff_show_color',this.result);
@@ -215,14 +203,19 @@ export default {
       DeleteFocusElement(row){
         window.eventHub.$emit('diff_viewport_delete',row.id);
       },
-      formatterColumnBefore(row, column) {
-        return JSON.stringify(row.before.geometryStream[0].appearance);
-      },
-      formatterColumnAfter(row, column) {
-        return JSON.stringify(row.after.geometryStream[0].appearance);
-      },
+      // formatterColumnBefore(row, column) {
+      //   return JSON.stringify(row.before.geometryStream[0].appearance);
+      // },
+      // formatterColumnAfter(row, column) {
+      //   return JSON.stringify(row.after.geometryStream[0].appearance);
+      // },
       
-      
+      buildtableResult(arr,result){
+        let index = 0;
+        for(index;index < result.length;index++){
+            arr.push({"id":result[index]})
+        }
+      },
       getResult(){
             let param = {
             projectId:this.projectId,
@@ -230,13 +223,26 @@ export default {
             endversion: this.startVersionName
           }
 
-          this.$get('api/version/differences',{}, param).then(res => {
+          this.$get('api/version/diffElems',{}, param).then(res => {
             this.isLoading = false;
               if (res.state === 0) {
-                this.tableDataInsert = res.data.insert;
-                this.tableDataUpdate = res.data.update;
-                this.tableDataDelete = res.data.delete;
-                this.result = res.data;
+                this.buildtableResult(this.tableDataInsert,res.data.insert);
+                this.buildtableResult(this.tableDataUpdate,res.data.update);
+                this.buildtableResult(this.tableDataDelete,res.data.delete);
+                let result = {
+                  insert:this.tableDataInsert,
+                  update:this.tableDataUpdate,
+                  delete:this.tableDataDelete
+                }
+                this.addReq.totalNum = this.tableDataInsert.length;
+                this.updateReq.totalNum = this.tableDataUpdate.length;
+                this.delReq.totalNum = this.tableDataDelete.length;
+
+                this.insertData = this.tableDataInsert.slice(0,this.addReq.pageSize); //pagination
+                this.updateData = this.tableDataUpdate.slice(0,this.updateReq.pageSize); //pagination
+                this.deleteData = this.tableDataDelete.slice(0,this.delReq.pageSize); //pagination
+
+                this.result = result; // color
               }
           });
           
