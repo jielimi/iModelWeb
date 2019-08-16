@@ -67,6 +67,14 @@
                   </el-button>
                 </template>
             </el-table-column>
+            <el-table-column label="difference">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    @click="getUpdateElemDifference(scope.row)">get difference
+                  </el-button>
+                </template>
+            </el-table-column>
             </el-table>
             <el-pagination
                    background
@@ -209,6 +217,18 @@ export default {
       // formatterColumnAfter(row, column) {
       //   return JSON.stringify(row.after.geometryStream[0].appearance);
       // },
+      getUpdateElemDifference(row){
+            let param = {
+            projectId:this.projectId,
+            startversion:this.endVersionName,
+            endversion: this.startVersionName,
+            elemId:row.id
+          }
+
+          this.$get('api/version/updateElemDiff',{}, param).then(res => {
+            console.log("res",res);
+          })
+      },
       
       buildtableResult(arr,result){
         let index = 0;
@@ -222,7 +242,7 @@ export default {
             startversion:this.endVersionName,
             endversion: this.startVersionName
           }
-
+          // api/version/diffElems  differences
           this.$get('api/version/diffElems',{}, param).then(res => {
             this.isLoading = false;
               if (res.state === 0) {
