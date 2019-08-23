@@ -24,7 +24,7 @@
         <tileprogressComponent></tileprogressComponent>
         <shadowComponent></shadowComponent>
         <treeComponent></treeComponent>
-        <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent>
+        <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
     </div>
 </template>
 <script>
