@@ -1,6 +1,8 @@
 import { HitDetail, IModelApp } from "@bentley/imodeljs-frontend";
 import { RealityModelTileClient } from "@bentley/imodeljs-frontend/lib/tile/RealityModelTileTree";
 import { Guid } from "@bentley/bentleyjs-core";
+import Dom from "@bentley/imodeljs-markup/node_modules/@svgdotjs/svg.js/src/elements/Dom";
+import * as utils from '@bentley/imodeljs-markup/node_modules/@svgdotjs/svg.js/src/utils/utils';
 
 HitDetail.prototype.getToolTip = async function() {
   
@@ -35,4 +37,10 @@ RealityModelTileClient.prototype.parseUrl = function(url) {
         }            
     }
     return props;
+};
+
+Dom.prototype.children = function() {
+    return new List(utils.map(this.node.children, function (node) {
+        return adopt(node)
+    }))
 };
