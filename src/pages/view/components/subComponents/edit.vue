@@ -10,22 +10,33 @@ export default {
     name: 'edit',
     data () {
         return {
+            id:'',
+            modelId:''
         };
     },
     components: {
         
     },
-    created () {},
+    created () {
+        window.eventHub.$on('component_edit',this.getElementData);
+    },
     methods: {
+        getElementData(data){
+            this.id = data.id,
+            this.modelId = data.modelId
+        },
         edit(){
+            if(this.id === ''){
+                return;
+            }
             let param = {
-                id:'0x20000000022',
+                id:this.id,
                 imodeltoken:JSON.stringify(this.GLOBAL_DATA.activeViewState.iModelConnection.iModelToken)
             }
 
             this.$post('api/view/changeColor',param).then(res=>{
                 if(res.state == 0){
-                    IModelApp.viewManager.refreshForModifiedModels(res.data.modelIds)
+                    IModelApp.viewManager.refreshForModifiedModels(this.modelId)
                 }
             })
             

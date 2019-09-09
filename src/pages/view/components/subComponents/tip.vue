@@ -106,6 +106,13 @@ export default {
                     that.rawData.bBoxHigh = res.data.extraMsg.raw.bBoxHigh;
                     that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
                     that.extendData = res.data.extraMsg.extend;
+                    
+                    let data={
+                        id:res.data.extraMsg.raw.id,
+                        modelId:res.data.extraMsg.raw.model.id
+                    }
+                   
+                    window.eventHub.$emit('component_edit',data);
                 }
             })
        },
@@ -142,8 +149,6 @@ export default {
                     that.baseInfo.type = message.Type;
                     that.baseInfo.category = message.Category;
                     that.baseInfo.model = message.Model;
-
-                   
                     if(message.Id){
                         let param = {
                             id:message.Id,
@@ -151,8 +156,6 @@ export default {
                         };
                         that.getExtraParam(param);
                     }
-                    
-                    
                 }
             }
             return new Notifications();
