@@ -123,7 +123,7 @@ export default {
             state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
             this.iminfo.contextId = imbcontext.toIModelTokenContextId();
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
-            this.iminfo.openMode, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
+            parseInt(this.iminfo.openMode), this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
             
             
             this.progress = this.randomNum(40,50);
