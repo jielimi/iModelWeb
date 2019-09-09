@@ -23,7 +23,8 @@
         <measureComponent></measureComponent>
         <tileprogressComponent></tileprogressComponent>
         <shadowComponent></shadowComponent>
-        <treeComponent></treeComponent>
+        <editComponent v-if="openMode==2"></editComponent>
+        <!-- <treeComponent></treeComponent> -->
         <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
     </div>
 </template>
@@ -53,6 +54,7 @@ import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
 import treeComponent from './subComponents/tree'
 import versionUpdateComponent from './subComponents/versionUpdate'
+import editComponent from './subComponents/edit'
 
 
 
@@ -61,7 +63,7 @@ export default {
     data () {
         return {};
     },
-    props:['projectId','url','versionName','contextId','accessToken'],
+    props:['projectId','url','versionName','contextId','accessToken','openMode'],
     components: {
         openFileComponent,
         modelComponent,
@@ -86,7 +88,8 @@ export default {
         measureComponent,
         shadowComponent,
         treeComponent,
-        versionUpdateComponent
+        versionUpdateComponent,
+        editComponent
     },
     created () {
     },

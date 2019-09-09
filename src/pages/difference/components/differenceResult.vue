@@ -226,7 +226,6 @@ export default {
           }
 
           this.$get('api/version/updateElemDiff',{}, param).then(res => {
-            console.log("res",res);
           })
       },
       

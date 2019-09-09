@@ -1,6 +1,9 @@
 <template>
 <div class="view" v-loading="isLoading">
-    <tool-bar-component :projectId="iminfo.iModelId" :url="iminfo.url" :versionName="iminfo.versionName" :contextId="iminfo.contextId" :accessToken="iminfo.accessToken">
+    <tool-bar-component :projectId="iminfo.iModelId" :url="iminfo.url" 
+    :versionName="iminfo.versionName" :contextId="iminfo.contextId" 
+    :accessToken="iminfo.accessToken"
+    :openMode="iminfo.openMode">
     </tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
     <el-dialog
@@ -60,6 +63,7 @@ export default {
                 "iModelId": this.$route.query.projectId,
                 "versionName":this.$route.query.versionName,
                 "versionId": this.$route.query.versionId,
+                "openMode":this.$route.query.openMode,
                 "name": "ReadOnlyTest",
                 "contextId":'',
                 "accessToken":''
@@ -119,7 +123,7 @@ export default {
             state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
             this.iminfo.contextId = imbcontext.toIModelTokenContextId();
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
-            1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
+            this.iminfo.openMode, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
             
             
             this.progress = this.randomNum(40,50);

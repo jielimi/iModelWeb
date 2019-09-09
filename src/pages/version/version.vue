@@ -84,7 +84,7 @@
         <el-table-column
           label="Version Name">
           <template slot-scope="scope">
-            <a href="javascript:;" class="link" @click="skipToView(scope.row)" :class="{'link-disabled':!scope.row.generated}">
+            <a href="javascript:;" class="link" @click="skipToView(scope.row,1)" :class="{'link-disabled':!scope.row.generated}">
               <span>{{ scope.row.name }}</span>
             </a>
           </template>
@@ -138,6 +138,12 @@
               type="success"
               size="mini"
               @click="Generate(scope.row)">Generate
+            </el-button>
+            <el-button
+            	v-if="scope.row.generated===true"
+              type="success"
+              size="mini"
+              @click="skipToView(scope.row,2)">Edit
             </el-button>
           </template>
         </el-table-column>
@@ -459,12 +465,12 @@
           }
         });
       },
-      skipToView(row){
+      skipToView(row,openMode){
         if(row.generated === false){
           return false;
         }
         // this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name,url:row.url}});
-        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url}});
+        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url,openMode:openMode}});
         window.open(routeData.href, '_blank'); 
       },
       modifyVersionConfirm () {
