@@ -290,7 +290,7 @@ export default {
                     displayStyle = new DisplayStyle2dState(displayStyleProp, this.view.iModel);
                 }
                 // ###TODO: Is there such a concept as "2d reality models"???
-                promises.push(displayStyle.loadContextRealityModels());
+                // promises.push(displayStyle.loadContextRealityModels());
                 this.displayStyles.set(displayStyleProp.id, displayStyle);
             }
             this.style = this.view.displayStyle.id;

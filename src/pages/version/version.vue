@@ -139,12 +139,12 @@
               size="mini"
               @click="Generate(scope.row)">Generate
             </el-button>
-            <el-button
+            <!-- <el-button
             	v-if="scope.row.generated===true"
               type="success"
               size="mini"
               @click="skipToView(scope.row,2)">Edit
-            </el-button>
+            </el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -465,14 +465,13 @@
           }
         });
       },
-      skipToView(row,openMode){
-        if(row.generated === false){
-          return false;
-        }
-        // this.$router.push({path:'view',query:{projectId: row.projectId,versionName: row.name,url:row.url}});
-        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url,openMode:openMode}});
-        window.open(routeData.href, '_blank'); 
-      },
+      // skipToView(row,openMode){
+      //   if(row.generated === false){
+      //     return false;
+      //   }
+      //   let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url,openMode:openMode}});
+      //   window.open(routeData.href, '_blank'); 
+      // },
       modifyVersionConfirm () {
         let param = {
           projectId: this.projectId,

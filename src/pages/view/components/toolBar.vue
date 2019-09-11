@@ -23,7 +23,7 @@
         <measureComponent></measureComponent>
         <tileprogressComponent></tileprogressComponent>
         <shadowComponent></shadowComponent>
-        <editComponent v-if="openMode==2"></editComponent>
+        <!-- <editComponent v-if="openMode==2"></editComponent> -->
         <!-- <treeComponent></treeComponent> -->
         <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
     </div>
@@ -54,9 +54,6 @@ import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
 import treeComponent from './subComponents/tree'
 import versionUpdateComponent from './subComponents/versionUpdate'
-import editComponent from './subComponents/edit'
-
-
 
 export default {
     name: 'toolBar',
@@ -88,8 +85,7 @@ export default {
         measureComponent,
         shadowComponent,
         treeComponent,
-        versionUpdateComponent,
-        editComponent
+        versionUpdateComponent
     },
     created () {
     },
