@@ -465,13 +465,13 @@
           }
         });
       },
-      // skipToView(row,openMode){
-      //   if(row.generated === false){
-      //     return false;
-      //   }
-      //   let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url,openMode:openMode}});
-      //   window.open(routeData.href, '_blank'); 
-      // },
+      skipToView(row,openMode){
+        if(row.generated === false){
+          return false;
+        }
+        let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url,openMode:openMode}});
+        window.open(routeData.href, '_blank'); 
+      },
       modifyVersionConfirm () {
         let param = {
           projectId: this.projectId,
