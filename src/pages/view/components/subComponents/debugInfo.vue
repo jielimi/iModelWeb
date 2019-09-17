@@ -14,8 +14,8 @@
                         <el-option label="AllTileTrees" value="1"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item v-if="form.memory != '-1'">
-                    <table border="1" style="width:100%">
+                <el-form-item >
+                    <table border="1" style="width:100%" v-show="form.memory != '-1'">
                         <tr>
                             <td style="width:50%">
                                 <div>
@@ -39,10 +39,14 @@
                                     <label>Total Tile Tree:{{form.totalTileTrees}}</label>
                                 </div>
                             </td>
-                            
                         </tr>
-
                     </table>
+                    <el-button
+                        :disabled="form.memory != '1'"
+                        type="success"
+                        size="mini"
+                        @click="purge">Purge
+                    </el-button>
                 </el-form-item>
             </el-form>        
         </el-dialog>
@@ -121,7 +125,6 @@ export default {
             this.oldMemIndex = index;
         },
         unpdate(index){
-
             const calcMem = [
                 (stats, vp) => {
                     vp.collectStatistics(stats);
@@ -166,12 +169,11 @@ export default {
                     this.form.texture.push(item)
                 }
             }
-            // console.log(stats,totalBytes)
         },
         updateBuffer(stats,totalBytes){
             let lables = ["Surfaces", "Visible Edges", "Silhouettes", "Polyline Edges", 
             "Polylines", "Point Strings", "Point Clouds", "Instances"];
-            this.form.buffer=[]
+            this.form.buffer=[];
             for(let index =0;index < lables.length;index++){
                 const stat = stats[index];
                 if (0 === stat.totalBytes) {
@@ -181,8 +183,16 @@ export default {
                     this.form.buffer.push(item)
                 }
             }
+        },
+        purge(){
+            let _vp = this.GLOBAL_DATA.theViewPort;
+            const purge = IModelApp.viewManager.purgeTileTrees(BeTimePoint.now());
+            if (undefined !== purge) {
+                purge();
+                this._vp.invalidateScene(); // to trigger reloading of tiles we actually do want to continue drawing
+                this.update(this.oldMemIndex);
+            }
 
-            // console.log(stats,totalBytes)
         },
         opendebug(){
            
