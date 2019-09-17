@@ -1,6 +1,7 @@
 <template>
     <div class="tool-bar">
         <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
+        <debug-info-component></debug-info-component>
         <open-file-component style="display:none"></open-file-component>
         <change-view-component></change-view-component>
         <model-component></model-component>
@@ -30,6 +31,7 @@
 </template>
 <script>
  
+import debugInfoComponent from './subComponents/debugInfo' 
 import openFileComponent from './subComponents/openFile'
 import modelComponent from './subComponents/model'
 import changeViewComponent from './subComponents/changeView'
@@ -62,6 +64,7 @@ export default {
     },
     props:['projectId','url','versionName','contextId','accessToken','openMode'],
     components: {
+        debugInfoComponent,
         openFileComponent,
         modelComponent,
         changeViewComponent,

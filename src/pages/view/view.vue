@@ -131,14 +131,16 @@ export default {
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
             const viewQueryParams = { wantPrivate: false };
+       
             const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
             
             if (viewSpecs.length > 0){
                 let viewSpec = viewSpecs[0];
                 const viewState = await state.iModelConnection.views.load(viewSpec.id);
                 state.viewState = viewState;
+                window.eventHub.$emit('viewList_init', viewSpecs);
             }
-            window.eventHub.$emit('viewList_init', viewSpecs);
+            // window.eventHub.$emit('viewList_init', viewSpecs);
         },
         async  openView(state) {
             // find the canvas.
