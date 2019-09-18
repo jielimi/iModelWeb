@@ -48,6 +48,97 @@
                         @click="purge">Purge
                     </el-button>
                 </el-form-item>
+                <el-form-item label="Tools Setting"> 
+                    <el-collapse v-model="activeNames">
+                        <el-collapse-item title="" name="1">
+                           <el-form ref="toolSettings" :model="toolSettings" label-width="80px">
+                               <el-form-item >
+                                    <el-checkbox label="Preserve World Up When Rotating" 
+                                    v-model="toolSettings.pwuCheck" @change="PWUCheckChange"></el-checkbox>
+                                </el-form-item>
+                                <el-form-item label="Animation Duration (ms):">
+                                    <el-input
+                                        type="number"
+                                        min = 0
+                                        step = 1
+                                        @blur="changeAnimationDuration"
+                                        v-model="toolSettings.animationTime">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="Pick Radius (inches): ">
+                                    <el-input
+                                        type="number"
+                                        min = 0
+                                        step= 0.01
+                                        @blur="changePickRadius"
+                                        v-model="toolSettings.viewToolPickRadiusInches">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item >
+                                    <el-checkbox label="Walk Enforce Z Up" 
+                                    v-model="toolSettings.walkEnforceZUp" @change="walkEnforceZUpChange"></el-checkbox>
+                                </el-form-item>
+                                <el-form-item label="Walk Camera Angle (degrees): ">
+                                    <el-input
+                                        type="number"
+                                        min = 0
+                                        step= 0.1
+                                        @blur="changeWalkCameraAngle"
+                                        v-model="toolSettings.walkCameraAngle">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="Walk Velocity (meters per second): ">
+                                    <el-input
+                                        type="number"
+                                        min = 0
+                                        step= 0.1
+                                        @blur="changeWalkVelocity"
+                                        v-model="toolSettings.walkVelocity">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="Wheel Zoom Bump Distance (meters): ">
+                                    <el-input
+                                        type="number"
+                                        min = 0
+                                        step= 0.025
+                                        @blur="changeWheelZoomBumpDistance"
+                                        v-model="toolSettings.wheelZoomBumpDistance">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="Wheel Zoom Ratio: ">
+                                    <el-input
+                                        type="number"
+                                        min = 0
+                                        step= 0.025
+                                        @blur="changeWheelZoomRatio"
+                                        v-model="toolSettings.wheelZoomRatio">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="Interial damping: ">
+                                    <el-input
+                                        type="number"
+                                        min= 0,
+                                        max= 1,
+                                        step= 0.05,
+                                        @blur="changeDamping"
+                                        v-model="toolSettings.damping">
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="Interial duration (seconds): ">
+                                    <el-input
+                                        type="number"
+                                        min= 0,
+                                        max= 10,
+                                        step= 0.05,
+                                        @blur="changeInertiaDuration"
+                                        v-model="toolSettings.inertiaDuration">
+                                    </el-input>
+                                </el-form-item>
+                           </el-form>
+                           
+                        </el-collapse-item>
+                    </el-collapse>
+                </el-form-item>
             </el-form>        
         </el-dialog>
     </div>
@@ -60,8 +151,9 @@ import {
   TileTree,
   TileTreeSet,
   Viewport,
+  ToolSettings
 } from "@bentley/imodeljs-frontend";
-import { assert, BeTimePoint } from "@bentley/bentleyjs-core";
+import { assert, BeTimePoint,BeDuration } from "@bentley/bentleyjs-core";
 
 
 export default {
@@ -77,7 +169,21 @@ export default {
                 texture:[],
                 buffer:[]
             },
-            _curIntervalId:''
+            
+            toolSettings:{
+                pwuCheck:ToolSettings.preserveWorldUp,
+                animationTime:ToolSettings.animationTime.milliseconds,
+                viewToolPickRadiusInches:ToolSettings.viewToolPickRadiusInches,
+                walkEnforceZUp:ToolSettings.walkEnforceZUp, //Whether the walk tool enforces worldZ be aligned with screenY
+                walkCameraAngle:ToolSettings.walkCameraAngle.degrees,
+                walkVelocity:ToolSettings.walkVelocity,
+                wheelZoomBumpDistance:ToolSettings.wheelZoomBumpDistance,
+                wheelZoomRatio:ToolSettings.wheelZoomRatio,
+                damping:ToolSettings.viewingInertia.damping,
+                inertiaDuration:ToolSettings.viewingInertia.duration.milliseconds / 1000
+            },
+            _curIntervalId:'',
+            
         };
     },
     components: {
@@ -196,6 +302,47 @@ export default {
         },
         opendebug(){
            
+        },
+        // Tools setting
+        PWUCheckChange(){
+            ToolSettings.preserveWorldUp = !ToolSettings.preserveWorldUp
+            IModelApp.toolAdmin.exitViewTool();
+        },
+        changeAnimationDuration(){
+            ToolSettings.animationTime = BeDuration.fromMilliseconds(this.toolSettings.animationTime); 
+            IModelApp.toolAdmin.exitViewTool();
+        },
+        changePickRadius(){
+            ToolSettings.viewToolPickRadiusInches = this.toolSettings.viewToolPickRadiusInches;
+             IModelApp.toolAdmin.exitViewTool();
+        },
+        walkEnforceZUpChange(){
+            ToolSettings.walkEnforceZUp = !ToolSettings.walkEnforceZUp;
+            IModelApp.toolAdmin.exitViewTool();
+        },
+        changeWalkCameraAngle(){
+            ToolSettings.walkCameraAngle.setDegrees(this.toolSettings.walkCameraAngle); 
+            IModelApp.toolAdmin.exitViewTool();
+        },
+        changeWalkVelocity(){
+            ToolSettings.walkVelocity = this.toolSettings.walkVelocity;
+             IModelApp.toolAdmin.exitViewTool();
+        },
+        changeWheelZoomBumpDistance(){
+            ToolSettings.wheelZoomBumpDistance = this.toolSettings.wheelZoomBumpDistance; 
+            IModelApp.toolAdmin.exitViewTool();
+        },
+        changeWheelZoomRatio(){
+            ToolSettings.wheelZoomRatio = this.toolSettings.wheelZoomRatio;
+             IModelApp.toolAdmin.exitViewTool();
+        },
+        changeDamping(){
+            ToolSettings.viewingInertia.damping = this.toolSettings.damping;
+             IModelApp.toolAdmin.exitViewTool();
+        },
+        changeInertiaDuration(){
+            ToolSettings.viewingInertia.duration = BeDuration.fromMilliseconds(this.toolSettings.inertiaDuration * 1000);
+             IModelApp.toolAdmin.exitViewTool();
         }
     }
     
