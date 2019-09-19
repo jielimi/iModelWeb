@@ -208,7 +208,8 @@ export default {
                 {"label": "weights", "flag": "Line Weight","only3d": false},
                 {"label": "styles", "flag": "Line Styles","only3d": false},
                 {"label": "clipVolume", "flag": "Clip Volume","only3d": true},
-                {"label": "forceSurfaceDiscard", "flag": "Force Surface Discard","only3d": true}
+                {"label": "forceSurfaceDiscard", "flag": "Force Surface Discard","only3d": true},
+                {"label": "backgroundMap", "flag": "Background Map","only3d": false}
             ],
             showVisibleEdges: false,
             showHiddenEdges: false,
