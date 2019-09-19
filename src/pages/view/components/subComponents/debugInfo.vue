@@ -135,7 +135,6 @@
                                     </el-input>
                                 </el-form-item>
                            </el-form>
-                           
                         </el-collapse-item>
                     </el-collapse>
                 </el-form-item>
@@ -171,12 +170,12 @@ export default {
             },
             
             toolSettings:{
-                pwuCheck:ToolSettings.preserveWorldUp,
-                animationTime:ToolSettings.animationTime.milliseconds,
-                viewToolPickRadiusInches:ToolSettings.viewToolPickRadiusInches,
+                pwuCheck:ToolSettings.preserveWorldUp,// If true, view rotation tool keeps the up vector (worldZ) aligned with screenY.
+                animationTime:ToolSettings.animationTime.milliseconds,//Duration of animations of viewing operations.you can try undo to test it
+                viewToolPickRadiusInches:ToolSettings.viewToolPickRadiusInches,//Radius in screen inches to search for elements that anchor viewing operations,you can try pan to test it (0.1 or 1000)
                 walkEnforceZUp:ToolSettings.walkEnforceZUp, //Whether the walk tool enforces worldZ be aligned with screenY
-                walkCameraAngle:ToolSettings.walkCameraAngle.degrees,
-                walkVelocity:ToolSettings.walkVelocity,
+                walkCameraAngle:ToolSettings.walkCameraAngle.degrees,//Camera angle enforced for walk tool
+                walkVelocity:ToolSettings.walkVelocity,//Speed, in meters per second, for the walk tool
                 wheelZoomBumpDistance:ToolSettings.wheelZoomBumpDistance,
                 wheelZoomRatio:ToolSettings.wheelZoomRatio,
                 damping:ToolSettings.viewingInertia.damping,
