@@ -1,11 +1,52 @@
 <template>
-    <div @click="dialogVisible = true">
-        <i class="iconfont icon-info"></i>
+    <div>
+        <i class="iconfont icon-info"  @click="dialogVisible = true"></i>
         <el-dialog
             title="Debug Info"
             :visible.sync="dialogVisible"
-            width="50%"
-            >
+            width="50%">
+            <div>
+                <el-checkbox v-model="showFPS"  @change="handleFPSCheckChange">
+                    <span v-show="fpsStatus == 0">Track FPS</span>
+                    <span v-show="fpsStatus == 1">Tracking FPS...</span>
+                    <span v-show="fpsStatus == 2">FPS: <span>{{ fps }}</span></span>
+                </el-checkbox>
+            </div>
+            <div class="request">
+                <span>Max Active Requests:</span>
+                <input type="number" min="0" step="1" v-model="maxActiveRequests" @change="handleRequestsChange">
+            </div>
+            <div>
+                <el-checkbox class="tile-check" v-model="showTileRequests" @change="toggle">
+                    <span>Track Tile Requests</span>
+                </el-checkbox>
+                <div class="request-wrap clearfix" v-show="isShowRequest">
+                    <div class="request-inner">
+                        <span>Active:<span>{{ active }}</span></span>
+                        <span>Pending:<span>{{ pending }}</span></span>
+                        <span>Canceled:<span>{{ canceled }}</span></span>
+                        <span>Total:<span>{{ total }}</span></span>
+                        <span>Selected:<span>{{ selected }}</span></span>
+                        <span>Ready:<span>{{ ready }}</span></span>
+                        <span>Progress:<span>{{ progress }}</span></span>
+                        <span>&nbsp;</span>
+                    </div>
+                    <div class="request-inner">
+                        <span>Completed:<span>{{ completed }}</span></span>
+                        <span>Timed Out:<span>{{ timedOut }}</span></span>
+                        <span>Failed:<span>{{ failed }}</span></span>
+                        <span>Empty:<span>{{ empty }}</span></span>
+                        <span>Undisplayable:<span>{{ undisplayable }}</span></span>
+                        <span>Elided:<span>{{ elided }}</span></span>
+                        <span>Cache Misses:<span>{{ cacheMisses }}</span></span>
+                        <span>Dispatched:<span>{{ dispatched }}</span></span>
+                    </div>
+                    <div class="btn-wrap">
+                        <button>Reset</button>
+                    </div>
+                </div>
+            </div>
+            
             <el-form ref="form" :model="form" label-width="80px">
                 <el-form-item label="Track Memory:">
                     <el-select v-model="form.memory" placeholder="" @change="memIndexChange">
@@ -146,6 +187,9 @@
 <script>
 import {
   IModelApp,
+  PerformanceMetrics,
+  Target,
+  TileAdmin,
   RenderMemory,
   TileTree,
   TileTreeSet,
@@ -160,6 +204,31 @@ export default {
     data () {
         return {
             dialogVisible: false,
+            activeNames: '',
+            showFPS: false,
+            fpsStatus: 0,
+            _metrics: undefined,
+            _curIntervalId: undefined,
+            _curRequestIntervalId: undefined,
+            fps: 0,
+            maxActiveRequests: 0,
+            showTileRequests: false,
+            isShowRequest: false,
+            active: 0,
+            pending: 0,
+            canceled: 0,
+            total: 0,
+            selected: 0,
+            ready: 0,
+            progress: 0,
+            completed: 0,
+            timedOut: 0,
+            failed: 0,
+            empty: 0,
+            undisplayable: 0,
+            elided: 0,
+            cacheMisses: 0,
+            dispatched: 0,
             form:{
                 memory:'None',
                 oldMemIndex:'0',
@@ -168,7 +237,6 @@ export default {
                 texture:[],
                 buffer:[]
             },
-            
             toolSettings:{
                 pwuCheck:ToolSettings.preserveWorldUp,// If true, view rotation tool keeps the up vector (worldZ) aligned with screenY.
                 animationTime:ToolSettings.animationTime.milliseconds,//Duration of animations of viewing operations.you can try undo to test it
@@ -185,12 +253,88 @@ export default {
             
         };
     },
-    components: {
-        
+    components: { 
     },
-    created () {},
+    created () {
+        window.eventHub.$on('render_mode_init',this.init);
+    },
     methods: {
-         formatMemory(numBytes) {
+        init(){
+            this.maxActiveRequests = IModelApp.tileAdmin.maxActiveRequests;
+        },
+        handleFPSCheckChange($event){
+            if($event){
+                this.fpsStatus = 1;
+                this.GLOBAL_DATA.theViewPort.continuousRendering = $event;
+                this._metrics = new PerformanceMetrics(false, true);
+                this._curIntervalId = setInterval(() => this.updateFPS(), 500);
+            }else{
+                this.fpsStatus = 0;
+                this._metrics = undefined;
+                this.clearInterval();
+            }
+            this.GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
+        },
+        updateFPS(){
+            const metrics = this._metrics;
+            this.fps = (metrics.spfTimes.length / metrics.spfSum).toFixed(2);
+            this.fpsStatus = 2;
+        },
+        clearInterval(){
+            if (undefined !== this._curIntervalId) {
+                clearInterval(this._curIntervalId);
+                this._curIntervalId = undefined;
+            }
+        },
+        handleRequestsChange(){
+            IModelApp.tileAdmin.maxActiveRequests = this.maxActiveRequests;
+        },
+        toggle(){
+            if (undefined !== this._curRequestIntervalId) {
+                this.isShowRequest = false;
+                this.clearRequestInterval();
+            } else {
+                this.isShowRequest = true;
+                this.update();
+                this._curRequestIntervalId = setInterval(() => this.update(), 500);
+            }
+        },
+        update(){
+            const stats = IModelApp.tileAdmin.statistics;
+            this.active = stats.numActiveRequests;
+            this.pending = stats.numPendingRequests;
+            this.canceled = stats.numCanceled;
+            this.total = stats.numActiveRequests + stats.numPendingRequests;
+            this.selected = this.GLOBAL_DATA.theViewPort.numSelectedTiles;
+            this.ready = this.GLOBAL_DATA.theViewPort.numReadyTiles;
+            this.progress = this.computeProgress(this.GLOBAL_DATA.theViewPort);
+            this.completed = stats.totalCompletedRequests;
+            this.timedOut = stats.totalTimedOutRequests;
+            this.failed = stats.totalFailedRequests;
+            this.empty = stats.totalEmptyTiles;
+            this.undisplayable = stats.totalUndisplayableTiles;
+            this.elided = stats.totalElidedTiles;
+            this.cacheMisses = stats.totalCacheMisses;
+            this.dispatched = stats.totalDispatchedRequests;
+        },
+        computeProgress(vp){
+            const ready = vp.numReadyTiles;
+            const requested = vp.numRequestedTiles;
+            const total = ready + requested;
+            const ratio = (total > 0) ? (ready / total) : 1.0;
+            return Math.round(ratio * 100);
+        },
+        reset(){
+            IModelApp.tileAdmin.resetStatistics();
+            this.update();
+        },
+        clearRequestInterval(){
+            if (undefined !== this._curRequestIntervalId) {
+                clearInterval(this._curRequestIntervalId);
+                this._curRequestIntervalId = undefined;
+            }
+        },
+        formatMemory(numBytes) {
             let suffix = "b";
             if (numBytes >= 1024) {
                 numBytes /= 1024;
@@ -350,5 +494,31 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-
+    .request-wrap {
+        margin-top: 10px;
+    }
+    .request-inner {
+        box-sizing: border-box;
+        width: 48%;
+        margin-right: 1%;
+        float: left;
+        border: 1px solid grey;
+        text-align: right;
+        padding-right: 3px;
+    }
+    .request-inner > span {
+        display: block;
+    }
+    .btn-wrap {
+        margin-top: 5px;
+        text-align: center;
+    }
+    .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
 </style>
