@@ -12,14 +12,16 @@
                 <el-input  v-model="loginForm.password" name="password" placeholder="Password" auto-complete="on" ></el-input>
             </el-form-item>
 
+            
             <el-form-item>
                 <el-button type="primary">Login</el-button>
             </el-form-item>
+            <el-form-item>
+                <router-link :to="{ path: 'register'}">Register</router-link>
+            </el-form-item>
         </el-form>
         </div>
-        
     </div>
-    
 </template>
 
 <script>
@@ -70,6 +72,7 @@ export default {
 .img{
     width: 100%;
     height: auto;
+    opacity: 0.6;
 }
 .login{
     background: none no-repeat scroll 0 0 rgba(0,0,0,0.6);
@@ -80,6 +83,9 @@ export default {
     width: 500px;
     h2 {
         color:white
+    }
+    a{
+        color: white;
     }
 
 }
