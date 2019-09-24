@@ -50,7 +50,7 @@
                         </tr>
                         <tr>
                             <td class="btn-wrap" colspan="2">
-                                <el-button size="mini">Reset</el-button>
+                                <el-button  @click="reset" size="mini">Reset</el-button>
                             </td>
                         </tr>
                     </table>
