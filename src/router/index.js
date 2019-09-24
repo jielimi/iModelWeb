@@ -30,6 +30,11 @@ export default new Router({
       ],
     },
     {
+      path: '/login',
+      name: 'login',
+      component: resolve => require(['@/pages/login/login'], resolve)
+    },
+    {
       path: '/view',
       name: 'view',
       component: resolve => require(['@/pages/view/view'], resolve)
