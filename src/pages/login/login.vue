@@ -19,7 +19,7 @@
 
             
             <el-form-item>
-                <el-button type="primary">Login</el-button>
+                <el-button type="primary" @click="login">Login</el-button>
             </el-form-item>
             <el-form-item>
                 <router-link :to="{ path: 'register'}">Register</router-link>
@@ -66,8 +66,23 @@ export default {
     
   },
   methods: {
-      start(){
-          
+      login(){
+          let param = {
+              userName:this.loginForm.username,
+              password:this.loginForm.password
+          }
+
+          this.$post('api/user/login',param).then(res=>{
+             if(res.state != 0) {
+                this.$message({
+                    message:res.message,
+                    type:'warning'
+                })
+             }else{
+                  this.$route.push('/project')
+             }
+          })
+         
       }
   }
 };
