@@ -1,9 +1,11 @@
 <template>
     <div style="height: 100%;overflow: hidden;">
-        <img class="img" src="../../assets/images/2.jpg"/>
+        <!-- <img class="img" src="../../assets/images/2.jpg"/> -->
+        <!-- <img class="img" id="img" src="../../assets/images/fa.png"/> -->
+        <canvas></canvas>
         <div class="login">
             <el-form :model="loginForm" :rules="loginRules">         
-            <h2>iModel Web Login</h2>
+            <h2>iModel Web</h2>
             <el-form-item prop="username">
                 <el-input v-model="loginForm.username" name="username" placeholder="UserName" auto-complete="on"></el-input>
             </el-form-item>
@@ -23,10 +25,8 @@
         </div>
     </div>
 </template>
-
 <script>
-
-
+import animate from './3D.js'
 export default {
   name: "login",
   data() {
@@ -57,6 +57,9 @@ export default {
   },
   components: {
   
+  },
+  mounted () {
+      animate();
   },
   methods: {
       start(){
