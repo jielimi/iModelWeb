@@ -1,61 +1,71 @@
 <template>
-    <div>
+    <div class="debug-panel">
         <i class="iconfont icon-info"  @click="dialogVisible = true"></i>
         <el-dialog
             title="Debug Info"
             :visible.sync="dialogVisible"
             width="50%">
-            <div>
+            <div class="item">
                 <el-checkbox v-model="showFPS"  @change="handleFPSCheckChange">
                     <span v-show="fpsStatus == 0">Track FPS</span>
                     <span v-show="fpsStatus == 1">Tracking FPS...</span>
                     <span v-show="fpsStatus == 2">FPS: <span>{{ fps }}</span></span>
                 </el-checkbox>
             </div>
-            <div class="request">
+            <div class="item request">
                 <span>Max Active Requests:</span>
-                <input type="number" min="0" step="1" v-model="maxActiveRequests" @change="handleRequestsChange">
+                <el-input-number v-model="maxActiveRequests" @change="handleRequestsChange" :min="0" :step="1" size="mini"></el-input-number>
             </div>
-            <div>
-                <el-checkbox class="tile-check" v-model="showTileRequests" @change="toggle">
+            <div class="item">
+                <el-checkbox v-model="showTileRequests" @change="toggle">
                     <span>Track Tile Requests</span>
                 </el-checkbox>
-                <div class="request-wrap clearfix" v-show="isShowRequest">
-                    <div class="request-inner">
-                        <span>Active:<span>{{ active }}</span></span>
-                        <span>Pending:<span>{{ pending }}</span></span>
-                        <span>Canceled:<span>{{ canceled }}</span></span>
-                        <span>Total:<span>{{ total }}</span></span>
-                        <span>Selected:<span>{{ selected }}</span></span>
-                        <span>Ready:<span>{{ ready }}</span></span>
-                        <span>Progress:<span>{{ progress }}</span></span>
-                        <span>&nbsp;</span>
-                    </div>
-                    <div class="request-inner">
-                        <span>Completed:<span>{{ completed }}</span></span>
-                        <span>Timed Out:<span>{{ timedOut }}</span></span>
-                        <span>Failed:<span>{{ failed }}</span></span>
-                        <span>Empty:<span>{{ empty }}</span></span>
-                        <span>Undisplayable:<span>{{ undisplayable }}</span></span>
-                        <span>Elided:<span>{{ elided }}</span></span>
-                        <span>Cache Misses:<span>{{ cacheMisses }}</span></span>
-                        <span>Dispatched:<span>{{ dispatched }}</span></span>
-                    </div>
-                    <div class="btn-wrap">
-                        <button>Reset</button>
-                    </div>
+                <div class="tile-wrap" v-show="isShowRequest">
+                    <table border="1" style="width:100%">
+                        <tr>
+                            <td style="width:50%">
+                                <div class="request-inner">
+                                    <span>Active:<span>{{ active }}</span></span>
+                                    <span>Pending:<span>{{ pending }}</span></span>
+                                    <span>Canceled:<span>{{ canceled }}</span></span>
+                                    <span>Total:<span>{{ total }}</span></span>
+                                    <span>Selected:<span>{{ selected }}</span></span>
+                                    <span>Ready:<span>{{ ready }}</span></span>
+                                    <span>Progress:<span>{{ progress }}</span></span>
+                                    <span>&nbsp;</span>
+                                </div>
+                            </td>
+                            <td style="width:50%">
+                                <div class="request-inner">
+                                    <span>Completed:<span>{{ completed }}</span></span>
+                                    <span>Timed Out:<span>{{ timedOut }}</span></span>
+                                    <span>Failed:<span>{{ failed }}</span></span>
+                                    <span>Empty:<span>{{ empty }}</span></span>
+                                    <span>Undisplayable:<span>{{ undisplayable }}</span></span>
+                                    <span>Elided:<span>{{ elided }}</span></span>
+                                    <span>Cache Misses:<span>{{ cacheMisses }}</span></span>
+                                    <span>Dispatched:<span>{{ dispatched }}</span></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="btn-wrap" colspan="2">
+                                <el-button size="mini">Reset</el-button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-            
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="Track Memory:">
-                    <el-select v-model="form.memory" placeholder="" @change="memIndexChange">
+            <div class=item>
+                <div>
+                    <span>Track Memory:</span>
+                    <el-select class="memory-select" v-model="form.memory" placeholder="" @change="memIndexChange" size="mini">
                         <el-option label="None" value="-1"></el-option>
                         <el-option label="ViewportTileTrees" value="0"></el-option>
                         <el-option label="AllTileTrees" value="1"></el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item >
+                </div>
+                <div>
                     <table border="1" style="width:100%" v-show="form.memory != '-1'">
                         <tr>
                             <td style="width:50%">
@@ -81,105 +91,109 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="btn-wrap" colspan="2">
+                                <el-button :disabled="form.memory != '1'" type="success" size="mini" @click="purge">Purge</el-button>
+                            </td>
+                        </tr>
                     </table>
-                    <el-button
-                        :disabled="form.memory != '1'"
-                        type="success"
-                        size="mini"
-                        @click="purge">Purge
-                    </el-button>
-                </el-form-item>
-                <el-form-item label="Tools Setting"> 
-                    <el-collapse v-model="activeNames">
-                        <el-collapse-item title="" name="1">
-                           <el-form ref="toolSettings" :model="toolSettings" label-width="80px">
-                               <el-form-item >
-                                    <el-checkbox label="Preserve World Up When Rotating" 
-                                    v-model="toolSettings.pwuCheck" @change="PWUCheckChange"></el-checkbox>
-                                </el-form-item>
-                                <el-form-item label="Animation Duration (ms):">
-                                    <el-input
-                                        type="number"
-                                        min = 0
-                                        step = 1
-                                        @blur="changeAnimationDuration"
-                                        v-model="toolSettings.animationTime">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item label="Pick Radius (inches): ">
-                                    <el-input
-                                        type="number"
-                                        min = 0
-                                        step= 0.01
-                                        @blur="changePickRadius"
-                                        v-model="toolSettings.viewToolPickRadiusInches">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item >
-                                    <el-checkbox label="Walk Enforce Z Up" 
-                                    v-model="toolSettings.walkEnforceZUp" @change="walkEnforceZUpChange"></el-checkbox>
-                                </el-form-item>
-                                <el-form-item label="Walk Camera Angle (degrees): ">
-                                    <el-input
-                                        type="number"
-                                        min = 0
-                                        step= 0.1
-                                        @blur="changeWalkCameraAngle"
-                                        v-model="toolSettings.walkCameraAngle">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item label="Walk Velocity (meters per second): ">
-                                    <el-input
-                                        type="number"
-                                        min = 0
-                                        step= 0.1
-                                        @blur="changeWalkVelocity"
-                                        v-model="toolSettings.walkVelocity">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item label="Wheel Zoom Bump Distance (meters): ">
-                                    <el-input
-                                        type="number"
-                                        min = 0
-                                        step= 0.025
-                                        @blur="changeWheelZoomBumpDistance"
-                                        v-model="toolSettings.wheelZoomBumpDistance">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item label="Wheel Zoom Ratio: ">
-                                    <el-input
-                                        type="number"
-                                        min = 0
-                                        step= 0.025
-                                        @blur="changeWheelZoomRatio"
-                                        v-model="toolSettings.wheelZoomRatio">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item label="Interial damping: ">
-                                    <el-input
-                                        type="number"
-                                        min= 0,
-                                        max= 1,
-                                        step= 0.05,
-                                        @blur="changeDamping"
-                                        v-model="toolSettings.damping">
-                                    </el-input>
-                                </el-form-item>
-                                <el-form-item label="Interial duration (seconds): ">
-                                    <el-input
-                                        type="number"
-                                        min= 0,
-                                        max= 10,
-                                        step= 0.05,
-                                        @blur="changeInertiaDuration"
-                                        v-model="toolSettings.inertiaDuration">
-                                    </el-input>
-                                </el-form-item>
-                           </el-form>
-                        </el-collapse-item>
-                    </el-collapse>
-                </el-form-item>
-            </el-form>        
+                </div>
+            </div>
+            <div class="item">
+                <el-collapse>
+                    <el-collapse-item title="Tools Setting">
+                       <div class="setting-inner">
+                            <el-checkbox label="Preserve World Up When Rotating" v-model="toolSettings.pwuCheck" @change="PWUCheckChange"></el-checkbox>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Animation Duration (ms): </span>
+                            <el-input-number
+                                size="mini"
+                                :min = "0"
+                                :step = 1
+                                @blur="changeAnimationDuration"
+                                v-model="toolSettings.animationTime">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Pick Radius (inches): </span>
+                            <el-input-number
+                                size="mini"
+                                :min = "0"
+                                :step= 0.01
+                                @blur="changePickRadius"
+                                v-model="toolSettings.viewToolPickRadiusInches">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <el-checkbox label="Walk Enforce Z Up" 
+                            v-model="toolSettings.walkEnforceZUp" @change="walkEnforceZUpChange"></el-checkbox>
+                        </div>
+                        <div class="setting-inner" label="Walk Camera Angle (degrees): ">
+                            <span>Animation Duration (ms):</span>
+                            <el-input-number
+                                size="mini"
+                                :min = "0"
+                                :step= 0.1
+                                @blur="changeWalkCameraAngle"
+                                v-model="toolSettings.walkCameraAngle">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Walk Velocity (meters per second): </span>
+                            <el-input-number
+                                size="mini"
+                                :min = "0"
+                                :step= 0.1
+                                @blur="changeWalkVelocity"
+                                v-model="toolSettings.walkVelocity">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Wheel Zoom Bump Distance (meters): </span>
+                            <el-input-number
+                                size="mini"
+                                :min = "0"
+                                :step= 0.025
+                                @blur="changeWheelZoomBumpDistance"
+                                v-model="toolSettings.wheelZoomBumpDistance">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Wheel Zoom Ratio: </span>
+                            <el-input-number
+                                size="mini"
+                                :min = "0"
+                                :step= 0.025
+                                @blur="changeWheelZoomRatio"
+                                v-model="toolSettings.wheelZoomRatio">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Interial damping: </span>
+                            <el-input-number
+                                size="mini"
+                                :min= "0"
+                                :max= "1"
+                                :step= 0.05
+                                @blur="changeDamping"
+                                v-model="toolSettings.damping">
+                            </el-input-number>
+                        </div>
+                        <div class="setting-inner">
+                            <span>Interial duration (seconds): </span>
+                            <el-input-number
+                                size="mini"
+                                :min= "0"
+                                :max= "10"
+                                :step= 0.05
+                                @blur="changeInertiaDuration"
+                                v-model="toolSettings.inertiaDuration">
+                            </el-input-number>
+                        </div>
+                    </el-collapse-item>
+                </el-collapse>
+            </div>        
         </el-dialog>
     </div>
 </template>
@@ -230,7 +244,7 @@ export default {
             cacheMisses: 0,
             dispatched: 0,
             form:{
-                memory:'None',
+                memory:'-1',
                 oldMemIndex:'0',
                 total:'',
                 totalTileTrees:'',
@@ -494,31 +508,45 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-    .request-wrap {
-        margin-top: 10px;
+    .debug-panel {
+        .item {
+            margin-top: 10px;
+        }
+        .tile-wrap {
+            margin-top: 5px;
+        }
+        .memory-select {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        table {
+            border-collapse: collapse;
+            text-align: right;
+            .request-inner > span {
+                display: block;
+                margin: 5px 3px 5px 0;
+            }
+            label{
+                display: block;
+                margin: 5px 3px 5px 0;
+            }
+            .btn-wrap {
+                padding: 5px 0;
+                text-align: center;
+            }
+        }
+        .setting-inner {
+            margin-top: 5px;
+        }
+        
+        .clearfix:after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0;
+        }
     }
-    .request-inner {
-        box-sizing: border-box;
-        width: 48%;
-        margin-right: 1%;
-        float: left;
-        border: 1px solid grey;
-        text-align: right;
-        padding-right: 3px;
-    }
-    .request-inner > span {
-        display: block;
-    }
-    .btn-wrap {
-        margin-top: 5px;
-        text-align: center;
-    }
-    .clearfix:after {
-        visibility: hidden;
-        display: block;
-        font-size: 0;
-        content: " ";
-        clear: both;
-        height: 0;
-    }
+    
 </style>
