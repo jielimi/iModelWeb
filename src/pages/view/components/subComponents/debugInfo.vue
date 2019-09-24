@@ -537,6 +537,11 @@ export default {
         }
         .setting-inner {
             margin-top: 5px;
+            span {
+                display: inline-block;
+                width: 230px;
+                text-align: right;
+            }
         }
         
         .clearfix:after {
