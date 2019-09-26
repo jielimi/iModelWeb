@@ -50,7 +50,7 @@
                         </tr>
                         <tr>
                             <td class="btn-wrap" colspan="2">
-                                <el-button size="mini">Reset</el-button>
+                                <el-button  @click="reset" size="mini">Reset</el-button>
                             </td>
                         </tr>
                     </table>
@@ -537,6 +537,11 @@ export default {
         }
         .setting-inner {
             margin-top: 5px;
+            span {
+                display: inline-block;
+                width: 230px;
+                text-align: right;
+            }
         }
         
         .clearfix:after {
