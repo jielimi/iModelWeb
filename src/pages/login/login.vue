@@ -68,7 +68,7 @@ export default {
   methods: {
       login(){
           let param = {
-              userName:this.loginForm.username,
+              username:this.loginForm.username,
               password:this.loginForm.password
           }
 
@@ -78,9 +78,10 @@ export default {
                     message:res.message,
                     type:'warning'
                 })
-             }else{
-                  this.$route.push('/project')
              }
+            //  else{
+            //       this.$route.push('/project')
+            //  }
           })
          
       }
