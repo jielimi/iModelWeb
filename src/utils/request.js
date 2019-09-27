@@ -57,12 +57,15 @@ export function get(url, params = {}, headers = {}) {
       params: params,
       headers:headers
     })
-      .then(response => {
+    .then(response => {
+      if(response.data){
         resolve(response.data);
-      })
-      .catch(err => {
-        reject(err)
-      })
+      }
+      resolve(response)
+    })
+    .catch(err => {
+      reject(err)
+    })
   })
 }
 

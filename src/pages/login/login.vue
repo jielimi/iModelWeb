@@ -1,6 +1,5 @@
 <template>
-    <div style="height: 100%;overflow: hidden;">
-        <!-- <img class="img" src="../../assets/images/2.jpg"/> -->
+    <div>
         <img class="img" id="img" src="../../assets/images/fa.png"/>
         <ul class="bg-bubbles">
             <li v-for="(item, index) in bubbles" :key="index"></li>
