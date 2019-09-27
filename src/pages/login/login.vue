@@ -16,7 +16,6 @@
             <el-form-item prop="password">
                 <el-input  v-model="loginForm.password" name="password" placeholder="Password" auto-complete="on" ></el-input>
             </el-form-item>
-
             
             <el-form-item>
                 <el-button type="primary" @click="login">Login</el-button>
@@ -29,7 +28,7 @@
     </div>
 </template>
 <script>
-
+import { setCookie } from '@/utils/cookies';
 export default {
   name: "login",
   data() {
@@ -71,6 +70,7 @@ export default {
               username:this.loginForm.username,
               password:this.loginForm.password
           }
+          let that = this;
 
           this.$post('api/user/login',param).then(res=>{
              if(res.state != 0) {
@@ -79,11 +79,11 @@ export default {
                     type:'warning'
                 })
              }
-            //  else{
-            //       this.$route.push('/project')
-            //  }
+             else{
+                 setCookie('token',res.data.token,3600);
+                 that.$router.push({'path':'/'});
+             }
           })
-         
       }
   }
 };

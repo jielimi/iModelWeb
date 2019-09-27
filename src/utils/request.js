@@ -19,25 +19,31 @@ const responseHandler = (response) => {
   }
 };
 
-// axios.interceptors.request.use(
-//   config => {
-//     config.data = JSON.stringify(config.data);
-//     config.headers = {
-//       'Content-Type': 'application/json'
-//       // "x-auth-token": sessionStorage.getItem("x-auth-token"),
-//     }
-//
-//     // if(token){
-//     //   config.params = {'token':token}
-//     // }
-//
-//     //config.params = {'token':"93bf83cd-faab-40ef-8830-b58a2c6cd59a"}
-//     return config;
-//   },
-//   error => {
-//     return Promise.reject(err);
-//   }
-// );
+axios.interceptors.response.use(
+  response => {
+    switch(response.data.state){
+      case 401:
+          router.replace({
+              path: 'login',
+              query: {redirect: router.currentRoute.fullPath}
+          })
+          break;
+          default:
+              return response;
+      }
+  },
+  error => {
+      if (error.response) {
+          switch (error.response.status) {
+              case 401:
+                  router.replace({
+                      path: 'login',
+                      query: {redirect: router.currentRoute.fullPath}
+                  })
+          }
+      }
+      return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+  });
 /**
  * 封装get方法
  * @param url
