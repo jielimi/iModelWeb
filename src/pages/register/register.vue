@@ -13,13 +13,13 @@
                 <el-input v-model="registerForm.username" name="username" placeholder="UserName" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input  v-model="registerForm.password" name="password" placeholder="Password" auto-complete="off" ></el-input>
+                <el-input  v-model="registerForm.password" name="password" placeholder="Password" type="password" auto-complete="off" ></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" auto-complete="off" ></el-input>
+                <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" type="password" auto-complete="off" ></el-input>
             </el-form-item>
             <el-form-item prop="mail">
-                <el-input v-model="registerForm.mail" name="mail" placeholder="Mail" auto-complete="off"></el-input>
+                <el-input v-model="registerForm.mail" name="mail" type="email" placeholder="Mail" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="company">
                 <el-input v-model="registerForm.company" name="company" placeholder="Company" auto-complete="off"></el-input>
@@ -28,7 +28,7 @@
                 <el-input v-model="registerForm.position" name="position" placeholder="Position" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="telephone">
-                <el-input v-model="registerForm.telephone" name="telephone" placeholder="Telephone" auto-complete="off"></el-input>
+                <el-input v-model="registerForm.telephone" name="telephone" type="telephone" placeholder="Telephone" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="register">Submit</el-button>
@@ -42,14 +42,21 @@
 export default {
   name: "register",
   data() {
-    let checkname = function(rule, value, callback){
-      if(value){
-        this.$post('api/user/name',{'name': value}).then(res=>{
-          if(res.state != 0) {
-            callback(new Error(res.message));
-          }
-        });
+    const checkname = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('please input user name'));
+        return;
       }
+      let param = {
+        username: this.registerForm.username
+      };
+      this.$post('api/user/name', param).then(res => {
+        if (res.state !== 0) {
+          callback(new Error('the name is exist'));
+        } else {
+          callback();
+        }
+      });
     };
     return {
       bubbles:[1,2,3,4,5,6,7,7,7,9,10,9],
@@ -137,17 +144,16 @@ export default {
           position:this.registerForm.position,
           telephone:this.registerForm.telephone
         }
-
         this.$post('api/user/register',param).then(res=>{
-           if(res.state != 0) {
+           if(res.state !== 0) {
               this.$message({
                 message:res.message,
                 type:'warning'
               })
            }
-          //  else{
-          //       this.$route.push('/project')
-          //  }
+           else{
+            this.$router.push({'path':'/login'});
+           }
         })
       }
   }
