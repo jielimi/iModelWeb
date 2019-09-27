@@ -75,9 +75,9 @@ export default {
                 model = view.iModel.models.getLoaded(id);
             }
             if(checked){
-                selector.addModels(id);
+                this.GLOBAL_DATA.theViewPort.addViewedModels(id);
             }else{
-                selector.dropModels(id);
+                this.GLOBAL_DATA.theViewPort.changeModelDisplay(id, false);
             }
             this.isCheckAll();
             vp.invalidateScene();
@@ -98,11 +98,11 @@ export default {
                         await view.iModel.models.load(val.id);
                         model = view.iModel.models.getLoaded(val.id);
                     }
-                    selector.addModels(val.id);
+                    that.GLOBAL_DATA.theViewPort.addViewedModels(val.id);
                 }
             }else{
                 this.modelList.forEach(function(val,index){
-                    selector.dropModels(val.id);
+                    that.GLOBAL_DATA.theViewPort.changeModelDisplay(val.id, false);
                 });
             }
             vp.invalidateScene();

@@ -38,12 +38,24 @@
                 </table>
             </el-collapse-item>
             <el-collapse-item title="ExtendData" name="5" v-if="extendData">
-                <table>
-                    <tr v-for="(value, key, index) in extendData">
-                        <td>{{key}}</td>
-                        <td>{{value}}</td>
-                    </tr>
-                </table>
+                <el-tabs v-model="activeTabName" @tab-click="handleClickTab">
+                    <el-tab-pane label="Element" name="first">
+                        <table class="extend-table">
+                            <tr v-for="(value, key, index) in extendData">
+                                <td>{{key}}</td>
+                                <td width="165">{{value}}</td>
+                            </tr>
+                        </table>
+                    </el-tab-pane>
+                    <el-tab-pane label="Assembly " name="second">
+                        <table class="extend-table">
+                            <tr v-for="(value, key, index) in assemblyData">
+                                <td>{{key}}</td>
+                                <td>{{value}}</td>
+                            </tr>
+                        </table>
+                    </el-tab-pane>
+                </el-tabs>
             </el-collapse-item>
             <el-collapse-item title="Material" name="5" v-if="material">
             </el-collapse-item>
@@ -66,13 +78,17 @@ export default {
             message:'',
             extraMsg:[],
             activeName: '1',
+            activeTabName: 'first',
             baseInfo: '',
             general: '',
             geometry: '',
             rawData: '',
             material: '',
             extend: '',
-            extendData:''
+            extendData:'',
+            cellId: undefined,
+            hasRequestCellProperty: false,
+            assemblyData: ''
         };
     },
     components: {},
@@ -106,15 +122,25 @@ export default {
                     that.rawData.bBoxHigh = res.data.extraMsg.raw.bBoxHigh;
                     that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
                     that.extendData = res.data.extraMsg.extend;
-                    
+                    that.cellId = res.data.extraMsg.raw.parent.id ? res.data.extraMsg.raw.parent.id : undefined;
+                    if(that.cellId && !that.hasRequestCellProperty){
+                        const obj = JSON.parse(JSON.stringify(param));
+                        obj.id = that.cellId;
+                        that.$get('api/view/assembly',{},obj).then(res=>{
+                            if(res.state === 0){
+                                that.hasRequestCellProperty = true;
+                                that.assemblyData = res.data.assembleMsg;
+                            }
+                        })
+                    }
                     let data={
                         id:res.data.extraMsg.raw.id,
                         modelId:res.data.extraMsg.raw.model.id
                     }
-                   
                     window.eventHub.$emit('component_edit',data);
                 }
-            })
+            });
+
        },
        displayTestAppAccuSnap() {
            class DisplayTestAppAccuSnap extends AccuSnap {
@@ -162,6 +188,9 @@ export default {
        },
        closeTip() {
             this.showToolTip = false;
+       },
+       handleClickTab(tab, event){
+
        }
     }
 }
@@ -218,6 +247,11 @@ export default {
     text-decoration: none;
     color: #fff;
 }
-
-
+.extend-table {
+    width: 96%;
+    margin-bottom: 20px;
+}
+td {
+    word-break: break-all;
+}
 </style>
