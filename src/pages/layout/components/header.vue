@@ -9,7 +9,7 @@
         </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>Change Password</el-dropdown-item>
-            <el-dropdown-item>Logout</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">Logout</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -21,13 +21,17 @@
 </template>
 
 <script>
+import { delCookie } from '@/utils/cookies';
   export default {
     name: 'imodel-header',
     created () {
 
     },
     methods: {
-
+        logout(){
+            delCookie("token")
+            this.$router.push({'path':'/login'})
+        }
     }
 
   }
