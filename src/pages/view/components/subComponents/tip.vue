@@ -87,6 +87,7 @@ export default {
             extend: '',
             extendData:'',
             cellId: undefined,
+            hasRequestCellProperty: false,
             assemblyData: ''
         };
     },
@@ -122,6 +123,16 @@ export default {
                     that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
                     that.extendData = res.data.extraMsg.extend;
                     that.cellId = res.data.extraMsg.raw.parent.id ? res.data.extraMsg.raw.parent.id : undefined;
+                    if(that.cellId && !that.hasRequestCellProperty){
+                        const obj = JSON.parse(JSON.stringify(param));
+                        obj.id = that.cellId;
+                        that.$get('api/view/assembly',{},obj).then(res=>{
+                            if(res.state === 0){
+                                that.hasRequestCellProperty = true;
+                                that.assemblyData = res.data.assembleMsg;
+                            }
+                        })
+                    }
                     let data={
                         id:res.data.extraMsg.raw.id,
                         modelId:res.data.extraMsg.raw.model.id
@@ -130,15 +141,6 @@ export default {
                 }
             });
 
-            if(this.cellId){
-                const obj = JSON.parse(JSON.stringify(param));
-                obj.id = this.cellId;
-                this.$get('api/view/assembly',{},obj).then(res=>{
-                    if(res.state === 0){
-                        this.assemblyData = res.data.assembleMsg;
-                    }
-                })
-            }
        },
        displayTestAppAccuSnap() {
            class DisplayTestAppAccuSnap extends AccuSnap {
