@@ -1,11 +1,12 @@
 <template>
-    <div>
-        <img class="img" id="img" src="../../assets/images/fa.png"/>
+<div style="width:100%;height:100%">
+  <div class="background-login">
+        <!-- <img class="img" id="img" src="../../assets/images/fa.png"/> -->
         <ul class="bg-bubbles">
             <li v-for="(item, index) in bubbles" :key="index"></li>
         </ul>
-        
-        <div class="login">
+  </div>
+  <div class="login">
             <el-form :model="loginForm" :rules="loginRules">         
             <h2>iModel Web</h2>
             <el-form-item prop="username">
@@ -13,7 +14,7 @@
             </el-form-item>
 
             <el-form-item prop="password">
-                <el-input  v-model="loginForm.password" name="password" placeholder="Password" auto-complete="on" ></el-input>
+                <el-input  v-model="loginForm.password" name="password" placeholder="Password" type="password" auto-complete="on" maxlength=15></el-input>
             </el-form-item>
             
             <el-form-item>
@@ -24,7 +25,8 @@
             </el-form-item>
         </el-form>
         </div>
-    </div>
+</div>
+    
 </template>
 <script>
 import { setCookie } from '@/utils/cookies';
@@ -88,6 +90,14 @@ export default {
 };
 </script>
 <style lang="less">
+.background-login{
+  position: relative;
+  background: url("../../assets/images/fa.png") no-repeat;
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+  background-size: 100%;
+}
 .el-input {
         width:300px;
 }    
