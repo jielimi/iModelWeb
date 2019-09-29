@@ -31,10 +31,18 @@
                 <el-input v-model="registerForm.telephone" name="telephone" type="telephone" placeholder="Telephone" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="register">Submit</el-button>
+                <el-button type="primary" :disabled="btnIsDisabled" @click="register">Submit</el-button>
             </el-form-item>
           </el-form>
         </div>
+        <el-alert
+          class="alert"
+          v-show="registerSuccess"
+          title="Register success, please wait for the administrator's approval."
+          type="success"
+          center
+          show-icon>
+        </el-alert>
     </div>
 </template>
 <script>
@@ -124,7 +132,9 @@ export default {
           }
         ]
       
-      }
+      },
+      registerSuccess: false,
+      btnIsDisabled: false
     }
   },
   components: {
@@ -152,7 +162,9 @@ export default {
               })
            }
            else{
-            this.$router.push({'path':'/login'});
+            this.registerSuccess = true;
+            this.btnIsDisabled = true;
+            //this.$router.push({'path':'/login'});
            }
         })
       }
@@ -160,6 +172,10 @@ export default {
 };
 </script>
 <style lang="less">
+.alert {
+  position: absolute;
+  top: 0;
+}
 .el-input {
         width:300px;
 }    
