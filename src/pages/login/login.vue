@@ -82,7 +82,12 @@ export default {
              }
              else{
                  setCookie('token',res.data.token,3600);
-                 that.$router.push({'path':'/'});
+                 setCookie('username',that.loginForm.username);
+                  if(that.$route.query){
+                      that.$router.push({'path':that.$route.query.redirect});
+                  }else{
+                      that.$router.push({'path':'/'});
+                  }
              }
           })
       }

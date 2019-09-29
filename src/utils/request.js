@@ -58,10 +58,14 @@ export function get(url, params = {}, headers = {}) {
       headers:headers
     })
     .then(response => {
-      if(response.data){
+      if(response && response.data != undefined){
         resolve(response.data);
       }
-      resolve(response)
+      resolve(
+        {
+          state:401
+        }
+      )
     })
     .catch(err => {
       reject(err)
