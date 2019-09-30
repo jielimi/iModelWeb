@@ -12,7 +12,7 @@
       </el-input>
       <el-button type="primary" @click="getProjectList(1)">Search</el-button>
       <el-button @click="reset">Reset</el-button>
-      <router-link class="user-list" :to="{ path: 'user'}">User list</router-link>
+      
     </div>
 
     <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible"  :close-on-click-modal="false" center>
@@ -170,8 +170,7 @@
 
 <script>
   import { formatDate } from '@/utils/date';
-  import { IModelVersion } from '@bentley/imodeljs-common'
-  
+  import { IModelVersion } from '@bentley/imodeljs-common'  
   export default {
     name: 'project',
     data() {
