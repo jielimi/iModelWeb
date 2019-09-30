@@ -1,7 +1,7 @@
 <template>
 <div style="width:100%;height:100%">
   <div class="background-login">
-        <!-- <img class="img" id="img" src="../../assets/images/fa.png"/> -->
+        <img class="img" id="img" src="../../assets/images/fa.png"/>
         <ul class="bg-bubbles">
             <li v-for="(item, index) in bubbles" :key="index"></li>
         </ul>
@@ -144,7 +144,7 @@ export default {
 <style lang="less">
 .background-login{
   position: relative;
-  background: url("../../assets/images/fa.png") no-repeat;
+  // background: url("../../assets/images/fa.png") no-repeat;
   height: 100%;
   width: 50%;
   overflow: hidden;
@@ -155,7 +155,7 @@ export default {
 }    
 .img{
     height: auto;
-    width: 50%;
+    width: 60%;
     opacity: 0.6;
 }
 .login{
