@@ -28,6 +28,11 @@ const router = new Router({
             requireAuth: true,  
           },
           component: resolve => require(['@/pages/version/version'], resolve)
+        },
+        {
+          path: '/user',
+          name: 'user',
+          component: resolve => require(['@/pages/user/user'], resolve)
         }
       ],
     },

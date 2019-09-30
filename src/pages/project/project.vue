@@ -1,6 +1,7 @@
 <template>
   <div class="main" v-loading="isLoading">
     <h1>Project</h1>
+    <router-link :to="{ path: 'user'}">User list</router-link>
     <div class="search-area">
       <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)" maxlength="30">
         <i
