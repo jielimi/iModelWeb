@@ -35,14 +35,14 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-alert
+        <!-- <el-alert
           class="alert"
           v-show="registerSuccess"
           title="Register success, please wait for the administrator's approval."
           type="success"
           center
           show-icon>
-        </el-alert>
+        </el-alert> -->
     </div>
 </template>
 <script>
@@ -165,6 +165,11 @@ export default {
             this.registerSuccess = true;
             this.btnIsDisabled = true;
             //this.$router.push({'path':'/login'});
+            this.$message({
+              message:"Register success, please wait for the administrator's approval.",
+              type:'success'
+            })
+            return;
            }
         })
       }
