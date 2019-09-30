@@ -1,7 +1,6 @@
 <template>
   <div class="main" v-loading="isLoading">
     <h1>Project</h1>
-    <router-link :to="{ path: 'user'}">User list</router-link>
     <div class="search-area">
       <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)" maxlength="30">
         <i
@@ -13,7 +12,7 @@
       </el-input>
       <el-button type="primary" @click="getProjectList(1)">Search</el-button>
       <el-button @click="reset">Reset</el-button>
-
+      
     </div>
 
     <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible"  :close-on-click-modal="false" center>
@@ -171,8 +170,7 @@
 
 <script>
   import { formatDate } from '@/utils/date';
-  import { IModelVersion } from '@bentley/imodeljs-common'
-  
+  import { IModelVersion } from '@bentley/imodeljs-common'  
   export default {
     name: 'project',
     data() {
@@ -475,6 +473,13 @@
       vertical-align: middle;
       width: 45px;
       height: 45px;
+    }
+    .user-list {
+      float: right;
+      display: inline-block;
+      height: 32px;
+      line-height: 32px;
+      text-decoration: none;
     }
   }
 

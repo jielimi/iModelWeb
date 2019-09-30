@@ -68,14 +68,16 @@
           align="center"
           label="Operations"
           width="200">
-          <template slot-scope="scope" v-if="!scope.row.approve">
+          <template slot-scope="scope">
             <el-button
+              v-if="!scope.row.approve"
               type="primary"
               @click="approve(scope.row.username, true)">Pass
             </el-button>
             <el-button
+              v-if="scope.row.approve && scope.row.username!=='Admin'"
               type="default"
-              @click="approve(scope.row.username, false)">Fail
+              @click="approve(scope.row.username, false)">Fail 
             </el-button>
           </template>
         </el-table-column>

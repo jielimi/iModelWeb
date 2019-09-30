@@ -13,10 +13,10 @@
                 <el-input v-model="registerForm.username" name="username" placeholder="UserName" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input  v-model="registerForm.password" name="password" placeholder="Password" type="password" auto-complete="off" ></el-input>
+                <el-input  v-model="registerForm.password" name="password" placeholder="Password" type="password" auto-complete="off" maxlength=15></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" type="password" auto-complete="off" ></el-input>
+                <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" type="password" auto-complete="off" maxlength=15></el-input>
             </el-form-item>
             <el-form-item prop="mail">
                 <el-input v-model="registerForm.mail" name="mail" type="email" placeholder="Mail" auto-complete="off"></el-input>
@@ -35,14 +35,14 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-alert
+        <!-- <el-alert
           class="alert"
           v-show="registerSuccess"
           title="Register success, please wait for the administrator's approval."
           type="success"
           center
           show-icon>
-        </el-alert>
+        </el-alert> -->
     </div>
 </template>
 <script>
@@ -165,6 +165,11 @@ export default {
             this.registerSuccess = true;
             this.btnIsDisabled = true;
             //this.$router.push({'path':'/login'});
+            this.$message({
+              message:"Register success, please wait for the administrator's approval.",
+              type:'success'
+            })
+            return;
            }
         })
       }

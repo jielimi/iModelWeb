@@ -8,24 +8,31 @@
           <img  class="user" src="../../../assets/images/avatarDefault.png"><i class="el-icon-arrow-down el-icon--right"></i>
         </span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-if="username === 'Admin'">
+              <router-link class="user-list" :to="{ path: 'user'}">User List</router-link>
+            </el-dropdown-item>
             <el-dropdown-item>Change Password</el-dropdown-item>
             <el-dropdown-item @click.native="logout">Logout</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-
-
     </header>
   </div>
 
 </template>
 
 <script>
-import { delCookie } from '@/utils/cookies';
+  import { getCookie } from '@/utils/cookies';
+  import { delCookie } from '@/utils/cookies';
   export default {
     name: 'imodel-header',
+    data(){
+      return {
+        username: ''
+      }
+    },
     created () {
-
+      this.username = getCookie('username');
     },
     methods: {
         logout(){
