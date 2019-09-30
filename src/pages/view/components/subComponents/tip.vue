@@ -38,24 +38,50 @@
                 </table>
             </el-collapse-item>
             <el-collapse-item title="ExtendData" name="5" v-if="extendData">
-                <el-tabs v-model="activeTabName" @tab-click="handleClickTab">
-                    <el-tab-pane label="Element" name="first">
+                <el-popover
+                    placement="right"
+                    trigger="click"
+                    style="{ max-height: 400px; overflow-y: auto; }">
+                    <div class="table-wrap">
                         <table class="extend-table">
                             <tr v-for="(value, key, index) in extendData">
                                 <td>{{key}}</td>
-                                <td width="165">{{value}}</td>
+                                <td>
+                                    <table>
+                                        <tr v-for="(val, key, index) in value">
+                                            <td v-for="(v, k, i) in val">
+                                                {{v}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
                         </table>
-                    </el-tab-pane>
-                    <el-tab-pane label="Assembly " name="second">
+                    </div>
+                  <el-button slot="reference">Element</el-button>
+                </el-popover>
+                <el-popover
+                    placement="right"
+                    trigger="click"
+                    style="{ max-height: 400px; overflow-y: auto; }">
+                    <div class="table-wrap">
                         <table class="extend-table">
                             <tr v-for="(value, key, index) in assemblyData">
                                 <td>{{key}}</td>
-                                <td>{{value}}</td>
+                                <td>
+                                    <table>
+                                        <tr v-for="(val, key, index) in value">
+                                            <td v-for="(v, k, i) in val">
+                                                {{v}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
                         </table>
-                    </el-tab-pane>
-                </el-tabs>
+                    </div>
+                  <el-button slot="reference">Assembly</el-button>
+                </el-popover>
             </el-collapse-item>
             <el-collapse-item title="Material" name="5" v-if="material">
             </el-collapse-item>
@@ -87,7 +113,6 @@ export default {
             extend: '',
             extendData:'',
             cellId: undefined,
-            hasRequestCellProperty: false,
             assemblyData: ''
         };
     },
@@ -123,12 +148,11 @@ export default {
                     that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
                     that.extendData = res.data.extraMsg.extend;
                     that.cellId = res.data.extraMsg.raw.parent.id ? res.data.extraMsg.raw.parent.id : undefined;
-                    if(that.cellId && !that.hasRequestCellProperty){
+                    if(that.cellId){
                         const obj = JSON.parse(JSON.stringify(param));
                         obj.id = that.cellId;
                         that.$get('api/view/assembly',{},obj).then(res=>{
                             if(res.state === 0){
-                                that.hasRequestCellProperty = true;
                                 that.assemblyData = res.data.assembleMsg;
                             }
                         })
@@ -247,11 +271,19 @@ export default {
     text-decoration: none;
     color: #fff;
 }
-.extend-table {
-    width: 96%;
-    margin-bottom: 20px;
+.table-wrap {
+    min-height: 30px;
+    max-height: 400px;
+    overflow-y: auto;
 }
-td {
-    word-break: break-all;
+.extend-table {
+    border: 1px solid #999;
+    border-collapse: collapse;
+}
+.extend-table > tr >td {
+    border: 1px solid #999;
+    table tr td:first-child {
+        width: 240px;
+    }
 }
 </style>
