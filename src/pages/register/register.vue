@@ -13,10 +13,10 @@
                 <el-input v-model="registerForm.username" name="username" placeholder="UserName" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input  v-model="registerForm.password" name="password" placeholder="Password" type="password" auto-complete="off" ></el-input>
+                <el-input  v-model="registerForm.password" name="password" placeholder="Password" type="password" auto-complete="off" maxlength=15></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" type="password" auto-complete="off" ></el-input>
+                <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" type="password" auto-complete="off" maxlength=15></el-input>
             </el-form-item>
             <el-form-item prop="mail">
                 <el-input v-model="registerForm.mail" name="mail" type="email" placeholder="Mail" auto-complete="off"></el-input>
