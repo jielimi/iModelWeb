@@ -52,7 +52,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancle">Cancle</el-button>
+        <el-button @click="cancle">Cancel</el-button>
         <el-button v-if="isNewVersion" type="primary" @click="createVersionConfirm()" :disabled="confirmDisable">Confirm</el-button>
         <el-button v-else type="primary" @click="modifyVersionConfirm()" :disabled="confirmDisable">Confirm</el-button>
       </div>

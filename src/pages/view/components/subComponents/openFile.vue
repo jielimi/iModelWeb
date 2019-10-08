@@ -8,7 +8,7 @@
         >
         <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">cancle</el-button>
+            <el-button @click="dialogVisible = false">cancel</el-button>
             <el-button type="primary" @click="openFile">confirm</el-button>
         </span>
         </el-dialog>

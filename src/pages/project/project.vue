@@ -34,7 +34,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancle">Cancle</el-button>
+        <el-button @click="cancle">Cancel</el-button>
 
         <el-button v-if="isNewProject" type="primary" @click="createProjectConfirm()" :disabled="confirmDisable">Confirm</el-button>
         <el-button v-else type="primary" @click="modifyProjectConfirm()" :disabled="confirmDisable">Confirm</el-button>
@@ -54,7 +54,7 @@
         <el-dialog title="Open Standalone" :visible.sync="stdialogVisible" width="30%" :close-on-click-modal="false" center>
           <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="stdialogVisible = false">Cancle</el-button>
+            <el-button @click="stdialogVisible = false">Cancel</el-button>
             <el-button type="primary" @click="openSTFile">Confirm</el-button>
           </span>
         </el-dialog>
@@ -75,7 +75,7 @@
           
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="onlinedialogVisible = false">Cancle</el-button>
+          <el-button @click="onlinedialogVisible = false">Cancel</el-button>
           <el-button type="primary" @click="openOnlineFile">Confirm</el-button>
         </div>
       </el-dialog>
