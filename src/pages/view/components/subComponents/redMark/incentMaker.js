@@ -107,7 +107,7 @@ var IncidentMarkerDemo = (function () {
     IncidentMarkerDemo.decoratorArr.pop()
 
   }
-  IncidentMarkerDemo.cancle = function(){
+  IncidentMarkerDemo.cancel = function(){
     for(var i=0;i<IncidentMarkerDemo.decoratorArr.length;i++){
       IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[i]);
     }

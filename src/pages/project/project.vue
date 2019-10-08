@@ -34,7 +34,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancle">Cancel</el-button>
+        <el-button @click="cancel">Cancel</el-button>
 
         <el-button v-if="isNewProject" type="primary" @click="createProjectConfirm()" :disabled="confirmDisable">Confirm</el-button>
         <el-button v-else type="primary" @click="modifyProjectConfirm()" :disabled="confirmDisable">Confirm</el-button>
@@ -297,7 +297,7 @@
         // 放回索引值
         return this.req.pageSize * (this.req.pageIndex - 1) + 1 + row.index;
       },
-      cancle () {
+      cancel () {
         this.projectForm.projectName = '';
         this.projectForm.projectDescription = '';
         this.$refs['projectForm'].resetFields();

@@ -67,7 +67,7 @@ export default {
                             IncidentMarkerDemo.undo();
                             break;
                             case "escape":
-                            IncidentMarkerDemo.cancle();
+                            IncidentMarkerDemo.cancel();
                             break;
                         }
                     }
@@ -83,7 +83,7 @@ export default {
             if(this.active){
                 IModelApp.tools.run("iModelWeb.Mark");
             }else{
-                IncidentMarkerDemo.cancle()
+                IncidentMarkerDemo.cancel()
             }
             
         },

@@ -117,7 +117,7 @@ var IncidentMarkerDemo = /** @class */ (function () {
     IModelApp.viewManager.addDecorator(IncidentMarkerDemo._decorator);
     IncidentMarkerDemo.decoratorArr.push(IncidentMarkerDemo._decorator);
   };
-  IncidentMarkerDemo.cancle = function(){
+  IncidentMarkerDemo.cancel = function(){
     for(var i=0;i<IncidentMarkerDemo.decoratorArr.length;i++){
       IModelApp.viewManager.dropDecorator(IncidentMarkerDemo.decoratorArr[i]);
     }

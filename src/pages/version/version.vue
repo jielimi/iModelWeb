@@ -52,7 +52,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancle">Cancel</el-button>
+        <el-button @click="cancel">Cancel</el-button>
         <el-button v-if="isNewVersion" type="primary" @click="createVersionConfirm()" :disabled="confirmDisable">Confirm</el-button>
         <el-button v-else type="primary" @click="modifyVersionConfirm()" :disabled="confirmDisable">Confirm</el-button>
       </div>
@@ -415,7 +415,7 @@
         // 放回索引值
         return this.req.pageSize * (this.req.pageIndex - 1) + 1 + row.index;
       },
-      cancle () {
+      cancel () {
         this.$refs['versionForm'].resetFields();
         this.versionForm.versionName = '';
         this.versionForm.versionDescription = '';
