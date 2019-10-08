@@ -72,7 +72,7 @@
             <el-button
               v-if="!scope.row.approve"
               type="primary"
-              @click="approve(scope.row.username, true)">Pass
+              @click="approve(scope.row.username, true)">Approve
             </el-button>
             <el-button
               v-if="scope.row.approve && scope.row.username!=='Admin'"
@@ -181,10 +181,10 @@
       	return row.approve.toString();
       },
       approve(username,action){
-      	let operate = action? "pass" : "fail";
+      	let operate = action? "approve" : "fail";
       	this.$confirm('Confirm to '+ operate + '?', '', {
           confirmButtonText: 'Confirm',
-          cancelButtonText: 'Cancle'
+          cancelButtonText: 'Cancel'
         }).then(() => {
           let param = {
 	        	username: username,
