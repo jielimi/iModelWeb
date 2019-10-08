@@ -1,5 +1,6 @@
 import axios from 'axios';
 import router from "../router/index";
+import { setCookie,getCookie } from '@/utils/cookies';
 
 
 axios.defaults.timeout = 10000000;
@@ -29,7 +30,10 @@ axios.interceptors.response.use(
           })
           break;
           default:
-              return response;
+            // 重设token
+            var token = getCookie("token")
+            setCookie('token',token,3600);
+            return response;
       }
   },
   error => {

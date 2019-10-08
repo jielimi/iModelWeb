@@ -30,9 +30,9 @@
             <el-form-item>
                 <el-button type="primary" @click="login">Login</el-button>
             </el-form-item>
-            <!-- <el-form-item>
+            <el-form-item>
                 <router-link :to="{ path: 'register'}">Register</router-link>
-            </el-form-item> -->
+            </el-form-item>
         </el-form>
         </div>
 </div>
