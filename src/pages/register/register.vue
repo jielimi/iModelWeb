@@ -1,11 +1,11 @@
 <template>
     <div style="height: 100%;overflow: hidden;">
-        <!-- <img class="img" src="../../assets/images/2.jpg"/> -->
+      <div class="background-login">
         <img class="img" id="img" src="../../assets/images/fa.png"/>
         <ul class="bg-bubbles">
           <li v-for="(item, index) in bubbles" :key="index"></li>
         </ul>
-        
+      </div>
         <div class="login">
           <el-form :model="registerForm" :rules="registerRules">         
             <h2>Create Your Account</h2>
@@ -181,12 +181,19 @@ export default {
   position: absolute;
   top: 0;
 }
+.background-login{
+  position: relative;
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+  background-size: 100%;
+}
 .el-input {
         width:300px;
 }    
 .img{
     height: auto;
-    width: 50%;
+    width: 60%;
     opacity: 0.6;
 }
 .login{

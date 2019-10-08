@@ -292,7 +292,7 @@
         paginationShow: true,
         tableData: [],
         uploadParams: {
-          //action: 'http://47.251.5.15:3000/api/version/upload',
+          // action: 'http://39.100.156.154:3000/api/version/upload',
 					action: 'http://127.0.0.1:5566/api/version/upload',
 					data: {
 						type: '0',
