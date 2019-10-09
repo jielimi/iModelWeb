@@ -10,7 +10,7 @@
             <el-form :model="loginForm" :rules="loginRules">         
             <h2>iModel Web</h2>
             <el-form-item prop="username">
-                <el-input v-model="loginForm.username" name="username" placeholder="UserName" auto-complete="on"></el-input>
+                <el-input v-model="loginForm.useremail" name="useremail" placeholder="UserEmail" auto-complete="on"></el-input>
             </el-form-item>
 
             <el-form-item prop="password">
@@ -51,15 +51,15 @@ export default {
         verifyLoadState:true,
         bubbles:[1,2,3,4,5,6,7,7,7,9,10,9],
         loginForm: {
-            username: '',
+            useremail: '',
             password: '',
             identityCode:''
         },
         loginRules: {
-        username: [
+        useremail: [
             {
                 required: true,
-                message: "please input user name",
+                message: "please input user email",
                 trigger: "blur"
             }
         ],
@@ -89,12 +89,12 @@ export default {
       },
       login(){
           let param = {
-              username:this.loginForm.username,
+              useremail:this.loginForm.useremail,
               password:this.loginForm.password,
               vertifyCode:this.loginForm.identityCode
           }
 
-          if(!param.username || !param.password){
+          if(!param.useremail || !param.useremail){
             this.$message({
                     message:"please input your name or your password",
                     type:'warning'
@@ -122,7 +122,7 @@ export default {
              }
              else{
                  setCookie('token',res.data.token,3600);
-                 setCookie('username',that.loginForm.username);
+                 setCookie('username',res.data.userName);
                   if(that.$route.query.redirect){
                       that.$router.push({'path':that.$route.query.redirect});
                   }else{

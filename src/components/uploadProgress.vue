@@ -76,7 +76,6 @@ export default {
             },1000)
         },
         endQuery() {
-            
             if (this.timeout){
                 clearTimeout(this.timeout)
             }
