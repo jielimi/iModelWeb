@@ -7,19 +7,19 @@
         </ul>
       </div>
         <div class="login">
-          <el-form :model="registerForm" :rules="registerRules">         
+          <el-form :model="registerForm" :rules="registerRules" ref="registerForm" sizi="mini">      
             <h2>Create Your Account</h2>
             <el-form-item prop="username">
                 <el-input v-model="registerForm.username" name="username" placeholder="UserName" auto-complete="off"></el-input>
             </el-form-item>
+            <el-form-item prop="mail">
+                <el-input v-model="registerForm.mail" name="mail" type="email" placeholder="Email" auto-complete="off"></el-input>
+            </el-form-item>
             <el-form-item prop="password">
                 <el-input  v-model="registerForm.password" name="password" placeholder="Password" type="password" auto-complete="off" maxlength=15></el-input>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="chkPassword">
                 <el-input  v-model="registerForm.chkPassword" name="chkPassword" placeholder="Confirm Password" type="password" auto-complete="off" maxlength=15></el-input>
-            </el-form-item>
-            <el-form-item prop="mail">
-                <el-input v-model="registerForm.mail" name="mail" type="email" placeholder="Mail" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="company">
                 <el-input v-model="registerForm.company" name="company" placeholder="Company" auto-complete="off"></el-input>
@@ -28,17 +28,21 @@
                 <el-input v-model="registerForm.position" name="position" placeholder="Position" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="telephone">
-                <el-input v-model="registerForm.telephone" name="telephone" type="telephone" placeholder="Telephone" auto-complete="off"></el-input>
+                <el-input v-model="registerForm.telephone" name="telephone" type="telephone" placeholder="Telephone" auto-complete="off" maxlength=11></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" :disabled="btnIsDisabled" @click="register">Submit</el-button>
+              <div class="btn-wrap">
+                <el-button class="submit" type="primary" @click="submitForm('registerForm')">Submit</el-button>
+                <el-button class="reset" @click="resetForm('registerForm')">Reset</el-button>
+              </div>
+                
             </el-form-item>
           </el-form>
         </div>
         <!-- <el-alert
           class="alert"
           v-show="registerSuccess"
-          title="Register success, please wait for the administrator's approval."
+          title="Register success, Please wait for the administrator's approval."
           type="success"
           center
           show-icon>
@@ -52,7 +56,7 @@ export default {
   data() {
     const checkname = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('please input user name'));
+        callback(new Error('Please input user name'));
         return;
       }
       let param = {
@@ -65,6 +69,25 @@ export default {
           callback();
         }
       });
+    };
+    const validatePassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please input password'));
+      } else {
+        if (this.registerForm.chkPassword !== '') {
+          this.$refs.registerForm.validateField('chkPassword');
+        }
+        callback();
+      }
+    };
+    const validateChkPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please input password again'));
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('Please input the same password'));
+      } else {
+        callback();
+      }
     };
     return {
       bubbles:[1,2,3,4,5,6,7,7,7,9,10,9],
@@ -81,7 +104,7 @@ export default {
         username: [
             {
               required: true,
-              message: "please input user name",
+              message: "Please input user name",
               trigger: "blur"
             },
             {
@@ -90,51 +113,35 @@ export default {
             }
         ],
         password: [
-          {
-            required: true,
-            message: 'please input password',
-            trigger: 'blur'
-          }
+          { validator: validatePassword, trigger: 'blur' }
         ],
         chkPassword: [
-          {
-            required: true,
-            message: 'please input password',
-            trigger: 'blur'
-          }
+          { validator: validateChkPassword, trigger: 'blur' }
         ],
         mail: [
           {
-            required: true,
-            message: 'please input mail',
-            trigger: 'blur'
-          }
+            required: true,message: 'Please input mail',trigger: 'blur'
+          },
+          { type: 'email', message: 'Please enter the correct email address', trigger: 'blur' }
         ],
         company: [
           {
-            required: true,
-            message: 'please input company',
-            trigger: 'blur'
+            required: true,message: 'Please input company',trigger: 'blur'
           }
         ],
         position: [
           {
-            required: true,
-            message: 'please input position',
-            trigger: 'blur'
+            required: true,message: 'Please input position',trigger: 'blur'
           }
         ],
         telephone: [
           {
-            required: true,
-            message: 'please input telephone',
-            trigger: 'blur'
+            required: true,message: 'Please input telephone',trigger: 'blur'
           }
         ]
       
       },
-      registerSuccess: false,
-      btnIsDisabled: false
+      registerSuccess: false
     }
   },
   components: {
@@ -145,33 +152,41 @@ export default {
     
   },
   methods: {
-      register(){
-        let param = {
-          username:this.registerForm.username,
-          password:this.registerForm.password,
-          mail:this.registerForm.mail,
-          company:this.registerForm.company,
-          position:this.registerForm.position,
-          telephone:this.registerForm.telephone
-        }
-        this.$post('api/user/register',param).then(res=>{
-           if(res.state !== 0) {
-              this.$message({
-                message:res.message,
-                type:'warning'
-              })
-           }
-           else{
-            this.registerSuccess = true;
-            this.btnIsDisabled = true;
-            //this.$router.push({'path':'/login'});
-            this.$message({
-              message:"Register success, please wait for the administrator's approval.",
-              type:'success'
-            })
-            return;
-           }
-        })
+      submitForm(formName){
+        this.$refs[formName].validate((valid) => {
+          if(valid){
+            let param = {
+              username:this.registerForm.username,
+              password:this.registerForm.password,
+              mail:this.registerForm.mail,
+              company:this.registerForm.company,
+              position:this.registerForm.position,
+              telephone:this.registerForm.telephone
+            }
+            this.$post('api/user/register',param).then(res=>{
+               if(res.state !== 0) {
+                  this.$message({
+                    message:res.message,
+                    type:'warning'
+                  })
+               }
+               else{
+                this.registerSuccess = true;
+                //this.$router.push({'path':'/login'});
+                this.$message({
+                  message:"Register success, Please wait for the administrator's approval.",
+                  type:'success'
+                })
+                return;
+               }
+            });
+          }else {
+            return false;
+          }
+        });
+      },
+      resetForm(formName){
+        this.$refs[formName].resetFields();
       }
   }
 };
@@ -210,7 +225,11 @@ export default {
         color: white;
     }
 }
-
+.btn-wrap {
+  padding-left: 90px;
+  margin-top: 10px;
+  text-align: left;
+}
 .bg-bubbles {
     position: absolute;
     margin: 0;
