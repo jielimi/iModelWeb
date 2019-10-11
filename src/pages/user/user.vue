@@ -202,23 +202,30 @@
       	return row.approve.toString();
       },
       delUser(mail){
+        this.$confirm('Confirm to delete ?', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel'
+        }).then(() => {
           let param = {
             useremail:mail
           }
           this.$del('api/user/instance', param).then(res => {
-		        if (res.state !== 0) {
-		          this.$message({
-	              message:res.message,
-	              type:'warning'
-	            });
-		        } else {
-		          this.$message({
-	              message: 'success',
-	              type:'success'
-	            });
-	            this.getUserList();
-		        }
-		      });
+            if (res.state !== 0) {
+              this.$message({
+                message:res.message,
+                type:'warning'
+              });
+            } else {
+              this.$message({
+                message: 'success',
+                type:'success'
+              });
+              this.getUserList();
+            }
+          });
+        }).catch(() => {
+          return false;
+        }); 
       },
       changeReadOnly($event,mail){
         let param = {
@@ -241,7 +248,7 @@
         });
       },
       approve(mail,action){
-      	let operate = action? "approve" : "fail";
+      	let operate = action? "approve" : "cancel";
       	this.$confirm('Confirm to '+ operate + '?', '', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel'
