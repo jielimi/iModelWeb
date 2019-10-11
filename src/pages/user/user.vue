@@ -72,12 +72,17 @@
             <el-button
               v-if="!scope.row.approve"
               type="primary"
-              @click="approve(scope.row.username, true)">Approve
+              @click="approve(scope.row.mail, true)">Approve
             </el-button>
             <el-button
               v-if="scope.row.approve && scope.row.username!=='Admin'"
               type="default"
-              @click="approve(scope.row.username, false)">Fail 
+              @click="approve(scope.row.mail, false)">Cancel 
+            </el-button>
+            <el-button
+              v-if="scope.row.username!=='Admin'"
+              type="primary"
+              @click="delUser(scope.row.mail)">Delete
             </el-button>
           </template>
         </el-table-column>
@@ -180,14 +185,33 @@
       statusFormat(row, column){
       	return row.approve.toString();
       },
-      approve(username,action){
+      delUser(mail){
+          let param = {
+            useremail:mail
+          }
+          this.$post('api/user/del', param).then(res => {
+		        if (res.state !== 0) {
+		          this.$message({
+	              message:res.message,
+	              type:'warning'
+	            });
+		        } else {
+		          this.$message({
+	              message: 'success',
+	              type:'success'
+	            });
+	            this.getUserList();
+		        }
+		      });
+      },
+      approve(mail,action){
       	let operate = action? "approve" : "fail";
       	this.$confirm('Confirm to '+ operate + '?', '', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel'
         }).then(() => {
           let param = {
-	        	username: username,
+	        	useremail: mail,
 	        	approve: action
 		      };
 		      this.$post('api/user/approve', param).then(res => {
