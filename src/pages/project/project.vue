@@ -140,6 +140,16 @@
             </el-button>
           </template>
         </el-table-column>
+        <el-table-column
+          align="center"
+          label="Delete">
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              @click="delProj(scope.row.projectId)">Delete
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -362,6 +372,26 @@
             });
           }
         });
+      },
+      delProj(projId){
+        let param = {
+          projectId: projId,
+          userId: '0x1'
+        };
+        this.$del('api/project/instance', param).then(res => {
+            if (res.state !== 0) {
+              this.$message({
+                message:res.message,
+                type:'warning'
+              });
+            } else {
+              this.$message({
+                message: 'success',
+                type:'success'
+              });
+              this.getProjectList(1);
+            }
+          });
       },
       dateFormat(row, column, cellValue, index) {
         const  daterc= row[column.property];

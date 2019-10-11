@@ -86,7 +86,7 @@
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.username!=='Admin'"
-              type="primary"
+              type="danger"
               @click="delUser(scope.row.mail)">Delete
             </el-button>
           </template>
