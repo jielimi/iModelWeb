@@ -86,6 +86,18 @@
             </el-button>
           </template>
         </el-table-column>
+        <el-table-column
+          align="center"
+          label="ReadOnly"
+          width="200">
+          <template slot-scope="scope">
+            <el-switch
+              v-if="scope.row.username!=='Admin'"
+              v-model="userReadonly"
+            >
+            </el-switch>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <el-pagination v-if="paginationShow"
@@ -118,6 +130,7 @@
         queryWord: '',
         dialogFormVisible: false,
         formLabelWidth: '120px',
+        userReadonly:false,
         projectForm: {
           projectId:'',
           projectName: '',
@@ -189,7 +202,7 @@
           let param = {
             useremail:mail
           }
-          this.$post('api/user/del', param).then(res => {
+          this.$del('api/user/instance', param).then(res => {
 		        if (res.state !== 0) {
 		          this.$message({
 	              message:res.message,
