@@ -93,7 +93,8 @@
           <template slot-scope="scope">
             <el-switch
               v-if="scope.row.username!=='Admin'"
-              v-model="userReadonly"
+              v-model="scope.row.readonly"
+              @change = changeUserAuth($event,scope.row.mail)
             >
             </el-switch>
           </template>
@@ -130,7 +131,6 @@
         queryWord: '',
         dialogFormVisible: false,
         formLabelWidth: '120px',
-        userReadonly:false,
         projectForm: {
           projectId:'',
           projectName: '',
@@ -216,6 +216,27 @@
 	            this.getUserList();
 		        }
 		      });
+      },
+      changeUserAuth(readonly, mail){
+       
+        let param = {
+            useremail:mail,
+            readonly:readonly
+        }
+        this.$post('api/user/auth', param).then(res => {
+          if (res.state !== 0) {
+            this.$message({
+              message:res.message,
+              type:'warning'
+            });
+          } else {
+            this.$message({
+              message: 'success',
+              type:'success'
+            });
+            this.getUserList();
+          }
+        });
       },
       approve(mail,action){
       	let operate = action? "approve" : "fail";
