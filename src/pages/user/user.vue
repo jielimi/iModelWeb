@@ -66,8 +66,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="Operations"
-          width="200">
+          label="Approve">
           <template slot-scope="scope">
             <el-button
               v-if="!scope.row.approve"
@@ -79,6 +78,12 @@
               type="default"
               @click="approve(scope.row.mail, false)">Cancel 
             </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="Delete">
+          <template slot-scope="scope">
             <el-button
               v-if="scope.row.username!=='Admin'"
               type="primary"
@@ -88,13 +93,12 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="ReadOnly"
-          width="200">
+          label="ReadOnly">
           <template slot-scope="scope">
             <el-switch
               v-if="scope.row.username!=='Admin'"
               v-model="scope.row.readonly"
-              @change = changeUserAuth($event,scope.row.mail)
+              @change="changeReadOnly($event,scope.row.mail)"
             >
             </el-switch>
           </template>
@@ -118,7 +122,6 @@
 <script>
   import { formatDate } from '@/utils/date';
   import { IModelVersion } from '@bentley/imodeljs-common'
-  
   export default {
     name: 'user',
     data() {
@@ -217,12 +220,11 @@
 		        }
 		      });
       },
-      changeUserAuth(readonly, mail){
-       
+      changeReadOnly($event,mail){
         let param = {
-            useremail:mail,
-            readonly:readonly
-        }
+          useremail:mail,
+          readonly: $event
+        };
         this.$post('api/user/auth', param).then(res => {
           if (res.state !== 0) {
             this.$message({
@@ -289,7 +291,6 @@
         margin-right: 20px;
       }
     }
-
     .table-area {
       background-color: @whiteBGColor;
       width: 100%;
@@ -303,12 +304,10 @@
         padding: 20px 30px;
       }
     }
-
     .link {
       color: #409EFF;
       text-decoration: underline;
       cursor: pointer;
     }
   }
-
 </style>

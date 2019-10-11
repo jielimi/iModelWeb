@@ -10,7 +10,7 @@
           <el-form :model="registerForm" :rules="registerRules" ref="registerForm" sizi="mini">      
             <h2>Create Your Account</h2>
             <el-form-item prop="username">
-                <el-input v-model="registerForm.username" name="username" placeholder="UserName" auto-complete="off"></el-input>
+                <el-input v-model.trim="registerForm.username" name="username" placeholder="UserName" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item prop="mail">
                 <el-input v-model="registerForm.mail" name="mail" type="email" placeholder="Email" auto-complete="off"></el-input>
@@ -156,7 +156,7 @@ export default {
         this.$refs[formName].validate((valid) => {
           if(valid){
             let param = {
-              username:this.registerForm.username,
+              username:this.registerForm.username.trim(),
               password:this.registerForm.password,
               mail:this.registerForm.mail,
               company:this.registerForm.company,

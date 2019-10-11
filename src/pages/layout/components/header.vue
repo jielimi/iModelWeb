@@ -8,9 +8,7 @@
           <img  class="user" src="../../../assets/images/avatarDefault.png"><i class="el-icon-arrow-down el-icon--right"></i>
         </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-if="username === 'Admin'">
-              <router-link class="user-list" :to="{ path: 'user'}">User List</router-link>
-            </el-dropdown-item>
+            <el-dropdown-item v-if="username === 'Admin'" @click.native="userlist">User List</el-dropdown-item>
             <el-dropdown-item>Change Password</el-dropdown-item>
             <el-dropdown-item @click.native="logout">Logout</el-dropdown-item>
           </el-dropdown-menu>
@@ -36,8 +34,11 @@
     },
     methods: {
         logout(){
-            delCookie("token")
-            this.$router.push({'path':'/login'})
+          delCookie("token");
+          this.$router.push({'path':'/login'});
+        },
+        userlist(){
+          this.$router.push({'path':'/user'})
         }
     }
 
@@ -63,10 +64,16 @@
       font-size: 16px;
       font-family: 'PingFangSC-Regular', arial, '\5fae\8f6f\96c5\9ed1', '\5b8b\4f53', sans-seri;
     }
-
+    .el-dropdown-link {
+      display: inline-block;
+      height: 30px;
+    }
     .user{
       width: 30px;
       height: 30px;
+    }
+    i{
+      vertical-align: super;
     }
   }
 
