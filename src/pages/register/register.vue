@@ -6,7 +6,7 @@
           <li v-for="(item, index) in bubbles" :key="index"></li>
         </ul>
       </div>
-        <div class="login">
+        <div class="login" v-if="!registerSuccess">
           <el-form :model="registerForm" :rules="registerRules" ref="registerForm" sizi="mini">      
             <h2>Create Your Account</h2>
             <el-form-item prop="username">
@@ -39,14 +39,11 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- <el-alert
-          class="alert"
-          v-show="registerSuccess"
-          title="Register success, Please wait for the administrator's approval."
-          type="success"
-          center
-          show-icon>
-        </el-alert> -->
+        <div class="success-wrap" v-if="registerSuccess">
+          <p><i class="el-icon-success"></i> Register success, Please wait for the administrator's approval.</p>
+          <br />
+          <p>The page will skip to login after {{ time }} seconds.</p>
+        </div>
     </div>
 </template>
 <script>
@@ -141,7 +138,8 @@ export default {
         ]
       
       },
-      registerSuccess: false
+      registerSuccess: false,
+      time: 5
     }
   },
   components: {
@@ -172,12 +170,15 @@ export default {
                }
                else{
                 this.registerSuccess = true;
-                //this.$router.push({'path':'/login'});
-                this.$message({
-                  message:"Register success, Please wait for the administrator's approval.",
-                  type:'success'
-                })
-                return;
+                let that = this;
+                let inter = setInterval(function(){
+                  that.time --;
+                  if(that.time === 0){
+                    that.$router.push({'path':'/login'});
+                    clearInterval(inter);
+                  }
+                },1000);
+                
                }
             });
           }else {
@@ -224,6 +225,16 @@ export default {
     a{
         color: white;
     }
+}
+.success-wrap {
+  position: absolute;
+  top: 150px;
+  right: 20%;
+  width: 500px;
+  p{
+    text-align: left;
+    color: #67c23a;
+  }
 }
 .btn-wrap {
   padding-left: 90px;
