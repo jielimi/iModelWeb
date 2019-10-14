@@ -218,7 +218,6 @@
 		      });
       },
       changeUserAuth(readonly, mail){
-       
         let param = {
             useremail:mail,
             readonly:readonly

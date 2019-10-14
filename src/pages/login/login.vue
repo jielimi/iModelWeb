@@ -122,6 +122,7 @@ export default {
              }
              else{
                  setCookie('token',res.data.token,3600);
+                 setCookie('refreshToken',res.data.refreshToken,3600*24);
                  setCookie('username',res.data.userName);
                   if(that.$route.query.redirect){
                       that.$router.push({'path':that.$route.query.redirect});

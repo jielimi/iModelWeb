@@ -5,36 +5,59 @@ import { setCookie,getCookie } from '@/utils/cookies';
 
 axios.defaults.timeout = 10000000;
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8';
+let isRefreshing = false;
+let requests = []
 
-// http request 拦截器
-const responseHandler = (response) => {
-  switch (response.data.errorCode) {
-    case 404:
-      router.push({ path: '/404' });
-      break;
-    case 500:
-      router.push({ path: '/500' });
-      break;
-    default:
-      return response;
-  }
-};
+
+function backToLogin(){
+  router.replace({
+    path: 'login',
+    query: {redirect: router.currentRoute.fullPath}
+  })
+}
+function refresh(){
+  return axios.post('api/user/refreshtoken').then(res => res.data)
+}
+
 
 axios.interceptors.response.use(
   response => {
     switch(response.data.state){
-      case 401:
-          router.replace({
-              path: 'login',
-              query: {redirect: router.currentRoute.fullPath}
-          })
-          break;
-          default:
-            // 重设token
-            var token = getCookie("token")
-            setCookie('token',token,3600);
-            return response;
+      case 401:{
+        backToLogin()
+        break;
       }
+      case 10001:{ 
+        const refreshToken = getCookie('refreshToken');
+        if(!refreshToken){
+          backToLogin();
+          break;
+        }
+
+        if (!isRefreshing) {
+          isRefreshing = true;
+          return refresh().then(res => {
+            setCookie('token',res.data.token,3600);
+            const config = response.config;
+            requests.forEach(cb=>cb());
+            requests = [];
+            return axios(config)
+          }).catch(res => {
+            backToLogin();
+          }).finally(() => {
+            isRefreshing = false
+          })
+        }else{
+          return new Promise((resolve) => {
+            requests.push(() => {
+              resolve(instance(response.config))
+            })
+          })
+        }
+      }
+      default:
+       return response;
+    }
   },
   error => {
       if (error.response) {
