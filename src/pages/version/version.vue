@@ -162,7 +162,8 @@
 					  :on-success="uploadMasterOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress"
-					  :on-remove="removeMasterFile">
+					  :on-remove="removeMasterFile"
+            :with-credentials="true">
 					  	<el-button @click="changeParam('0')" type="primary">Upload master file</el-button>
 					</el-upload>
 					<br />
@@ -176,7 +177,8 @@
 					  :on-success="uploadReferenceOnSuccess"
 					  :on-error="uploadOnError"
 					  :on-progress="uploadOnProgress"
-            :on-remove="removeReferenceFile">
+            :on-remove="removeReferenceFile"
+            :with-credentials="true">
 					  	<el-button @click="changeParam('1')" type="primary">Upload reference file</el-button>
 					</el-upload>
 				</div>
