@@ -140,6 +140,17 @@
             </el-button>
           </template>
         </el-table-column>
+        <el-table-column
+          v-if="username==='Admin'"
+          align="center"
+          label="Delete">
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              @click="delProj(scope.row.projectId)">Delete
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -169,8 +180,9 @@
 </template>
 
 <script>
+  import { getCookie } from '@/utils/cookies';
   import { formatDate } from '@/utils/date';
-  import { IModelVersion } from '@bentley/imodeljs-common'  
+  import { IModelVersion } from '@bentley/imodeljs-common'
   export default {
     name: 'project',
     data() {
@@ -197,6 +209,7 @@
         });
       };
       return {
+        username: '',
         dialogVisible:false,
         stdialogVisible:false,
         onlinedialogVisible:false,
@@ -250,6 +263,7 @@
       };
     },
     created () {
+      this.username = getCookie('username');
       this.getProjectList();
     },
     methods: {
@@ -362,6 +376,34 @@
             });
           }
         });
+      },
+      delProj(projId){
+        this.$confirm('Confirm to delete ?', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel'
+        }).then(() => {
+          let param = {
+            projectId: projId,
+            userId: '0x1'
+          };
+          this.$del('api/project/instance', param).then(res => {
+            if (res.state !== 0) {
+              this.$message({
+                message:res.message,
+                type:'warning'
+              });
+            } else {
+              this.$message({
+                message: 'success',
+                type:'success'
+              });
+              this.getProjectList(1);
+            }
+          });
+        }).catch(() => {
+          return false;
+        }); 
+          
       },
       dateFormat(row, column, cellValue, index) {
         const  daterc= row[column.property];
