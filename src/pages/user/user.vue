@@ -243,6 +243,7 @@
               message: 'success',
               type:'success'
             });
+           
             this.getUserList();
           }
         });

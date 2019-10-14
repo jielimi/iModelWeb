@@ -43,7 +43,7 @@
 
     <div class="table-area">
       <div class="operate-area">
-        <el-button type="primary" @click="createProject">Create Project</el-button>
+        <el-button v-if="!readOnlyAuth" type="primary" @click="createProject">Create Project</el-button>
 
         
         <!-- 打开standalone   -->
@@ -180,7 +180,7 @@
 </template>
 
 <script>
-  import { getCookie } from '@/utils/cookies';
+  import { getCookie ,setCookie} from '@/utils/cookies';
   import { formatDate } from '@/utils/date';
   import { IModelVersion } from '@bentley/imodeljs-common'
   export default {
@@ -209,6 +209,7 @@
         });
       };
       return {
+        readOnlyAuth:false,
         username: '',
         dialogVisible:false,
         stdialogVisible:false,
@@ -263,8 +264,9 @@
       };
     },
     created () {
-      this.username = getCookie('username');
       this.getProjectList();
+      this.readOnlyAuth = getCookie('readonly') === 'true'?true:false;
+      this.username = getCookie('username');
     },
     methods: {
       getProjectList (index) {
@@ -292,9 +294,6 @@
         this.req.pageIndex = 1;
         this.getProjectList();
       },
-      // handleDelete () {
-      //   console.log('hi');
-      // },
       handleSizeChange(val) {
         this.req.pageIndex = 1;
         this.req.pageSize = val;
