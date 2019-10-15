@@ -147,7 +147,7 @@ export default {
                     that.rawData.bBoxHigh = res.data.extraMsg.raw.bBoxHigh;
                     that.rawData.bBoxLow = res.data.extraMsg.raw.bBoxLow;
                     that.extendData = res.data.extraMsg.extend;
-                    that.cellId = res.data.extraMsg.raw.parent.id ? res.data.extraMsg.raw.parent.id : undefined;
+                    that.cellId = (res.data.extraMsg.raw.parent && res.data.extraMsg.raw.parent.id) ? res.data.extraMsg.raw.parent.id : undefined;
                     if(that.cellId){
                         const obj = JSON.parse(JSON.stringify(param));
                         obj.id = that.cellId;
