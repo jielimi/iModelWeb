@@ -126,7 +126,13 @@ export default {
                  setCookie('username',res.data.userName);
                  setCookie('readonly',res.data.readonly);
                   if(that.$route.query.redirect){
+                    if(that.$route.query.redirect.indexOf("view?") != -1){
+                      let test = '#'+that.$route.query.redirect
+                       window.open(test, '_blank'); 
+                    }else{
                       that.$router.push({'path':that.$route.query.redirect});
+                    }
+                    
                   }else{
                       that.$router.push({'path':'/'});
                   }

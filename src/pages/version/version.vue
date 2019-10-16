@@ -60,7 +60,7 @@
 
     <div class="table-area">
       <div class="operate-area">
-        <el-button type="primary" @click="createVersion">Add Version</el-button>
+        <el-button type="primary" @click="createVersion" v-if="!readOnlyAuth">Add Version</el-button>
         <el-button type="success" @click="versionCompare" :disabled="!(multipleSelection && multipleSelection.length==2)">Version Compare</el-button>
       </div>
       <el-table
@@ -115,8 +115,9 @@
         </el-table-column>
         <el-table-column
           label="Operations"
-          width="380">
-          <template slot-scope="scope">
+          width="380"
+          v-if="!readOnlyAuth">
+          <template slot-scope="scope" >
             <el-button
               type="primary"
               size="mini"
@@ -233,8 +234,7 @@
 <script>
   import { formatDate } from '@/utils/date';
   import uploadProgress from '@/components/uploadProgress'
-  // import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
-  // import { IModelApp } from "@bentley/imodeljs-frontend";
+  import { getCookie} from '@/utils/cookies';
 
   export default {
     name: 'project',
@@ -257,6 +257,7 @@
         });
       };
       return {
+        readOnlyAuth:false,
         dialogVisible:false,
         thumbnailSrc:'',
         isLoading: false,
@@ -315,6 +316,7 @@
     },
     created () {
       this.getVersionList();
+      this.readOnlyAuth = getCookie('readonly') === 'true'?true:false;
     },
     components:{
       uploadProgress

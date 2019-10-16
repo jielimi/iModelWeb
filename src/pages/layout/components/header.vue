@@ -35,6 +35,9 @@
     methods: {
         logout(){
           delCookie("token");
+          delCookie("refreshToken");
+          delCookie("username");
+          delCookie("readonly");
           this.$router.push({'path':'/login'});
         },
         userlist(){
