@@ -47,4 +47,4 @@ Dom.prototype.children = function() {
     })
 };
 
-CloudStorageTileCache.getCache().setProvider(CloudStorageProvider.AliCloud);
+//CloudStorageTileCache.getCache().setProvider(CloudStorageProvider.AliCloud);

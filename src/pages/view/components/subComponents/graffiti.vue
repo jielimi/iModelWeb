@@ -63,18 +63,18 @@ export default {
                         case "t":
                             tools.run("Markup.Text.Place");
                             return EventHandled.Yes;
-                        // case "1":
-                        //     const symbol1 = getSvgFile("Warning_sign.svg");
-                        //     if (undefined === symbol1)
-                        //     return EventHandled.No;
-                        //     tools.run("Markup.Symbol", symbol1);
-                        //     return EventHandled.Yes;
-                        // case "2":
-                        //     const symbol2 = getSvgFile("window-area.svg");
-                        //     if (undefined === symbol2)
-                        //     return EventHandled.No;
-                        //     tools.run("Markup.Symbol", symbol2, true);
-                        //     return EventHandled.Yes;
+                        case "1":
+                            let string = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">' +
+                                        '<circle cx="100" cy="50" r="50" stroke="black" stroke-width="2" fill="red" />'+
+                                        '</svg>'
+                            tools.run("Markup.Symbol", string);
+                            return EventHandled.Yes;
+                        case "2":
+                            let string1 = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">' +
+                                        '<rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)"/>'+
+                                        '</svg>'
+                            tools.run("Markup.Symbol", string1,true);
+                            return EventHandled.Yes; 
                         }
                         return EventHandled.No;
                     }
