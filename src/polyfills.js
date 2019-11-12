@@ -1,4 +1,5 @@
 import { HitDetail, IModelApp } from "@bentley/imodeljs-frontend";
+import { CloudStorageTileCache, CloudStorageProvider } from "@bentley/imodeljs-common";
 import { RealityModelTileClient } from "@bentley/imodeljs-frontend/lib/tile/RealityModelTileTree";
 import { Guid } from "@bentley/bentleyjs-core";
 import Dom from "@bentley/imodeljs-markup/node_modules/@svgdotjs/svg.js/src/elements/Dom";
@@ -45,3 +46,5 @@ Dom.prototype.children = function() {
         return adopt(node)
     })
 };
+
+CloudStorageTileCache.getCache().setProvider(CloudStorageProvider.AliCloud);

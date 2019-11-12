@@ -6,6 +6,7 @@
 
 <script>
 // import { BeEvent } from "@bentley/bentleyjs-core";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
     name: 'tileprogress',
     data () {
@@ -23,13 +24,17 @@ export default {
     methods: {
         addListener(){
            this.vp = this.GLOBAL_DATA.theViewPort
-           this.vp.onRender.addListener((vp)=>this.update());
+           // this.vp.onRender.addListener((vp)=>this.update());
+           IModelApp.viewManager.onFinishRender.addListener(() => this.update());
            
         },
          update() {
-            const requested = this.vp.numRequestedTiles;
-            const ready = this.vp.numReadyTiles;
-            const total = ready + requested;
+            let ready = 0;
+            let total = 0;
+            IModelApp.viewManager.forEachViewport((vp) => {
+              ready += vp.numReadyTiles;
+              total += vp.numReadyTiles + vp.numRequestedTiles;
+            });
             const pctComplete = (total > 0) ? (ready / total) : 1.0;
             this.percentage= pctComplete.toFixed(2)*100;
         }
