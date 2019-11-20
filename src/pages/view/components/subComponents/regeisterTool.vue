@@ -2,7 +2,7 @@
     <div class="registerTool">
         <markComponent ref="redMark"></markComponent>
         <graffitiComponent ref='graffiti'></graffitiComponent>
-        <addComponent ref='add'></addComponent>
+        <addComponent ref='add' style="display:none"></addComponent>
         <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
     </div>
 </template>

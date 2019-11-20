@@ -7,8 +7,9 @@
 </template>
 
 <script>
-import {IModelApp, SpatialModelState,PrimitiveTool, EventHandled} from "@bentley/imodeljs-frontend";
-
+import {IModelApp, SpatialModelState,PrimitiveTool, EventHandled,LocateResponse} from "@bentley/imodeljs-frontend";
+const { IndexedPolyface, Point3d, Vector3d } = require("@bentley/geometry-core");
+import { ColorDef } from '@bentley/imodeljs-common';
 export default {
     name: 'imodelmark',
     data () {
@@ -24,6 +25,24 @@ export default {
         
     },
     methods: {
+        drawTriangleMesh(point, base) {
+            const polyface = IndexedPolyface.create();
+            const x = point.x;
+            const y = point.y;
+            const z = point.z;
+            const point1 = Point3d.create(x + base, y, z);
+            const point2 = Point3d.create(x, y + base, z);
+            const point3 = Point3d.create(x, y, z);
+            polyface.addPoint(point1);
+            polyface.addPoint(point2);
+            polyface.addPoint(point3);
+            polyface.addPointIndex(0);
+            polyface.addPointIndex(1);
+            polyface.addPointIndex(2);
+            polyface.terminateFacet();
+            polyface.data.compress();
+            return polyface;
+        },
         register(toolNamespace){
                 let that = this;
                 class AddTool extends PrimitiveTool {
@@ -37,22 +56,31 @@ export default {
 
                 setupAndPromptForNextAction() {
                     IModelApp.accuSnap.enableSnap(true);
+                    if (!this.isDynamicsStarted) {
+                        IModelApp.viewManager.beginDynamicsMode();
+                    }
                 }
 
                 onDynamicFrame(ev, context) {
-                    // const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
-                    // if (curSnapDetail) {
-                    //     const builder = context.createSceneGraphicBuilder();
-                    //     builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.white, 1);
-                    //     const polyface = drawTetrahedron(curSnapDetail.snapPoint.clone(), 2);
-                    //     // const polyface = drawTriangleMesh(curSnapDetail.snapPoint.clone(), 2);
-                    //     builder.addPolyface(polyface, true);
-                    //     context.addGraphic(builder.finish());
-                    // }
+                    const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
+                    
+                    const secondPt = curSnapDetail ? curSnapDetail.snapPoint.clone() : ev.point;
+                    const builder = context.createSceneGraphicBuilder();
+                    const polyface = that.drawTriangleMesh(secondPt, 20);
+                    if (polyface) {
+                        // builder.setSymbology(ColorDef.red, ColorDef.red, 1);
+                        // builder.addLineString([this.firstPoint, secondPt]);
+                        builder.setSymbology(ColorDef.green, ColorDef.green, 1);
+                        builder.addPolyface(polyface, true);
+                        context.addGraphic(builder.finish());
+                    }
+                    
                 }
             
                 async onDataButtonDown(ev){
                   const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
+                  const currHit = await IModelApp.locateManager.doLocate(new LocateResponse(), true, ev.point, ev.viewport, ev.inputSource);
+                  console.log("currHit",currHit)
                   console.log("curSnapDetail",curSnapDetail);
                   if (curSnapDetail){
                       let param = {

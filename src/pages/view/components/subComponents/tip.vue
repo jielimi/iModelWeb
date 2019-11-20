@@ -82,6 +82,28 @@
                     </div>
                   <el-button slot="reference">Assembly</el-button>
                 </el-popover>
+                <el-popover
+                    placement="right"
+                    trigger="click"
+                    style="{ max-height: 400px; overflow-y: auto; }">
+                    <div class="table-wrap">
+                        <table class="extend-table">
+                            <tr v-for="(value, key, index) in topAssemblyData">
+                                <td>{{key}}</td>
+                                <td>
+                                    <table>
+                                        <tr v-for="(val, key, index) in value">
+                                            <td v-for="(v, k, i) in val">
+                                                {{v}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                  <el-button slot="reference">Top Assembly</el-button>
+                </el-popover>
             </el-collapse-item>
             <el-collapse-item title="Material" name="5" v-if="material">
             </el-collapse-item>
@@ -113,7 +135,8 @@ export default {
             extend: '',
             extendData:'',
             cellId: undefined,
-            assemblyData: ''
+            assemblyData: '',
+            topAssemblyData:''
         };
     },
     components: {},
@@ -155,7 +178,12 @@ export default {
                             if(res.state === 0){
                                 that.assemblyData = res.data.assembleMsg;
                             }
-                        })
+                        });
+                        that.$get('api/view/topAssembly',{},obj).then(res=>{
+                            if(res.state === 0){
+                                that.topAssemblyData = res.data.assembleMsg;
+                            }
+                        });
                     }
                     let data={
                         id:res.data.extraMsg.raw.id,
