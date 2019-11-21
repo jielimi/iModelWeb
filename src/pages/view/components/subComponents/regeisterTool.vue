@@ -8,12 +8,13 @@
 </template>
 
 <script>
-import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin} from "@bentley/imodeljs-frontend";
+import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,Tool} from "@bentley/imodeljs-frontend";
 import markComponent from './redMark/redMark'
 import graffitiComponent from './graffiti'
 import addComponent from './addElement/addElement'
 import tipComponent from './tip'
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
+import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
 
 export default {
     name: 'registerTool',
@@ -55,6 +56,7 @@ export default {
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
                         that.$refs.add.register(toolNamespace);
+                        RefreshTilesTool.register(toolNamespace);
                         window.eventHub.$emit('iModel_startup_finish');
                     })
                 }

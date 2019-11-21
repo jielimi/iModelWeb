@@ -33,10 +33,11 @@ export default {
         init(){
             let keyins = [];
             let tools = IModelApp.tools.getToolList();
+            console.log(tools);
             for (const tool of tools) {
                 keyins.push(tool.keyin);
             }
-            console.log(keyins);
+           
         },
         handleFPSCheckChange($event){
             if($event){
