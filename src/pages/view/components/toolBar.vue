@@ -1,10 +1,8 @@
 <template>
     <div>
-        <div>
-            <div>
-                <keyinComponent></keyinComponent>
-                <tileprogressComponent></tileprogressComponent>
-            </div>
+        <div class="top-tools">
+            <keyinComponent style="float: left;"></keyinComponent>
+            <tileprogressComponent style="float: right;"></tileprogressComponent>
         </div>
         <div class="tool-bar">
             <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
@@ -112,6 +110,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
+.top-tools {
+    height: 30px;
+    position: relative;
+    padding: 4px 15px 0;
+}
 .tool-bar{
     height: 35px;
     padding: 10px;

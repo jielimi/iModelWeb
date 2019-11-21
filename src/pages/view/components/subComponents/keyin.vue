@@ -1,5 +1,12 @@
 <template>
     <div class='keyin'>
+        <el-select v-model="toolId" placeholder="Select A Tool" size="mini" @change="toolChange">
+            <el-option
+            v-for="item in keyins"
+            :label="item.keyin"
+            :value="item.id">
+            </el-option>
+        </el-select>
         <span class="fps">
             <el-checkbox v-model="showFPS"  @change="handleFPSCheckChange">
                 <span v-show="fpsStatus == 0">Track FPS</span>
@@ -20,7 +27,9 @@ export default {
             fps: 0,
             showFPS: false,
             fpsStatus: 0,
-            _metrics: undefined
+            _metrics: undefined,
+            toolId: '',
+            keyins: []
         };
     },
     components: {
@@ -31,11 +40,10 @@ export default {
     },
     methods: {
         init(){
-            let keyins = [];
             let tools = IModelApp.tools.getToolList();
             console.log(tools);
             for (const tool of tools) {
-                keyins.push(tool.keyin);
+                this.keyins.push(tool.keyin);
             }
            
         },
@@ -62,6 +70,9 @@ export default {
                 clearInterval(this._curIntervalId);
                 this._curIntervalId = undefined;
             }
+        },
+        toolChange(){
+
         }
     }
 }
@@ -69,4 +80,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
+    .el-select {
+        margin-right: 10px;
+    }
 </style>
