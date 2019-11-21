@@ -3,8 +3,9 @@
         <el-select v-model="toolId" placeholder="Select A Tool" size="mini" @change="toolChange">
             <el-option
             v-for="item in keyins"
-            :label="item.keyin"
-            :value="item.id">
+            :label="item.toolId"
+            :value="item.toolId"
+            :key="item.toolId">
             </el-option>
         </el-select>
         <span class="fps">
@@ -41,11 +42,9 @@ export default {
     methods: {
         init(){
             let tools = IModelApp.tools.getToolList();
-            console.log(tools);
             for (const tool of tools) {
-                this.keyins.push(tool.keyin);
+                this.keyins.push(tool);
             }
-           
         },
         handleFPSCheckChange($event){
             if($event){
