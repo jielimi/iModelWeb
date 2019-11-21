@@ -15,6 +15,7 @@ import addComponent from './addElement/addElement'
 import tipComponent from './tip'
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
+import { FrontendDevTools } from "@bentley/frontend-devtools";
 
 export default {
     name: 'registerTool',
@@ -58,6 +59,7 @@ export default {
                         that.$refs.add.register(toolNamespace);
                         RefreshTilesTool.register(toolNamespace);
                         window.eventHub.$emit('iModel_startup_finish');
+                        return FrontendDevTools.initialize()
                     })
                 }
 
