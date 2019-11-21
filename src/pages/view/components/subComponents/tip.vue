@@ -275,7 +275,7 @@ export default {
     padding: 10px;
     text-align: left;
     position: absolute;
-    top: 65px;
+    top: 78px;
     left: 15px;
     width: 15%;
     color: white;

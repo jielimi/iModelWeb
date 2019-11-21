@@ -184,6 +184,7 @@ export default {
             window.eventHub.$emit('render_mode_init');
             window.eventHub.$emit('render_model_init');
             window.eventHub.$emit('tile_progress_init');
+            window.eventHub.$emit('keyin_init');
         }
     }
 }
@@ -200,7 +201,7 @@ export default {
     }
     .imodelview {
         position: absolute;
-        top:60px;
+        top:76px;
         left: 5px;
         right: 5px;
         bottom: 5px;

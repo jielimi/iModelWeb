@@ -1,37 +1,45 @@
 <template>
-    <div class="tool-bar">
-        <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
-        <debug-info-component></debug-info-component>
-        <open-file-component style="display:none"></open-file-component>
-        <change-view-component></change-view-component>
-        <model-component></model-component>
-        <categories-component></categories-component>
-        <save-component :projectId="projectId" :versionName="versionName"></save-component>
-        <hide-component></hide-component>
-        <show-component></show-component>
-        <fit-to-view-component></fit-to-view-component>
-        <zoomin-component></zoomin-component>
-        <window-area-component></window-area-component>
-        <walk-component></walk-component>
-        <rotate-component></rotate-component>
-        <gyroscopeComponent></gyroscopeComponent>
-        <settingComponent></settingComponent>
-        <undoComponent></undoComponent>
-        <redoComponent></redoComponent>
-        <clipComponent></clipComponent>
-        <regeisterToolComponent :projectId="projectId" :url="url" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
-        <isolateComponent></isolateComponent>
-        <measureComponent></measureComponent>
-        <tileprogressComponent></tileprogressComponent>
-        <shadowComponent></shadowComponent>
-        <!-- <editComponent v-if="openMode==2"></editComponent> -->
-        <!-- <treeComponent></treeComponent> -->
-        <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
+    <div>
+        <div>
+            <div>
+                <keyinComponent></keyinComponent>
+                <tileprogressComponent></tileprogressComponent>
+            </div>
+        </div>
+        <div class="tool-bar">
+            <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
+            <debug-info-component></debug-info-component>
+            <open-file-component style="display:none"></open-file-component>
+            <change-view-component></change-view-component>
+            <model-component></model-component>
+            <categories-component></categories-component>
+            <save-component :projectId="projectId" :versionName="versionName"></save-component>
+            <hide-component></hide-component>
+            <show-component></show-component>
+            <fit-to-view-component></fit-to-view-component>
+            <zoomin-component></zoomin-component>
+            <window-area-component></window-area-component>
+            <walk-component></walk-component>
+            <rotate-component></rotate-component>
+            <gyroscopeComponent></gyroscopeComponent>
+            <settingComponent></settingComponent>
+            <undoComponent></undoComponent>
+            <redoComponent></redoComponent>
+            <clipComponent></clipComponent>
+            <regeisterToolComponent :projectId="projectId" :url="url" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
+            <isolateComponent></isolateComponent>
+            <measureComponent></measureComponent>
+            <shadowComponent></shadowComponent>
+            <!-- <editComponent v-if="openMode==2"></editComponent> -->
+            <!-- <treeComponent></treeComponent> -->
+            <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
+        </div>
     </div>
 </template>
 <script>
  
-import debugInfoComponent from './subComponents/debugInfo' 
+import keyinComponent from './subComponents/keyin'
+import debugInfoComponent from './subComponents/debugInfo'
 import openFileComponent from './subComponents/openFile'
 import modelComponent from './subComponents/model'
 import changeViewComponent from './subComponents/changeView'
@@ -64,6 +72,7 @@ export default {
     },
     props:['projectId','url','versionName','contextId','accessToken','openMode'],
     components: {
+        keyinComponent,
         debugInfoComponent,
         openFileComponent,
         modelComponent,
