@@ -71,7 +71,7 @@ export default {
             }
         },
         toolChange(item){
-            
+            //IModelApp.tools.run(item, this.GLOBAL_DATA.theViewPort);
         }
     }
 }
