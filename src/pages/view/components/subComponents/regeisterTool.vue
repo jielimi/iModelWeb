@@ -2,7 +2,7 @@
     <div class="registerTool">
         <markComponent ref="redMark"></markComponent>
         <graffitiComponent ref='graffiti'></graffitiComponent>
-        <addComponent ref='add' style="display:none"></addComponent>
+        <addComponent ref='add'></addComponent>
         <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
     </div>
 </template>
@@ -53,7 +53,7 @@ export default {
                         const imbcontext= new IModelBankAccessContext(that.projectId, that.url, IModelApp.hubDeploymentEnv);
                         opts.imodelClient = imbcontext.client;
                         IModelApp.startup(opts);
-                        const toolNamespace = IModelApp.i18n.registerNamespace("iModelWeb");
+                        const toolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
                         that.$refs.add.register(toolNamespace);

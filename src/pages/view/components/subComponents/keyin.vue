@@ -70,8 +70,8 @@ export default {
                 this._curIntervalId = undefined;
             }
         },
-        toolChange(){
-
+        toolChange(item){
+            
         }
     }
 }

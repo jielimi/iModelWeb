@@ -219,6 +219,9 @@ export default {
                     super();
                 }
                 get isToolTipSupported() { return true; }
+                outputPrompt(prompt) { 
+                    console.log("prompt",prompt) 
+                }
                 _showToolTip(el, message, pt, options) {
                     that.showToolTip = true;
                     that.baseInfo = {};

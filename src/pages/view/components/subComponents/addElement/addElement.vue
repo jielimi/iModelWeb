@@ -64,16 +64,16 @@ export default {
                 onDynamicFrame(ev, context) {
                     const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
                     
-                    const secondPt = curSnapDetail ? curSnapDetail.snapPoint.clone() : ev.point;
-                    const builder = context.createSceneGraphicBuilder();
-                    const polyface = that.drawTriangleMesh(secondPt, 20);
-                    if (polyface) {
-                        // builder.setSymbology(ColorDef.red, ColorDef.red, 1);
-                        // builder.addLineString([this.firstPoint, secondPt]);
-                        builder.setSymbology(ColorDef.green, ColorDef.green, 1);
-                        builder.addPolyface(polyface, true);
-                        context.addGraphic(builder.finish());
-                    }
+                    // const secondPt = curSnapDetail ? curSnapDetail.snapPoint.clone() : ev.point;
+                    // const builder = context.createSceneGraphicBuilder();
+                    // const polyface = that.drawTriangleMesh(secondPt, 20);
+                    // if (polyface) {
+                    //     // builder.setSymbology(ColorDef.red, ColorDef.red, 1);
+                    //     // builder.addLineString([this.firstPoint, secondPt]);
+                    //     builder.setSymbology(ColorDef.green, ColorDef.green, 1);
+                    //     builder.addPolyface(polyface, true);
+                    //     context.addGraphic(builder.finish());
+                    // }
                     
                 }
             

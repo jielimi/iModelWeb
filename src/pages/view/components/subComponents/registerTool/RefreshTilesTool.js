@@ -1,4 +1,4 @@
-import { Tool} from "@bentley/imodeljs-frontend";
+import { IModelApp,Tool} from "@bentley/imodeljs-frontend";
 export class RefreshTilesTool extends Tool {
     static toolId = "RefreshTiles";
     static get maxArgs() { return undefined; }
