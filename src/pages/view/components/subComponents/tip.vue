@@ -222,6 +222,9 @@ export default {
                 outputPrompt(prompt) { 
                     console.log("prompt",prompt) 
                 }
+                outputMessage(message){
+                    console.log("message",message) 
+                }
                 _showToolTip(el, message, pt, options) {
                     that.showToolTip = true;
                     that.baseInfo = {};

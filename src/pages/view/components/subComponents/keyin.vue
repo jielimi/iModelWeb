@@ -42,6 +42,7 @@ export default {
     methods: {
         init(){
             let tools = IModelApp.tools.getToolList();
+            console.log(tools)
             for (const tool of tools) {
                 this.keyins.push(tool);
             }
