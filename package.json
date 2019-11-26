@@ -14,7 +14,7 @@
   "dependencies": {
     "@bentley/bentleyjs-core": "1.9.0-dev.5",
     "@bentley/electron-manager": "1.9.0-dev.5",
-    "@bentley/frontend-devtools": "^1.8.0",
+    "@bentley/frontend-devtools": "1.9.0-dev.5",
     "@bentley/geometry-core": "1.9.0-dev.5",
     "@bentley/imodeljs-clients": "1.9.0-dev.5",
     "@bentley/imodeljs-clients-backend": "1.9.0-dev.5",
