@@ -56,6 +56,7 @@ export default {
                         const imbcontext= new IModelBankAccessContext(that.projectId, that.url, IModelApp.hubDeploymentEnv);
                         opts.imodelClient = imbcontext.client;
                         IModelApp.startup(opts);
+                        IModelApp.renderSystem.enableDiagnostics(6);// RenderDiagnostics.ALL
                         const toolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
