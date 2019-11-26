@@ -50,11 +50,6 @@ export default {
                     return EventHandled.No;
                 }
 
-                // async onResetButtonUp(_ev) {
-                //     // IModelApp.toolAdmin.startDefaultTool(); 
-                //     // return EventHandled.No;
-                // }
-
                 onRestartTool() {
                     const tool = new MarkTool();
                     if (!tool.run())
