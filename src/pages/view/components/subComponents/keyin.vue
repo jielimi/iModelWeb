@@ -1,6 +1,6 @@
 <template>
     <div class='keyin'>
-        <el-select v-model="currTool" filterable placeholder="Select A Tool" size="mini" @keyup.enter.native="toolChange">
+        <el-select v-model="currTool" filterable clearable="true" placeholder="Select A Tool" size="mini" @keyup.enter.native="toolChange">
             <el-option
             v-for="item in keyins"
             :key="item.toolId"
