@@ -100,6 +100,25 @@
                 </div>
             </div>
             <div class="item">
+                <el-checkbox v-model="showProfileGPU" @change="toggleProfileGPU">
+                    <span>Profile GPU</span>
+                </el-checkbox>
+                <div class="tile-wrap" v-show="showProfileGPU">
+                    <el-button v-if="!isRecording" @click="clickRecord" type="success" size="mini">Record Profile</el-button>
+                    <el-button v-if="isRecording" @click="stopRecording" type="danger" size="mini">Stop Recording</el-button>
+                    <br /><br />
+                    <table border="1" style="width:100%">
+                        <tr>
+                            <td style="width:100%">
+                                <div class="request-inner">
+                                    <span>{{ text }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="item">
                 <el-collapse>
                     <el-collapse-item title="Tools Setting">
                        <div class="setting-inner">
@@ -208,10 +227,12 @@ import {
   TileTree,
   TileTreeSet,
   Viewport,
-  ToolSettings
+  ToolSettings,
+  GLTimerResult,
+  RenderSystemDebugControl
 } from "@bentley/imodeljs-frontend";
 import { assert, BeTimePoint,BeDuration } from "@bentley/bentleyjs-core";
-
+import { saveAs } from "file-saver";
 
 export default {
     name: 'debuginfo',
@@ -226,8 +247,14 @@ export default {
             _curRequestIntervalId: undefined,
             fps: 0,
             maxActiveRequests: 0,
+            debugControl: '',
             showTileRequests: false,
             isShowRequest: false,
+            showProfileGPU: false,
+            isRecording: false,
+            recordedResults: [],
+            text: '',
+            dummyArgs: { 0: 0 },
             active: 0,
             pending: 0,
             canceled: 0,
@@ -275,6 +302,7 @@ export default {
     methods: {
         init(){
             this.maxActiveRequests = IModelApp.tileAdmin.maxActiveRequests;
+            this.debugControl = IModelApp.renderSystem.debugControl;
         },
         handleFPSCheckChange($event){
             if($event){
@@ -312,6 +340,85 @@ export default {
                 this.update();
                 this._curRequestIntervalId = setInterval(() => this.update(), 500);
             }
+        },
+        toggleProfileGPU(){
+            if (this.showProfileGPU) {
+                this.debugControl.resultsCallback = this.resultsCallback;
+            } else {
+                this.debugControl.resultsCallback = undefined;
+                this.stopRecording();
+            }
+        },
+        clickRecord(){
+            this.isRecording = true;
+        },
+        stopRecording() {
+            this.isRecording = false;
+            if (this.recordedResults.length !== 0) {
+                const chromeTrace = this.createTraceFromTimerResults(this.recordedResults);
+                const blob = new Blob([JSON.stringify(chromeTrace)], { type: "application/json;charset=utf-8" });
+                saveAs(blob, "gpu-profile.json");
+                this.recordedResults = [];
+            }
+        },
+        resultsCallback (result){
+            if (this.isRecording){
+                this.recordedResults.push(result);
+            }
+            const printDepth = (currentRes) => {
+                if (currentRes.nanoseconds < 100){
+                    // high-pass filter, empty queries have some noise
+                    return;
+                }
+                if(currentRes.label === 'Total'){
+                    this.text = '';
+                }
+                this.text += `${currentRes.label}: ${currentRes.nanoseconds / 1.E6}ms\n`;
+                if (!currentRes.children){
+                    return;
+                }
+                for (const childRes of currentRes.children){
+                    printDepth(childRes);
+                }
+            };
+            printDepth(result);
+        },
+        createTraceFromTimerResults(timerResults) {
+          const traceEvents = [];
+
+          const addChildren = (startTime, children) => {
+            for (const child of children) {
+              if (child.nanoseconds < 100)
+                continue;
+              const microseconds = child.nanoseconds / 1E3;
+              traceEvents.push(this.createTraceEvent(child.label, startTime, microseconds));
+              if (child.children)
+                addChildren(startTime, child.children);
+              startTime += microseconds;
+            }
+          };
+
+          let frameStartTime = 0;
+          let frameNumber = 0;
+          for (const tr of timerResults) {
+            const microseconds = tr.nanoseconds / 1E3;
+            traceEvents.push(this.createTraceEvent(`Frame ${frameNumber}`, frameStartTime, microseconds));
+            if (tr.children)
+              addChildren(frameStartTime, tr.children);
+            frameStartTime += microseconds;
+            ++frameNumber;
+          }
+          return { traceEvents };
+        },
+        createTraceEvent(name, start, duration) {
+          return {
+            pid: 1,
+            ts: start,
+            dur: duration,
+            ph: "X",
+            name,
+            args: this.dummyArgs
+          };
         },
         update(){
             const stats = IModelApp.tileAdmin.statistics;
@@ -522,6 +629,9 @@ export default {
         table {
             border-collapse: collapse;
             text-align: right;
+            .request-inner {
+                white-space: pre-line;
+            }
             .request-inner > span {
                 display: block;
                 margin: 5px 3px 5px 0;
