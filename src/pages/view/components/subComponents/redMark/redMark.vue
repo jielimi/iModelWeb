@@ -9,6 +9,7 @@
 <script>
 // import {IModelApp, PrimitiveTool, EventHandled} from "@bentley/imodeljs-frontend";
 import {IncidentMarkerDemo} from "./incentMaker"
+import { Arc3d} from "@bentley/geometry-core";
 
 import {
     IModelJson as GeomJson,
@@ -57,7 +58,7 @@ export default {
                   constructor() {
                     super(...arguments);
                     this.points = [];
-                    this._snapGeomId='';
+                    this._snapGeomId=undefined;
                   }
                   requireWriteableTarget() { return false; }
                   onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
@@ -80,14 +81,14 @@ export default {
             testDecorationHit(id) { return id === this._snapGeomId; }
         
             getDecorationGeometry(_hit){
-                if (this.points.length < 2)
-                    return undefined;
+                // if (this.points.length < 2)
+                //     return undefined;
             
-                const geomData = GeomJson.Writer.toIModelJson(LineString3d.create(this.points));
-                return (undefined === geomData ? undefined : [geomData]);
+                // const geomData = GeomJson.Writer.toIModelJson(LineString3d.create(this.points));
+                // return (undefined === geomData ? undefined : [geomData]);
             }
         
-            decorate(context) {
+            decorate(context) { // whole
                 if (this.points.length < 2)
                     return;
             
@@ -96,17 +97,30 @@ export default {
             
                 const builder = context.createGraphicBuilder(GraphicType.WorldDecoration, undefined, this._snapGeomId);
             
-                builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.black, 1);
-                builder.addLineString(this.points);
+                builder.setSymbology(ColorDef.red, ColorDef.blue, 1);
+                // builder.addLineString(this.points);
+                
+                for(let i = 0;i<this.points.length;i++){
+                    let p = this.points[i];
+                    let ellipse = Arc3d.createXYEllipse(p, 0.1, 0.1);
+                    builder.addArc(ellipse, true, true);
+                    builder.addArc(ellipse, false, false);
+
+                }
             
                 context.addDecorationFromBuilder(builder);
             }
         
-            onDynamicFrame(ev, context) {
+            onDynamicFrame(ev, context) { // last line
                 if (this.points.length < 1)
                     return;
             
                 const builder = context.createSceneGraphicBuilder();
+
+                // for(let i = 0;i<this.points.length;i++){
+                //     let p = this.points[i];
+
+                // }
             
                 builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.black, 1);
                 builder.addLineString([this.points[this.points.length - 1], ev.point]); // Only draw current segment in dynamics, accepted segments are drawn as pickable decorations...

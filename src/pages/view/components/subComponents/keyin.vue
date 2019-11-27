@@ -1,6 +1,6 @@
 <template>
     <div class='keyin'>
-        <el-select v-model="currTool" filterable placeholder="Select A Tool" size="mini" @change="toolChange">
+        <el-select v-model="currTool" filterable placeholder="Select A Tool" size="mini" @keyup.enter.native="toolChange">
             <el-option
             v-for="item in keyins"
             :key="item.toolId"
@@ -73,11 +73,13 @@ export default {
                 this._curIntervalId = undefined;
             }
         },
-        toolChange(item){
+        toolChange(e){
+            let item = e.target.value;
+            this.currTool = item;
 
             let keyin = this.parseKeyin(item);
             if (undefined === keyin.tool) {
-                console.log("Cannot find a key-in that matches: " + input);
+                console.log("Cannot find a key-in that matches: " + item);
                 return;
             }
             let maxArgs = keyin.tool.maxArgs;
@@ -103,6 +105,7 @@ export default {
             const findTool = (lowerKeyin) => tools.find((x) => x.keyin.toLowerCase() === lowerKeyin || x.englishKeyin.toLowerCase() === lowerKeyin);
 
             // try the trivial, common case first
+            
             tool = findTool(input.toLowerCase());
             if (undefined !== tool)
                 return { tool, args };
@@ -130,6 +133,8 @@ export default {
                     break;
                 }
             }
+            debugger;
+            
             return { tool, args };
         }
     }
