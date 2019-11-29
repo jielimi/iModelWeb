@@ -123,7 +123,7 @@ export default {
         .detail {
             position: absolute;
             left: 0;
-            top: 45px;
+            top: 38px;
             z-index: 999;
             width: 200px;
             max-height: 350px;

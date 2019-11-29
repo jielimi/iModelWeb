@@ -77,7 +77,7 @@ export default {
         position: absolute;
         text-align: center;
         right: 0;
-        top: 45px;
+        top: 38px;
         z-index: 999;
         width: 300px;
         max-height: 350px;

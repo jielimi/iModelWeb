@@ -58,7 +58,7 @@
                             </tr>
                         </table>
                     </div>
-                  <el-button slot="reference">Element</el-button>
+                  <el-button class="tip-btn first" size="mini" type="info" slot="reference">Element<i class="el-icon-arrow-right"></i></el-button>
                 </el-popover>
                 <el-popover
                     placement="right"
@@ -80,7 +80,7 @@
                             </tr>
                         </table>
                     </div>
-                  <el-button slot="reference">Assembly</el-button>
+                  <el-button class="tip-btn" size="mini" type="info" slot="reference">Assembly<i class="el-icon-arrow-right"></i></el-button>
                 </el-popover>
                 <el-popover
                     placement="right"
@@ -102,7 +102,7 @@
                             </tr>
                         </table>
                     </div>
-                  <el-button slot="reference">Top Assembly</el-button>
+                  <el-button class="tip-btn" size="mini" type="info" slot="reference">Top Assembly<i class="el-icon-arrow-right"></i></el-button>
                 </el-popover>
             </el-collapse-item>
             <el-collapse-item title="Material" name="5" v-if="material">
@@ -318,6 +318,22 @@ export default {
     border: 1px solid #999;
     table tr td:first-child {
         width: 240px;
+    }
+}
+.tip-btn {
+    display: block;
+    position: relative;
+    width: 150px;
+    text-align: left;
+    margin-left: 10px;
+    margin-top: 5px;
+    border: none;
+    &.first {
+        margin-top: 0;
+    }
+    i {
+        position: absolute;
+        right: 20px;
     }
 }
 </style>

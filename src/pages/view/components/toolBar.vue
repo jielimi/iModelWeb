@@ -111,13 +111,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .top-tools {
-    height: 30px;
+    height: 28px;
     position: relative;
     padding: 4px 15px 0;
 }
 .tool-bar{
-    height: 35px;
-    padding: 10px;
+    height: 30px;
+    padding: 10px 10px 5px 10px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

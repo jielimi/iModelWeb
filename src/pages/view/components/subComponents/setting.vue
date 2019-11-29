@@ -609,7 +609,7 @@ export default {
         .detail {
             position: absolute;
             left: 0;
-            top: 45px;
+            top: 38px;
             z-index: 999;
             width: 320px;
             max-height: 400px;

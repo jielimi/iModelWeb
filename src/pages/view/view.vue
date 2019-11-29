@@ -201,7 +201,7 @@ export default {
     }
     .imodelview {
         position: absolute;
-        top:86px;
+        top:82px;
         left: 5px;
         right: 5px;
         bottom: 5px;

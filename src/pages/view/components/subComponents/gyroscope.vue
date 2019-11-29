@@ -94,7 +94,7 @@ export default {
         padding-left: 3px;
         padding-top: 3px;
         z-index: 999;
-        top: 45px;
+        top: 38px;
         left: -1px;
         border-color: gray;
         border-style: solid;
