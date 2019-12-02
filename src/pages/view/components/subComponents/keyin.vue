@@ -133,8 +133,6 @@ export default {
                     break;
                 }
             }
-            debugger;
-            
             return { tool, args };
         }
     }
