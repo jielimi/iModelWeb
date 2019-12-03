@@ -42,7 +42,7 @@ export default {
                 static tileAdminProps = {
                     retryInterval: 50,
                     enableInstancing: true,
-                    defaultTileSizeModifier:1000
+                    defaultTileSizeModifier:1
                 };
 
                 static startup(opts) {
