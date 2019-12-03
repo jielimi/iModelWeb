@@ -354,6 +354,7 @@ export default {
             this.currColor = hlSettings.visible.color ? hlSettings.visible.color.toHexString() : "#FFFFFF";
             this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid
             this.hiddenPattern = hlSettings.hidden.pattern ? hlSettings.hidden.pattern : LinePixels.Invalid
+            this.showVisibleEdges = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags).visibleEdges;
         },
         handleVisibleEdgesCheckChange($event){
             const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
