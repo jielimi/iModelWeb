@@ -1,209 +1,157 @@
 <template>
-<div class="view" v-loading="isLoading">
-    <tool-bar-component :projectId="iminfo.iModelId" :url="iminfo.url" 
-    :versionName="iminfo.versionName" :contextId="iminfo.contextId" 
-    :accessToken="iminfo.accessToken"
-    :openMode="iminfo.openMode">
-    </tool-bar-component>
-    <div class="imodelview" id="imodelview"></div>
-    <el-dialog
-        title=""
-        width="50%"
-        :visible.sync="isLoading"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        :show-close="false"
-        center>
-        <div>
-            <el-progress :text-inside="true" :stroke-width="18" :percentage=progress status="success"></el-progress>
-        </div>
-    </el-dialog>
-</div>
+  <div class="viewport">
+    <div class="toolbar">
+      <change-view
+        :viewSpecs="viewSpecs"
+        :value="viewId"
+        :changeView="changeView"
+      ></change-view>
+      <div class="tool" @click="handleClick('Fit')">
+        Fit
+      </div>
+      <div class="tool" @click="handleClick('Walk')">
+        Walk
+      </div>
+      <div class="tool" @click="handleClick('Zoom')">
+        Zoom
+      </div>
+      <div class="tool" @click="handleClick('Rotate')">
+        Rotate
+      </div>
+      <div class="tool">
+        <el-checkbox v-model="checked">
+          <span
+            :style="{ display: 'inline-block', width: '80px', margin: '0 4px' }"
+          >
+            {{ checked ? `FPS: ${fps}` : "Track FPS" }}
+          </span></el-checkbox
+        >
+      </div>
+    </div>
+    <div class="imodel-viewport" ref="vpDiv"></div>
+  </div>
 </template>
-
 <script>
-//import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
-import { ScreenViewport } from '@bentley/imodeljs-frontend';
-import { IModelVersion } from '@bentley/imodeljs-common'
-//import * as common_1 from "@bentley/imodeljs-common/lib/common"
-import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
-import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
-import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
-import toolBarComponent from './components/toolBar';
-import RPC from './rpc';
-class IModelBankAuthorizationClient {
-    constructor(jsonObj) {
-        this._userInfo = UserInfo.fromJson(jsonObj);
-        this.hasSignedIn = true;//this is cheating
-    }
-    async getAccessToken(_requestContext) {
-        const userInfo = this._userInfo;
-        const foreignAccessTokenWrapper = {};
-        foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
-        const accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
-        return accessToken;
-    }
-}
-class SimpleViewState {
-    constructor(){};
-}
-let activeViewState = new SimpleViewState();
+import {
+  FitViewTool,
+  WalkViewTool,
+  ZoomViewTool,
+  RotateViewTool
+} from "@bentley/imodeljs-frontend";
+
+import { SimpleViewApp } from "../lib/SimpleViewApp.js";
+
+
+// import ChangeView from "../components/ChangeView.vue";
+
 export default {
-    name:'imodelviewer',
-    data(){
-        return{
-            isLoading:false,
-            progress:2,
-            iminfo:{
-                "url": this.$route.query.url,
-                "iModelId": this.$route.query.projectId,
-                "versionName":this.$route.query.versionName,
-                "versionId": this.$route.query.versionId,
-                "openMode":this.$route.query.openMode,
-                "name": "ReadOnlyTest",
-                "contextId":'',
-                "accessToken":''
-            },
-        }
-    },
-    components:{
-        toolBarComponent
-    },
-    created(){
-        //window.eventHub.$on('categories_viewList_change',this.categoryChange);
-    },
-    mounted(){
-     window.eventHub.$on('iModel_startup_finish',this.main)
-     //this.main();
-    },
-    beforeDestroy(){
-        if (GLOBAL_DATA.theViewPort){
-            IModelApp.viewManager.dropViewport(GLOBAL_DATA.theViewPort);
-            GLOBAL_DATA.theViewPort = undefined;
-        }
-
-        if (activeViewState.iModelConnection !== undefined){
-            activeViewState.iModelConnection.close(activeViewState.accessToken);
-        }
-    },
-    methods:{
-        randomNum(minNum,maxNum){ 
-            switch(arguments.length){ 
-                case 1: 
-                    return parseInt(Math.random()*minNum+1,10); 
-                break; 
-                case 2: 
-                    return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
-                break; 
-                    default: 
-                        return 0; 
-                    break; 
-            } 
-        },
-        
-        async loginAndOpenImodel(state) {
-            this.progress = this.randomNum(5,20);
-            const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
-            
-                     
-            IModelApp.authorizationClient = new IModelBankAuthorizationClient({
-                "sub": "userid",
-                "email": "email@organization.org",
-                "given_name": "first",
-                "family_name": "last",
-                "org": "orgid",
-                "org_name": "organization"
-            });
-            
-            // Open the iModel
-            state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
-            state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
-            this.iminfo.contextId = imbcontext.toIModelTokenContextId();
-            state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
-            1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
-            
-            
-            this.progress = this.randomNum(40,50);
-        },
-        async buildViewList(state, configurations) {
-            const config = undefined !== configurations ? configurations : {};
-            const viewQueryParams = { wantPrivate: false };
-       
-            const viewSpecs = await state.iModelConnection.views.getViewList(viewQueryParams);
-            
-            if (viewSpecs.length > 0){
-                let viewSpec = viewSpecs[0];
-                const viewState = await state.iModelConnection.views.load(viewSpec.id);
-                state.viewState = viewState;
-                window.eventHub.$emit('viewList_init', viewSpecs);
-            }
-            // window.eventHub.$emit('viewList_init', viewSpecs);
-        },
-        async  openView(state) {
-            // find the canvas.
-            const parent = document.getElementById("imodelview");
-            if (parent) {
-                await this.buildViewList(state);
-                
-                if (!GLOBAL_DATA.theViewPort){
-                    GLOBAL_DATA.theViewPort = ScreenViewport.create(parent, state.viewState);                   
-                }
-                IModelApp.viewManager.addViewport(GLOBAL_DATA.theViewPort);
-            }
-        },
-        async main() {
-            this.isLoading = true; 
-            RPC.init();
-            if(this.$route.query && this.$route.query.isStandalone){
-                window.eventHub.$emit('tile_progress_init');
-                window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
-                this.isLoading = false;
-                return;
-            }
-            try{
-                this.progress = this.randomNum(0,5);
-                await this.loginAndOpenImodel(activeViewState);
-                this.progress = this.randomNum(80,95);
-            } catch (reason){
-                this.isLoading = false; 
-                return;
-            }
-           // GLOBAL_DATA.activeViewState = activeViewState;
-            await this.openView(activeViewState);
-            GLOBAL_DATA.activeViewState = activeViewState;
-            this.isLoading = false; 
-            this.progress = 0;
-            window.eventHub.$emit('categories_init');
-            window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init');
-            window.eventHub.$emit('tile_progress_init');
-            window.eventHub.$emit('keyin_init');
-        }
+  name: "Viewport",
+//   components: { "change-view": ChangeView },
+  data() {
+    return {
+      fps: 0,
+      viewSpecs: null,
+      viewId: "",
+      checked: false,
+      timeout: null
+    };
+  },
+  watch: {
+    checked(val) {
+      if (val) {
+        SimpleViewApp.enableFps();
+        this.timeout = setInterval(() => {
+          this.fps = SimpleViewApp.fps;
+        }, 500);
+      } else {
+        SimpleViewApp.disableFps();
+        this.fps = 0;
+        window.clearInterval(this.timeout);
+      }
     }
-}
+  },
+  mounted() {
+    const version = {
+      // name: "1",
+      // projectId: "e2c2051f-6fd0-4721-954d-03171f0193c1",
+      // url: "http://127.0.0.1:4003"
+      name: this.$route.query.versionName,
+      projectId: this.$route.query.projectId,
+      url: this.$route.query.url
+    };
+
+    this.$nextTick(() => {
+      this.main(version);
+    });
+  },
+  beforeDestroy() {
+    SimpleViewApp.shutdown();
+    window.clearInterval(this.timeout);
+  },
+  methods: {
+    async main(version) {
+      SimpleViewApp.startup(version.projectId, version.url);
+
+      await SimpleViewApp.render(version, this.$refs.vpDiv);
+
+      this.viewSpecs = JSON.parse(JSON.stringify(SimpleViewApp.viewList));
+
+      this.viewId = SimpleViewApp.selectedViewSpec.id;
+    },
+    async changeView(id) {
+      await SimpleViewApp.changeView(id);
+
+      this.viewId = SimpleViewApp.selectedViewSpec.id;
+    },
+    handleClick(label) {
+      switch (label) {
+        case "Fit":
+          SimpleViewApp.run(FitViewTool.toolId);
+          break;
+        case "Walk":
+          SimpleViewApp.run(WalkViewTool.toolId);
+          break;
+        case "Zoom":
+          SimpleViewApp.run(ZoomViewTool.toolId);
+          break;
+        case "Rotate":
+          SimpleViewApp.run(RotateViewTool.toolId);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+};
 </script>
-
-<style lang="less" scoped>
-    .view{
-        position: absolute;
-        top:0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        
+<style scoped lang="less">
+.viewport {
+  width: 100%;
+  height: 100vh;
+  padding-top: 60px;
+  .toolbar {
+    height: 60px;
+    margin-top: -60px;
+    padding-left: 8px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .tool {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 4px;
+      margin-right: 4px;
+      padding: 10px 24px;
+      cursor: pointer;
     }
-    .imodelview {
-        position: absolute;
-        top:82px;
-        left: 5px;
-        right: 5px;
-        bottom: 5px;
-        border-color: black;
-        border-style: solid;
-        border-width: 1px;
-        margin-left: 5px;
-        margin-bottom: 5px;
-        background-color: gray;
-    }
+  }
+  .imodel-viewport {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+}
 </style>
-
