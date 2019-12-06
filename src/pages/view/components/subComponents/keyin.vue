@@ -28,7 +28,6 @@ export default {
             fps: 0,
             showFPS: false,
             fpsStatus: 0,
-            _metrics: undefined,
             currTool: '',
             toolId: '',
             keyins: []
@@ -53,17 +52,17 @@ export default {
             if($event){
                 this.fpsStatus = 1;
                 GLOBAL_DATA.theViewPort.continuousRendering = $event;
-                this._metrics = new PerformanceMetrics(false, true);
+                GLOBAL_DATA.theViewPort.target.performanceMetrics = new PerformanceMetrics(false, true);
                 this._curIntervalId = setInterval(() => this.updateFPS(), 500);
             }else{
                 this.fpsStatus = 0;
-                this._metrics = undefined;
+                GLOBAL_DATA.theViewPort.target.performanceMetrics = undefined;
                 this.clearInterval();
             }
-            GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
+            //GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
         },
         updateFPS(){
-            const metrics = this._metrics;
+            const metrics = GLOBAL_DATA.theViewPort.target.performanceMetrics;
             this.fps = (metrics.spfTimes.length / metrics.spfSum).toFixed(2);
             this.fpsStatus = 2;
         },

@@ -98,11 +98,11 @@ export default {
                         await view.iModel.models.load(val.id);
                         model = view.iModel.models.getLoaded(val.id);
                     }
-                    that.GLOBAL_DATA.theViewPort.addViewedModels(val.id);
+                    GLOBAL_DATA.theViewPort.addViewedModels(val.id);
                 }
             }else{
                 this.modelList.forEach(function(val,index){
-                    that.GLOBAL_DATA.theViewPort.changeModelDisplay(val.id, false);
+                    GLOBAL_DATA.theViewPort.changeModelDisplay(val.id, false);
                 });
             }
             vp.invalidateScene();
