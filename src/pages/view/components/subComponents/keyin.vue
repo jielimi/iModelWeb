@@ -37,14 +37,14 @@ export default {
         
     },
     created () {
-        window.eventHub.$on('keyin_init',this.init);
+         window.eventHub.$on('keyin_init',this.init);
     },
     methods: {
         init(){
             let tools = IModelApp.tools.getToolList();
             for (const tool of tools) {
                 if(tool.keyin){
-                    this.keyins.push(tool);
+                     this.keyins.push(JSON.parse(JSON.stringify(tool)));;
                 }
             }
         },
@@ -52,17 +52,17 @@ export default {
             if($event){
                 this.fpsStatus = 1;
                 GLOBAL_DATA.theViewPort.continuousRendering = $event;
-                GLOBAL_DATA.theViewPort.target.performanceMetrics = new PerformanceMetrics(false, true);
+                // this._metrics = new PerformanceMetrics(false, true);
                 this._curIntervalId = setInterval(() => this.updateFPS(), 500);
             }else{
                 this.fpsStatus = 0;
-                GLOBAL_DATA.theViewPort.target.performanceMetrics = undefined;
+                this._metrics = undefined;
                 this.clearInterval();
             }
-            //GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
+            GLOBAL_DATA.theViewPort.target.performanceMetrics = new PerformanceMetrics(false, true)
         },
         updateFPS(){
-            const metrics = GLOBAL_DATA.theViewPort.target.performanceMetrics;
+            const metrics =  GLOBAL_DATA.theViewPort.target.performanceMetrics;
             this.fps = (metrics.spfTimes.length / metrics.spfSum).toFixed(2);
             this.fpsStatus = 2;
         },

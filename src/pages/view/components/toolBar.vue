@@ -9,7 +9,7 @@
             <debug-info-component></debug-info-component>
             <open-file-component style="display:none"></open-file-component>
             <change-view-component></change-view-component>
-            <!-- <model-component></model-component> -->
+            <model-component></model-component>
             <categories-component></categories-component>
             <!-- <save-component :projectId="projectId" :versionName="versionName"></save-component> -->
             <hide-component></hide-component>
@@ -20,7 +20,7 @@
             <walk-component></walk-component>
             <rotate-component></rotate-component>
             <gyroscopeComponent></gyroscopeComponent>
-            <!-- <settingComponent></settingComponent> -->
+            <settingComponent></settingComponent>
             <undoComponent></undoComponent>
             <redoComponent></redoComponent>
             <clipComponent></clipComponent>
@@ -36,7 +36,7 @@
 </template>
 <script>
  
-import keyinComponent from './subComponents/keyin'
+ import keyinComponent from './subComponents/keyin'
 import debugInfoComponent from './subComponents/debugInfo'
 import openFileComponent from './subComponents/openFile'
 import modelComponent from './subComponents/model'

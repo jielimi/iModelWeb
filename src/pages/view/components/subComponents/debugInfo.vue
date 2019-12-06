@@ -5,13 +5,13 @@
                 class="detail"
                 title="Debug Info"
                 v-show="dialogVisible">
-                <!-- <div class="item">
+                <div class="item">
                     <el-checkbox v-model="showFPS"  @change="handleFPSCheckChange">
                         <span v-show="fpsStatus == 0">Track FPS</span>
                         <span v-show="fpsStatus == 1">Tracking FPS...</span>
                         <span v-show="fpsStatus == 2">FPS: <span>{{ fps }}</span></span>
                     </el-checkbox>
-                </div> -->
+                </div>
                 <div class="item request">
                     <span>Max Active Requests:</span>
                     <el-input-number v-model="maxActiveRequests" @change="handleRequestsChange" :min="0" :step="1" size="mini"></el-input-number>
