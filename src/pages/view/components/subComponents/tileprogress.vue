@@ -11,8 +11,7 @@ export default {
     name: 'tileprogress',
     data () {
         return {
-            percentage:0,
-            vp:'',
+            percentage:0
         };
     },
     components: {
@@ -23,7 +22,6 @@ export default {
     },
     methods: {
         addListener(){
-           this.vp = GLOBAL_DATA.theViewPort
            // this.vp.onRender.addListener((vp)=>this.update());
            IModelApp.viewManager.onFinishRender.addListener(() => this.update());
            
@@ -32,8 +30,8 @@ export default {
             let ready = 0;
             let total = 0;
             IModelApp.viewManager.forEachViewport((vp) => {
-              ready += vp.numReadyTiles;
-              total += vp.numReadyTiles + vp.numRequestedTiles;
+              ready += GLOBAL_DATA.theViewPort.numReadyTiles;
+              total += GLOBAL_DATA.theViewPort.numReadyTiles + GLOBAL_DATA.theViewPort.numRequestedTiles;
             });
             const pctComplete = (total > 0) ? (ready / total) : 1.0;
             this.percentage= pctComplete.toFixed(2)*100;

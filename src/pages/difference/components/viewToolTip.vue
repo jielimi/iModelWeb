@@ -133,9 +133,9 @@ export default {
                     let imodeltoken = '';
                     
                     if(el.parentElement.parentElement.id == 'imodelEnd'){
-                        imodeltoken = that.GLOBAL_DATA.diffActiveViewState[1].iModelConnection.iModelToken
+                        imodeltoken = GLOBAL_DATA.diffActiveViewState[1].iModelConnection.iModelToken
                     }else if(el.parentElement.parentElement.id == 'imodelStart'){
-                        imodeltoken = that.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.iModelToken
+                        imodeltoken = GLOBAL_DATA.diffActiveViewState[0].iModelConnection.iModelToken
                     }else{
                         return;
                     }

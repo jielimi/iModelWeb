@@ -9,9 +9,9 @@
             <debug-info-component></debug-info-component>
             <open-file-component style="display:none"></open-file-component>
             <change-view-component></change-view-component>
-            <model-component></model-component>
+            <!-- <model-component></model-component> -->
             <categories-component></categories-component>
-            <save-component :projectId="projectId" :versionName="versionName"></save-component>
+            <!-- <save-component :projectId="projectId" :versionName="versionName"></save-component> -->
             <hide-component></hide-component>
             <show-component></show-component>
             <fit-to-view-component></fit-to-view-component>
@@ -20,7 +20,7 @@
             <walk-component></walk-component>
             <rotate-component></rotate-component>
             <gyroscopeComponent></gyroscopeComponent>
-            <settingComponent></settingComponent>
+            <!-- <settingComponent></settingComponent> -->
             <undoComponent></undoComponent>
             <redoComponent></redoComponent>
             <clipComponent></clipComponent>
@@ -60,8 +60,8 @@ import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
-import treeComponent from './subComponents/tree'
-import versionUpdateComponent from './subComponents/versionUpdate'
+// import treeComponent from './subComponents/tree'
+// import versionUpdateComponent from './subComponents/versionUpdate'
 
 export default {
     name: 'toolBar',
@@ -93,9 +93,7 @@ export default {
         isolateComponent,
         tileprogressComponent,
         measureComponent,
-        shadowComponent,
-        treeComponent,
-        versionUpdateComponent
+        shadowComponent
     },
     created () {
     },
