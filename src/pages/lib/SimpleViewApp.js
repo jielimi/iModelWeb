@@ -152,23 +152,23 @@ export class SimpleViewApp {
     );
   }
 
-  static async changeView(id) {
-    const viewSpec = this.viewList.find(i => i.id === id);
+  // static async changeView(id) {
+  //   const viewSpec = this.viewList.find(i => i.id === id);
 
-    if (!viewSpec) {
-      throw new Error("No such view.");
-    }
+  //   if (!viewSpec) {
+  //     throw new Error("No such view.");
+  //   }
 
-    const view = await this.connection.views.load(viewSpec.id);
+  //   const view = await this.connection.views.load(viewSpec.id);
 
-    const viewState = view.clone();
+  //   const viewState = view.clone();
 
-    this.viewport.changeView(viewState);
+  //   this.viewport.changeView(viewState);
 
-    this.viewState = viewState;
+  //   this.viewState = viewState;
 
-    this.selectedViewSpec = viewSpec;
-  }
+  //   this.selectedViewSpec = viewSpec;
+  // }
 
   static async loginAndOpenIModel() {
     const { projectId, name: versionName } = this.version;

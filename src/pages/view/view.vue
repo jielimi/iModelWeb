@@ -1,11 +1,7 @@
 <template>
   <div class="viewport">
     <div class="toolbar">
-      <change-view
-        :viewSpecs="viewSpecs"
-        :value="viewId"
-        :changeView="changeView"
-      ></change-view>
+      <change-view-component></change-view-component>
       <div class="tool" @click="handleClick('Fit')">
         Fit
       </div>
@@ -40,13 +36,14 @@ import {
 } from "@bentley/imodeljs-frontend";
 
 import { SimpleViewApp } from "../lib/SimpleViewApp.js";
+import changeViewComponent from './components/changeView';
 
 
 // import ChangeView from "../components/ChangeView.vue";
 
 export default {
   name: "Viewport",
-//   components: { "change-view": ChangeView },
+  components: { changeViewComponent },
   data() {
     return {
       fps: 0,
@@ -72,9 +69,6 @@ export default {
   },
   mounted() {
     const version = {
-      // name: "1",
-      // projectId: "e2c2051f-6fd0-4721-954d-03171f0193c1",
-      // url: "http://127.0.0.1:4003"
       name: this.$route.query.versionName,
       projectId: this.$route.query.projectId,
       url: this.$route.query.url
@@ -95,14 +89,15 @@ export default {
       await SimpleViewApp.render(version, this.$refs.vpDiv);
 
       this.viewSpecs = JSON.parse(JSON.stringify(SimpleViewApp.viewList));
+      window.eventHub.$emit('viewList_init', this.viewSpecs);
 
       this.viewId = SimpleViewApp.selectedViewSpec.id;
     },
-    async changeView(id) {
-      await SimpleViewApp.changeView(id);
+    // async changeView(id) {
+    //   await SimpleViewApp.changeView(id);
 
-      this.viewId = SimpleViewApp.selectedViewSpec.id;
-    },
+    //   this.viewId = SimpleViewApp.selectedViewSpec.id;
+    // },
     handleClick(label) {
       switch (label) {
         case "Fit":
