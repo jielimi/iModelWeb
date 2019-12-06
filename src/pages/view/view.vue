@@ -53,10 +53,6 @@ export default {
     data(){
         return{
             isLoading:false,
-            theViewPort:undefined,
-            configuration:{
-                "useIModelBank": true
-            },
             progress:2,
             iminfo:{
                 "url": this.$route.query.url,
@@ -81,8 +77,9 @@ export default {
      //this.main();
     },
     beforeDestroy(){
-        if (this.theViewPort){
-            IModelApp.viewManager.dropViewport(this.theViewPort);
+        if (GLOBAL_DATA.theViewPort){
+            IModelApp.viewManager.dropViewport(GLOBAL_DATA.theViewPort);
+            GLOBAL_DATA.theViewPort = undefined;
         }
 
         if (activeViewState.iModelConnection !== undefined){
@@ -148,17 +145,13 @@ export default {
             if (parent) {
                 await this.buildViewList(state);
                 
-                if (!this.theViewPort){
-                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
-                    this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    GLOBAL_DATA.theViewPort = this.theViewPort;
+                if (!GLOBAL_DATA.theViewPort){
+                    GLOBAL_DATA.theViewPort = ScreenViewport.create(parent, state.viewState);                   
                 }
-                IModelApp.viewManager.addViewport(this.theViewPort);
+                IModelApp.viewManager.addViewport(GLOBAL_DATA.theViewPort);
             }
         },
         async main() {
-         
-
             this.isLoading = true; 
             RPC.init();
             if(this.$route.query && this.$route.query.isStandalone){
