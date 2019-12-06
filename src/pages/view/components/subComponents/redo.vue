@@ -18,7 +18,7 @@ export default {
     created () {},
     methods: {
         redo(){
-            IModelApp.tools.run("View.Redo", this.GLOBAL_DATA.theViewPort);
+            IModelApp.tools.run("View.Redo", GLOBAL_DATA.theViewPort);
         }
     }
 }

@@ -52,7 +52,7 @@ export default {
         handleFPSCheckChange($event){
             if($event){
                 this.fpsStatus = 1;
-                this.GLOBAL_DATA.theViewPort.continuousRendering = $event;
+                GLOBAL_DATA.theViewPort.continuousRendering = $event;
                 this._metrics = new PerformanceMetrics(false, true);
                 this._curIntervalId = setInterval(() => this.updateFPS(), 500);
             }else{
@@ -60,7 +60,7 @@ export default {
                 this._metrics = undefined;
                 this.clearInterval();
             }
-            this.GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
+            GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
         },
         updateFPS(){
             const metrics = this._metrics;
@@ -96,7 +96,7 @@ export default {
             } catch (e) {
                 console.log("Key-in caused the following exception to occur: " + e);
             }
-            //IModelApp.tools.run(item, this.GLOBAL_DATA.theViewPort);
+            //IModelApp.tools.run(item, GLOBAL_DATA.theViewPort);
         },
         parseKeyin(input) {
             const tools = IModelApp.tools.getToolList();

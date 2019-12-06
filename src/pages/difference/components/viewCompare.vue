@@ -92,23 +92,23 @@ export default {
     },
     methods: {
         focusElement(id){
-            this.GLOBAL_DATA.diffViewPort[this.version0].zoomToElements(id);
+            GLOBAL_DATA.diffViewPort[this.version0].zoomToElements(id);
         },
         color(result){
             for(var i = 0;i<result.insert.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[this.version].iModelConnection.selectionSet.elements.add(result.insert[i].id);
+                GLOBAL_DATA.diffActiveViewState[this.version].iModelConnection.selectionSet.elements.add(result.insert[i].id);
             } 
-            handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#3CB371",GLOBAL_DATA.diffViewPort[0])
 
-            this.GLOBAL_DATA.diffActiveViewState[this.version].iModelConnection.selectionSet.elements.clear();
+            GLOBAL_DATA.diffActiveViewState[this.version].iModelConnection.selectionSet.elements.clear();
 
             for(var i = 0;i<result.update.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[this.version].iModelConnection.selectionSet.elements.add(result.update[i].id);
+                GLOBAL_DATA.diffActiveViewState[this.version].iModelConnection.selectionSet.elements.add(result.update[i].id);
             } 
-            handleColorChange("#FFFF00",this.GLOBAL_DATA.diffViewPort[this.version])
+            handleColorChange("#FFFF00",GLOBAL_DATA.diffViewPort[this.version])
         },
         removeColor(){
-            clear(this.GLOBAL_DATA.diffViewPort[this.version0]);
+            clear(GLOBAL_DATA.diffViewPort[this.version0]);
         },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 
@@ -167,7 +167,7 @@ export default {
                 
                 if (!this.theViewPort){
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    this.GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
+                    GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
@@ -180,7 +180,7 @@ export default {
                 
                 if (!this.theViewPort){
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    this.GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
+                    GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
@@ -206,7 +206,7 @@ export default {
                 await this.openView1(activeViewState);
             }
             
-            this.GLOBAL_DATA.diffActiveViewState[this.version] = activeViewState;
+            GLOBAL_DATA.diffActiveViewState[this.version] = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
             // window.eventHub.$emit('categories_init');

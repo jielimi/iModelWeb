@@ -19,7 +19,7 @@ export default {
     created () {},
     methods: {
         startfit(){
-            IModelApp.tools.run("View.Fit", this.GLOBAL_DATA.theViewPort, true);
+            IModelApp.tools.run("View.Fit", GLOBAL_DATA.theViewPort, true);
         }
     }
     

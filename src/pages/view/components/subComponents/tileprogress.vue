@@ -23,7 +23,7 @@ export default {
     },
     methods: {
         addListener(){
-           this.vp = this.GLOBAL_DATA.theViewPort
+           this.vp = GLOBAL_DATA.theViewPort
            // this.vp.onRender.addListener((vp)=>this.update());
            IModelApp.viewManager.onFinishRender.addListener(() => this.update());
            

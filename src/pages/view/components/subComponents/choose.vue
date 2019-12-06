@@ -20,7 +20,7 @@ export default {
     created () {},
     methods: {
         choose(){
-            IModelApp.tools.run("View.Select", this.GLOBAL_DATA.theViewPort);
+            IModelApp.tools.run("View.Select", GLOBAL_DATA.theViewPort);
         }
     }
     

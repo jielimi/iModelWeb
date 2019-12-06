@@ -39,8 +39,8 @@ export default {
         async updateRenderModelOptionsMap(){
             this.checkNameList = [];
             this.checkList = [];
-            const vp = this.GLOBAL_DATA.theViewPort;
-            const view = this.GLOBAL_DATA.theViewPort.view;
+            const vp = GLOBAL_DATA.theViewPort;
+            const view = GLOBAL_DATA.theViewPort.view;
             if(view.modelSelector){
                 this.hasModel = true;
                 const selector = view.modelSelector;
@@ -64,8 +64,8 @@ export default {
              }
         },
         async applyModelChange(id,name){
-            const vp = this.GLOBAL_DATA.theViewPort;
-            const view = this.GLOBAL_DATA.theViewPort.view;
+            const vp = GLOBAL_DATA.theViewPort;
+            const view = GLOBAL_DATA.theViewPort.view;
             const selector = view.modelSelector;
            
             let checked = this.checkNameList.indexOf(name) >= 0 ? true : false;
@@ -75,16 +75,16 @@ export default {
                 model = view.iModel.models.getLoaded(id);
             }
             if(checked){
-                this.GLOBAL_DATA.theViewPort.addViewedModels(id);
+                GLOBAL_DATA.theViewPort.addViewedModels(id);
             }else{
-                this.GLOBAL_DATA.theViewPort.changeModelDisplay(id, false);
+                GLOBAL_DATA.theViewPort.changeModelDisplay(id, false);
             }
             this.isCheckAll();
             vp.invalidateScene();
         },
         async handleCheckAllChange(value){
-            const vp = this.GLOBAL_DATA.theViewPort;
-            const view = this.GLOBAL_DATA.theViewPort.view;
+            const vp = GLOBAL_DATA.theViewPort;
+            const view = GLOBAL_DATA.theViewPort.view;
             const selector = view.modelSelector;
             this.checkNameList = [];
             this.checkList = [];

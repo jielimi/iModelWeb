@@ -311,7 +311,7 @@ export default {
         handleFPSCheckChange($event){
             if($event){
                 this.fpsStatus = 1;
-                this.GLOBAL_DATA.theViewPort.continuousRendering = $event;
+                GLOBAL_DATA.theViewPort.continuousRendering = $event;
                 this._metrics = new PerformanceMetrics(false, true);
                 this._curIntervalId = setInterval(() => this.updateFPS(), 500);
             }else{
@@ -319,7 +319,7 @@ export default {
                 this._metrics = undefined;
                 this.clearInterval();
             }
-            this.GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
+            GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
         },
         updateFPS(){
             const metrics = this._metrics;
@@ -430,9 +430,9 @@ export default {
             this.pending = stats.numPendingRequests;
             this.canceled = stats.numCanceled;
             this.total = stats.numActiveRequests + stats.numPendingRequests;
-            this.selected = this.GLOBAL_DATA.theViewPort.numSelectedTiles;
-            this.ready = this.GLOBAL_DATA.theViewPort.numReadyTiles;
-            this.progress = this.computeProgress(this.GLOBAL_DATA.theViewPort);
+            this.selected = GLOBAL_DATA.theViewPort.numSelectedTiles;
+            this.ready = GLOBAL_DATA.theViewPort.numReadyTiles;
+            this.progress = this.computeProgress(GLOBAL_DATA.theViewPort);
             this.completed = stats.totalCompletedRequests;
             this.timedOut = stats.totalTimedOutRequests;
             this.failed = stats.totalFailedRequests;
@@ -518,7 +518,7 @@ export default {
             ];
 
             let _stats = new RenderMemory.Statistics();
-            let _vp = this.GLOBAL_DATA.theViewPort;
+            let _vp = GLOBAL_DATA.theViewPort;
             const calc = calcMem[index];
             _stats.clear();
             const numTrees = calc(_stats, _vp);
@@ -559,7 +559,7 @@ export default {
             }
         },
         purge(){
-            let _vp = this.GLOBAL_DATA.theViewPort;
+            let _vp = GLOBAL_DATA.theViewPort;
             const purge = IModelApp.viewManager.purgeTileTrees(BeTimePoint.now());
             if (undefined !== purge) {
                 purge();

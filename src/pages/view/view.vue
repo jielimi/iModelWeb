@@ -151,7 +151,7 @@ export default {
                 if (!this.theViewPort){
                     // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                    GLOBAL_DATA.theViewPort = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
@@ -175,9 +175,9 @@ export default {
                 this.isLoading = false; 
                 return;
             }
-           // this.GLOBAL_DATA.activeViewState = activeViewState;
+           // GLOBAL_DATA.activeViewState = activeViewState;
             await this.openView(activeViewState);
-            this.GLOBAL_DATA.activeViewState = activeViewState;
+            GLOBAL_DATA.activeViewState = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
             window.eventHub.$emit('categories_init');

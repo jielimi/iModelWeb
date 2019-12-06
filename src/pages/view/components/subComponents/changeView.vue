@@ -35,13 +35,13 @@ export default {
         async selectChange(view){
             this.value = view.name;
             if (!(view instanceof ViewState)) {
-                view = await  this.GLOBAL_DATA.activeViewState.iModelConnection.views.load(view.id);
+                view = await  GLOBAL_DATA.activeViewState.iModelConnection.views.load(view.id);
             }
-            await this.GLOBAL_DATA.theViewPort.changeView(view);
+            await GLOBAL_DATA.theViewPort.changeView(view);
             await this.notify(view.clone());
         },
         async notify(view) {
-            this.GLOBAL_DATA.activeViewState.viewState = view;
+            GLOBAL_DATA.activeViewState.viewState = view;
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
             window.eventHub.$emit('render_model_init');

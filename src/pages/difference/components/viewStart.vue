@@ -103,23 +103,23 @@ export default {
     },
     methods: {
         focusElement(id){
-            this.GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
+            GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
         },
         color(result){
             for(var i = 0;i<result.insert.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.insert[i].id);
+                GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.insert[i].id);
             } 
-            handleColorChange("#3CB371",this.GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#3CB371",GLOBAL_DATA.diffViewPort[0])
 
-            this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
+            GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
 
             for(var i = 0;i<result.update.length;i++ ){
-                this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.update[i].id);
+                GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.update[i].id);
             } 
-            handleColorChange("#FCD037",this.GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#FCD037",GLOBAL_DATA.diffViewPort[0])
         },
         removeColor(){
-            clear(this.GLOBAL_DATA.diffViewPort[0]);
+            clear(GLOBAL_DATA.diffViewPort[0]);
         },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 
@@ -161,13 +161,13 @@ export default {
         async selectChange(view){
             this.value = view.name;
             if (!(view instanceof ViewState)) {
-                view = await  this.GLOBAL_DATA.diffActiveViewState[0].iModelConnection.views.load(view.id);
+                view = await  GLOBAL_DATA.diffActiveViewState[0].iModelConnection.views.load(view.id);
             }
-            await this.GLOBAL_DATA.diffViewPort[0].changeView(view);
+            await GLOBAL_DATA.diffViewPort[0].changeView(view);
             await this.notify(view.clone());
         },
         async notify(view) {
-            this.GLOBAL_DATA.diffActiveViewState[0].viewState = view;
+            GLOBAL_DATA.diffActiveViewState[0].viewState = view;
         },
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
@@ -193,7 +193,7 @@ export default {
                 if (!this.theViewPort){
                     // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    this.GLOBAL_DATA.diffViewPort[0] = this.theViewPort;
+                    GLOBAL_DATA.diffViewPort[0] = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }
@@ -211,7 +211,7 @@ export default {
             }
            
             await this.openView(activeViewState);
-            this.GLOBAL_DATA.diffActiveViewState[0] = activeViewState;
+            GLOBAL_DATA.diffActiveViewState[0] = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
             window.eventHub.$emit('categories_init');

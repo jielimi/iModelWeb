@@ -52,8 +52,8 @@ export default {
             this.isShowDetail = !this.isShowDetail;
         },
         direction (e,dir) {
-            // this.GLOBAL_DATA.theViewPort;
-            let theViewport = this.GLOBAL_DATA.theViewPort;
+            // GLOBAL_DATA.theViewPort;
+            let theViewport = GLOBAL_DATA.theViewPort;
             e.stopPropagation();
             this.isShowDetail = false;
             if (undefined === theViewport)

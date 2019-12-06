@@ -20,7 +20,7 @@ export default {
     created () {},
     methods: {
         shadow(){
-            let vp = this.GLOBAL_DATA.theViewPort
+            let vp = GLOBAL_DATA.theViewPort
             const emph = EmphasizeElements.getOrCreate(vp);
             if (emph.overrideSelectedElements(vp, new ColorDef(ColorByName.orange), undefined, true, false) // replace existing; don't clear selection set...
                 && emph.emphasizeSelectedElements(vp, undefined, true)) { // ...replace existing; now clear selection set

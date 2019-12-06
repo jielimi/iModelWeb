@@ -59,13 +59,13 @@ export default {
         },
         async resetStandaloneIModel(filename) {
            
-                IModelApp.viewManager.dropViewport(this.GLOBAL_DATA.theViewPort, false);
+                IModelApp.viewManager.dropViewport(GLOBAL_DATA.theViewPort, false);
                 
                 await this.clearViews();
                  
-                await this.openStandaloneIModel(this.GLOBAL_DATA.activeViewState, filename);
+                await this.openStandaloneIModel(GLOBAL_DATA.activeViewState, filename);
                 
-                await this.openView(this.GLOBAL_DATA.activeViewState);
+                await this.openView(GLOBAL_DATA.activeViewState);
 
                 window.eventHub.$emit('categories_init');
                 window.eventHub.$emit('render_mode_init');
@@ -74,15 +74,15 @@ export default {
                 this.dialogVisible = false;
         },
         async clearViews() {
-            if (this.GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
+            if (GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
                 
                 if(this.standalone){
-                    await this.GLOBAL_DATA.activeViewState.iModelConnection.closeSnapshot();
+                    await GLOBAL_DATA.activeViewState.iModelConnection.closeSnapshot();
                 }else {
-                    await this.GLOBAL_DATA.activeViewState.iModelConnection.close();
+                    await GLOBAL_DATA.activeViewState.iModelConnection.close();
                 }
 
-                this.GLOBAL_DATA.activeViewState = new SimpleViewState();
+                GLOBAL_DATA.activeViewState = new SimpleViewState();
             }
         },
         async openStandaloneIModel(state, filename) {
@@ -108,11 +108,11 @@ export default {
                 await this.buildViewList(state);
                
                 // this.theViewPort = ScreenViewport.create(parent, state.viewState); 
-                // this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                // GLOBAL_DATA.theViewPort = this.theViewPort;
                 if (!this.theViewPort){
                     // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    this.GLOBAL_DATA.theViewPort = this.theViewPort;
+                    GLOBAL_DATA.theViewPort = this.theViewPort;
                 }
                 IModelApp.viewManager.addViewport(this.theViewPort);
             }

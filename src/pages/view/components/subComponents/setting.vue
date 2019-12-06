@@ -266,7 +266,7 @@ export default {
             this.isShowDetail = !this.isShowDetail;
         },
         initSetting(){
-            this.view = this.GLOBAL_DATA.theViewPort.view;
+            this.view = GLOBAL_DATA.theViewPort.view;
             this.is3d = this.view.is3d();
             this.initStylePicker();
             this.addViewFlagAttribute();
@@ -298,8 +298,8 @@ export default {
             await Promise.all(promises);
         },
         handleStyleChange(id){
-            this.GLOBAL_DATA.theViewPort.displayStyle = this.displayStyles.get(id);
-            this.GLOBAL_DATA.theViewPort.invalidateScene();
+            GLOBAL_DATA.theViewPort.displayStyle = this.displayStyles.get(id);
+            GLOBAL_DATA.theViewPort.invalidateScene();
         },
         addViewFlagAttribute(label, flag){
             const viewflags = this.view.viewFlags;
@@ -313,18 +313,18 @@ export default {
             this.addShadowsToggle();
         },
         addShadowsToggle(){
-            if (this.GLOBAL_DATA.theViewPort.view.is3d()){
-                this.currentShadowColor = this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color;
+            if (GLOBAL_DATA.theViewPort.view.is3d()){
+                this.currentShadowColor = GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color;
             }
             let that = this;
-            this.GLOBAL_DATA.theViewPort.onDisplayStyleChanged.addListener(function(vp){
+            GLOBAL_DATA.theViewPort.onDisplayStyleChanged.addListener(function(vp){
                 that.updateShadowUI(vp.view)
             });
         },
         handleShadowCheckChange($event){
-            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf.shadows = $event;
-            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
         },
         updateShadowUI(view){
@@ -335,13 +335,13 @@ export default {
         },
         handleShadowColorChange($event){
             this.currentShadowColor = $event.target.value;
-            this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color = new ColorDef(this.currentShadowColor);
+            GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color = new ColorDef(this.currentShadowColor);
             this.sync();
         },
         handelViewFlagChange($event,label){
-            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf[label] = $event;
-            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
         },
         changeRenderMode(thing){
@@ -354,18 +354,18 @@ export default {
             this.currColor = hlSettings.visible.color ? hlSettings.visible.color.toHexString() : "#FFFFFF";
             this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid
             this.hiddenPattern = hlSettings.hidden.pattern ? hlSettings.hidden.pattern : LinePixels.Invalid
-            this.showVisibleEdges = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags).visibleEdges;
+            this.showVisibleEdges = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags).visibleEdges;
         },
         handleVisibleEdgesCheckChange($event){
-            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf.visibleEdges = $event;
-            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
         },
         handleHiddenEdgesCheckChange($event){
-            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf.hiddenEdges = $event;
-            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
         },
         handleTransparencyCheckChange($event){
@@ -442,7 +442,7 @@ export default {
                 false);
         },
         updateEdgeDisplay(transThresh,color,pattern,hiddenPattern,width,hiddenWidth,hiddenEdge){
-            const oldHLSettings = this.GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLSettings = GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const newHLSettings = HiddenLine.Settings.fromJSON({
                 visible: hiddenEdge ? oldHLSettings.visible : HiddenLine.Style.fromJSON({
                     ovrColor: color ? true : false,
@@ -546,9 +546,9 @@ export default {
 
         },
         handleOcclusionCheckChange($event){
-            const vf = this.GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
             vf.ambientOcclusion = $event;
-            this.GLOBAL_DATA.theViewPort.viewFlags = vf;
+            GLOBAL_DATA.theViewPort.viewFlags = vf;
             this.sync();
         },
         handelBiasChange($event){
@@ -594,7 +594,7 @@ export default {
             this.sync();
         },
         sync() {
-            this.GLOBAL_DATA.theViewPort.synchWithView(true);
+            GLOBAL_DATA.theViewPort.synchWithView(true);
         }
     }
 }

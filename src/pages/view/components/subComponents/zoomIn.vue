@@ -18,9 +18,9 @@ export default {
     created () {},
     methods: {
         async zoomToSelectedElements(){
-            const elems =  this.GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements;
+            const elems =  GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements;
             if (0 < elems.size)
-                await this.GLOBAL_DATA.theViewPort.zoomToElements(elems);
+                await GLOBAL_DATA.theViewPort.zoomToElements(elems);
             }
             
         }

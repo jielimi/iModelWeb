@@ -45,7 +45,7 @@ export default {
             const selectSpatialCategoryProps = selectCategoryProps + "BisCore.SpatialCategory WHERE ECInstanceId IN (" + selectUsedSpatialCategoryIds + ")";
             const selectDrawingCategoryProps = selectCategoryProps + "BisCore.DrawingCategory WHERE ECInstanceId IN (" + selectUsedDrawingCategoryIds + ")";
 
-            const view = this.GLOBAL_DATA.theViewPort.view;
+            const view = GLOBAL_DATA.theViewPort.view;
             const ecsql = view.is3d() ? selectSpatialCategoryProps : selectDrawingCategoryProps;
             const bindings = view.is2d() ? [view.baseModelId] : undefined;
            
@@ -53,7 +53,7 @@ export default {
             for await (const row of view.iModel.query(`${ecsql} LIMIT 1000`, bindings)) {
                 this.categoryList.push(row);
             }
-            // let view = this.GLOBAL_DATA.activeViewState.viewState;
+            // let view = GLOBAL_DATA.activeViewState.viewState;
             // let ecsql = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM " + (view.is3d() ? "BisCore.SpatialCategory" : "BisCore.DrawingCategory");
             
             // const bindings = view.is2d() ? [ view.baseModelId ] : undefined;
@@ -70,7 +70,7 @@ export default {
         // apply a category checkbox state being changed
         applyCategoryToggleChange(id,code) {
             let that = this;
-            let vp = this.GLOBAL_DATA.theViewPort;
+            let vp = GLOBAL_DATA.theViewPort;
             
             let invis = this.checkCodeList.indexOf(code) >= 0 ? true : false;
             const alreadyInvis = vp.view.viewsCategory(id);
@@ -83,7 +83,7 @@ export default {
             this.checkCodeList = [];
             this.checkList = [];
             let that = this;
-            let vp = this.GLOBAL_DATA.theViewPort;
+            let vp = GLOBAL_DATA.theViewPort;
             if(value){
                 this.categoryList.forEach(function(val,index){
                     if(that.checkList.indexOf(val.id) < 0){
