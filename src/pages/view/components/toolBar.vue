@@ -6,7 +6,7 @@
         </div>
         <div class="tool-bar">
             <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
-            <debug-info-component></debug-info-component>
+            <!-- <debug-info-component></debug-info-component> -->
             <open-file-component style="display:none"></open-file-component>
             <change-view-component></change-view-component>
             <model-component></model-component>
