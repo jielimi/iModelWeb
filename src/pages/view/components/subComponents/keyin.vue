@@ -42,9 +42,10 @@ export default {
     methods: {
         init(){
             let tools = IModelApp.tools.getToolList();
+            tools = this.deepCopy(tools);
             for (const tool of tools) {
                 if(tool.keyin){
-                     this.keyins.push(JSON.parse(JSON.stringify(tool)));;
+                     this.keyins.push(tool);;
                 }
             }
         },
@@ -133,6 +134,25 @@ export default {
                 }
             }
             return { tool, args };
+        },
+        deepCopy (obj, cache = []) {
+          if (obj === null || typeof obj !== 'object') {
+            return obj
+          }
+          const hit = cache.filter(c => c.original === obj)[0]
+          if (hit) {
+            return hit.copy
+          }
+          const copy = Array.isArray(obj) ?  [] :   {}
+          cache.push({
+            original: obj,
+            copy
+          })
+          Object.keys(obj).forEach(key => {
+            copy[key] = this.deepCopy(obj[key], cache)
+          })
+
+          return copy
         }
     }
 }
