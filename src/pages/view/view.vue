@@ -76,13 +76,6 @@ export default {
     },
     mounted(){
      window.eventHub.$on('iModel_startup_finish',this.main)
-     this.main();
-
-     setTimeout(()=>{
-         console.log(GLOBAL_DATA);
-         console.log(GLOBAL_DATA.theViewPort);
-
-     },15000)
     },
     beforeDestroy(){
         if (GLOBAL_DATA.theViewPort){
@@ -164,6 +157,7 @@ export default {
             RPC.init();
             if(this.$route.query && this.$route.query.isStandalone){
                 window.eventHub.$emit('tile_progress_init');
+                window.eventHub.$emit('keyin_init');
                 window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
                 this.isLoading = false;
                 return;

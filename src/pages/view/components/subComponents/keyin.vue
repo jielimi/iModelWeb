@@ -58,7 +58,7 @@ export default {
             document.getElementById("fps").addEventListener('click',function(event){
                 GLOBAL_DATA.theViewPort.continuousRendering = true;
                 GLOBAL_DATA.theViewPort.target.performanceMetrics = new PerformanceMetrics(false, true)
-                debugger;
+               
                 if(event.target.checked){
                     curIntervalId = setInterval(() => {
                     const metrics =  GLOBAL_DATA.theViewPort.target.performanceMetrics;
