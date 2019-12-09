@@ -27,7 +27,6 @@ export default {
         return {
             dialogVisible:false,
             inputFileUrl:'',
-            theViewPort:undefined,
             standalone: false
         };
     },
@@ -107,14 +106,11 @@ export default {
             if (parent) {
                 await this.buildViewList(state);
                
-                // this.theViewPort = ScreenViewport.create(parent, state.viewState); 
-                // GLOBAL_DATA.theViewPort = this.theViewPort;
-                if (!this.theViewPort){
-                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
-                    this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    GLOBAL_DATA.theViewPort = this.theViewPort;
+               
+                if (!GLOBAL_DATA.theViewPort){
+                    GLOBAL_DATA.theViewPort = ScreenViewport.create(parent, state.viewState);
                 }
-                IModelApp.viewManager.addViewport(this.theViewPort);
+                IModelApp.viewManager.addViewport(GLOBAL_DATA.theViewPort);
             }
         },
     }
