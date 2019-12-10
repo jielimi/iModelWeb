@@ -46,9 +46,9 @@ export default {
                 };
 
                 static startup(opts) {
-                    opts = opts ? opts : {};
+                   opts = opts ? opts : {};
                     
-                    setTimeout(()=>{
+                   that.$nextTick(() => {
                         opts.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
                         opts.notifications = that.$refs.tip.notifications();
                         opts.tileAdmin = TileAdmin.create(DisplayTestApp.tileAdminProps);

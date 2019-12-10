@@ -72,10 +72,10 @@ export default {
         toolBarComponent
     },
     created(){
-        //window.eventHub.$on('categories_viewList_change',this.categoryChange);
+       window.eventHub.$on('iModel_startup_finish',this.main)
     },
     mounted(){
-     window.eventHub.$on('iModel_startup_finish',this.main)
+     
     },
     beforeDestroy(){
         if (GLOBAL_DATA.theViewPort){

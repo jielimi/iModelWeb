@@ -26,6 +26,7 @@ Vue.prototype.$get = get;
 Vue.prototype.$patch = patch;
 Vue.prototype.$put = put;
 Vue.prototype.$del = del;
+Vue.config.performance = true
 
 /* eslint-disable no-new */
 new Vue({
