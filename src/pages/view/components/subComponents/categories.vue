@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default {
     name: 'briefCases',
     data () {
@@ -45,7 +46,7 @@ export default {
             const selectSpatialCategoryProps = selectCategoryProps + "BisCore.SpatialCategory WHERE ECInstanceId IN (" + selectUsedSpatialCategoryIds + ")";
             const selectDrawingCategoryProps = selectCategoryProps + "BisCore.DrawingCategory WHERE ECInstanceId IN (" + selectUsedDrawingCategoryIds + ")";
 
-            const view = GLOBAL_DATA.theViewPort.view;
+            const view = IModelApp.viewManager.selectedView.view;
             const ecsql = view.is3d() ? selectSpatialCategoryProps : selectDrawingCategoryProps;
             const bindings = view.is2d() ? [view.baseModelId] : undefined;
            
@@ -53,11 +54,7 @@ export default {
             for await (const row of view.iModel.query(`${ecsql} LIMIT 1000`, bindings)) {
                 this.categoryList.push(row);
             }
-            // let view = GLOBAL_DATA.activeViewState.viewState;
-            // let ecsql = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM " + (view.is3d() ? "BisCore.SpatialCategory" : "BisCore.DrawingCategory");
-            
-            // const bindings = view.is2d() ? [ view.baseModelId ] : undefined;
-            // this.categoryList = Array.from(await view.iModel.queryPage(ecsql, bindings, { size: 1000 }));
+           
             this.checkList = Array.from(view.categorySelector.categories);
             let that = this;
             this.categoryList.forEach(function(val,index){
@@ -70,7 +67,7 @@ export default {
         // apply a category checkbox state being changed
         applyCategoryToggleChange(id,code) {
             let that = this;
-            let vp = GLOBAL_DATA.theViewPort;
+            let vp = IModelApp.viewManager.selectedView;
             
             let invis = this.checkCodeList.indexOf(code) >= 0 ? true : false;
             const alreadyInvis = vp.view.viewsCategory(id);
@@ -83,7 +80,7 @@ export default {
             this.checkCodeList = [];
             this.checkList = [];
             let that = this;
-            let vp = GLOBAL_DATA.theViewPort;
+            let vp = IModelApp.viewManager.selectedView;
             if(value){
                 this.categoryList.forEach(function(val,index){
                     if(that.checkList.indexOf(val.id) < 0){

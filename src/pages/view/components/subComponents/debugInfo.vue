@@ -5,13 +5,6 @@
                 class="detail"
                 title="Debug Info"
                 v-show="dialogVisible">
-                <!-- <div class="item">
-                    <el-checkbox v-model="showFPS"  @change="handleFPSCheckChange">
-                        <span v-show="fpsStatus == 0">Track FPS</span>
-                        <span v-show="fpsStatus == 1">Tracking FPS...</span>
-                        <span v-show="fpsStatus == 2">FPS: <span>{{ fps }}</span></span>
-                    </el-checkbox>
-                </div> -->
                 <div class="item request">
                     <span>Max Active Requests:</span>
                     <el-input-number v-model="maxActiveRequests" @change="handleRequestsChange" :min="0" :step="1" size="mini"></el-input-number>
@@ -309,24 +302,6 @@ export default {
         detail() {
             this.dialogVisible = !this.dialogVisible;
         },
-        // handleFPSCheckChange($event){
-        //     if($event){
-        //         this.fpsStatus = 1;
-        //         GLOBAL_DATA.theViewPort.continuousRendering = $event;
-        //         this._metrics = new PerformanceMetrics(false, true);
-        //         this._curIntervalId = setInterval(() => this.updateFPS(), 500);
-        //     }else{
-        //         this.fpsStatus = 0;
-        //         this._metrics = undefined;
-        //         this.clearInterval();
-        //     }
-        //     GLOBAL_DATA.theViewPort.target.performanceMetrics = this._metrics;
-        // },
-        // updateFPS(){
-        //     const metrics = this._metrics;
-        //     this.fps = (metrics.spfTimes.length / metrics.spfSum).toFixed(2);
-        //     this.fpsStatus = 2;
-        // },
         clearInterval(){
             if (undefined !== this._curIntervalId) {
                 clearInterval(this._curIntervalId);
@@ -431,9 +406,9 @@ export default {
             this.pending = stats.numPendingRequests;
             this.canceled = stats.numCanceled;
             this.total = stats.numActiveRequests + stats.numPendingRequests;
-            this.selected = GLOBAL_DATA.theViewPort.numSelectedTiles;
-            this.ready = GLOBAL_DATA.theViewPort.numReadyTiles;
-            this.progress = this.computeProgress(GLOBAL_DATA.theViewPort);
+            this.selected = IModelApp.viewManager.selectedView.numSelectedTiles;
+            this.ready = IModelApp.viewManager.selectedView.numReadyTiles;
+            this.progress = this.computeProgress(IModelApp.viewManager.selectedView);
             this.completed = stats.totalCompletedRequests;
             this.timedOut = stats.totalTimedOutRequests;
             this.failed = stats.totalFailedRequests;
@@ -519,7 +494,7 @@ export default {
             ];
 
             let _stats = new RenderMemory.Statistics();
-            let _vp = GLOBAL_DATA.theViewPort;
+            let _vp = IModelApp.viewManager.selectedView;
             const calc = calcMem[index];
             _stats.clear();
             const numTrees = calc(_stats, _vp);
@@ -560,7 +535,7 @@ export default {
             }
         },
         purge(){
-            let _vp = GLOBAL_DATA.theViewPort;
+            let _vp = IModelApp.viewManager.selectedView;
             const purge = IModelApp.viewManager.purgeTileTrees(BeTimePoint.now());
             if (undefined !== purge) {
                 purge();

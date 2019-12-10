@@ -22,16 +22,16 @@ export default {
     },
     methods: {
         addListener(){
-           // this.vp.onRender.addListener((vp)=>this.update());
            IModelApp.viewManager.onFinishRender.addListener(() => this.update());
-           
         },
          update() {
             let ready = 0;
             let total = 0;
+            let kk = IModelApp.viewManager;
+            
             IModelApp.viewManager.forEachViewport((vp) => {
-              ready += GLOBAL_DATA.theViewPort.numReadyTiles;
-              total += GLOBAL_DATA.theViewPort.numReadyTiles + GLOBAL_DATA.theViewPort.numRequestedTiles;
+              ready += vp.numReadyTiles;
+              total += vp.numReadyTiles + vp.numRequestedTiles;
             });
             const pctComplete = (total > 0) ? (ready / total) : 1.0;
             this.percentage= pctComplete.toFixed(2)*100;

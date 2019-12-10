@@ -20,10 +20,10 @@ export default {
     created () {},
     methods: {
         hide(){
-           let selectSet = GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements;
+           let selectSet = IModelApp.viewManager.selectedView.iModel.selectionSet.elements;
            let allHiddenSet = new Set([...this.hiddenSet,...selectSet]);
            this.hiddenSet = allHiddenSet;
-           GLOBAL_DATA.theViewPort.setNeverDrawn(allHiddenSet);
+           IModelApp.viewManager.selectedView.setNeverDrawn(allHiddenSet);
         }
     }
     

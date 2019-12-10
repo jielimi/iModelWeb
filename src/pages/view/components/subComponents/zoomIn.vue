@@ -17,10 +17,10 @@ export default {
     },
     created () {},
     methods: {
-        async zoomToSelectedElements(){
-            const elems =  GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.elements;
+        async zoomToSelectedElements(){  
+            const elems = IModelApp.viewManager.selectedView.iModel.selectionSet.elements;
             if (0 < elems.size)
-                await GLOBAL_DATA.theViewPort.zoomToElements(elems);
+                await IModelApp.viewManager.selectedView.zoomToElements(elems);
             }
             
         }

@@ -39,8 +39,8 @@ export default {
         async updateRenderModelOptionsMap(){
             this.checkNameList = [];
             this.checkList = [];
-            const vp = GLOBAL_DATA.theViewPort;
-            const view = GLOBAL_DATA.theViewPort.view;
+            const vp = IModelApp.viewManager.selectedView;
+            const view = IModelApp.viewManager.selectedView.view;
             if(view.modelSelector){
                 this.hasModel = true;
                 const selector = view.modelSelector;
@@ -64,8 +64,8 @@ export default {
              }
         },
         async applyModelChange(id,name){
-            const vp = GLOBAL_DATA.theViewPort;
-            const view = GLOBAL_DATA.theViewPort.view;
+            const vp = IModelApp.viewManager.selectedView;
+            const view = IModelApp.viewManager.selectedView.view;
             const selector = view.modelSelector;
            
             let checked = this.checkNameList.indexOf(name) >= 0 ? true : false;
@@ -75,16 +75,16 @@ export default {
                 model = view.iModel.models.getLoaded(id);
             }
             if(checked){
-                GLOBAL_DATA.theViewPort.addViewedModels(id);
+                IModelApp.viewManager.selectedView.addViewedModels(id);
             }else{
-                GLOBAL_DATA.theViewPort.changeModelDisplay(id, false);
+                IModelApp.viewManager.selectedView.changeModelDisplay(id, false);
             }
             this.isCheckAll();
             vp.invalidateScene();
         },
         async handleCheckAllChange(value){
-            const vp = GLOBAL_DATA.theViewPort;
-            const view = GLOBAL_DATA.theViewPort.view;
+            const vp = IModelApp.viewManager.selectedView;
+            const view = IModelApp.viewManager.selectedView.view;
             const selector = view.modelSelector;
             this.checkNameList = [];
             this.checkList = [];
@@ -98,11 +98,11 @@ export default {
                         await view.iModel.models.load(val.id);
                         model = view.iModel.models.getLoaded(val.id);
                     }
-                    GLOBAL_DATA.theViewPort.addViewedModels(val.id);
+                    IModelApp.viewManager.selectedView.addViewedModels(val.id);
                 }
             }else{
                 this.modelList.forEach(function(val,index){
-                    GLOBAL_DATA.theViewPort.changeModelDisplay(val.id, false);
+                    IModelApp.viewManager.selectedView.changeModelDisplay(val.id, false);
                 });
             }
             vp.invalidateScene();

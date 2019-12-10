@@ -236,7 +236,7 @@ export default {
                     if(message.Id){
                         let param = {
                             id:message.Id,
-                            imodeltoken:JSON.stringify(GLOBAL_DATA.activeViewState.iModelConnection.iModelToken)
+                            imodeltoken:JSON.stringify(IModelApp.viewManager.selectedView.view.iModel._token)
                         };
                         that.getExtraParam(param);
                     }

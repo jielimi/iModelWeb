@@ -18,7 +18,7 @@ export default {
     created () {},
     methods: {
         undo(){
-            IModelApp.tools.run("View.Undo", GLOBAL_DATA.theViewPort);
+            IModelApp.tools.run("View.Undo", IModelApp.viewManager.selectedView);
         }
     }
     

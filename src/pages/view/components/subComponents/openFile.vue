@@ -17,10 +17,12 @@
 
 <script>
 import { IModelApp,IModelConnection,ScreenViewport } from "@bentley/imodeljs-frontend";
-//import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+
 class SimpleViewState {
     constructor(){};
 }
+let activeViewState = new SimpleViewState();
+let theViewPort = undefined;
 export default {
     name: 'openFile',
     data () {
@@ -58,13 +60,13 @@ export default {
         },
         async resetStandaloneIModel(filename) {
            
-                IModelApp.viewManager.dropViewport(GLOBAL_DATA.theViewPort, false);
+                IModelApp.viewManager.dropViewport(theViewPort, false);
                 
                 await this.clearViews();
                  
-                await this.openStandaloneIModel(GLOBAL_DATA.activeViewState, filename);
+                await this.openStandaloneIModel(activeViewState, filename);
                 
-                await this.openView(GLOBAL_DATA.activeViewState);
+                await this.openView(activeViewState);
 
                 window.eventHub.$emit('categories_init');
                 window.eventHub.$emit('render_mode_init');
@@ -73,15 +75,15 @@ export default {
                 this.dialogVisible = false;
         },
         async clearViews() {
-            if (GLOBAL_DATA.activeViewState.iModelConnection !== undefined){
+            if (activeViewState.iModelConnection !== undefined){
                 
                 if(this.standalone){
-                    await GLOBAL_DATA.activeViewState.iModelConnection.closeSnapshot();
+                    await activeViewState.iModelConnection.closeSnapshot();
                 }else {
-                    await GLOBAL_DATA.activeViewState.iModelConnection.close();
+                    await activeViewState.iModelConnection.close();
                 }
 
-                GLOBAL_DATA.activeViewState = new SimpleViewState();
+                activeViewState = new SimpleViewState();
             }
         },
         async openStandaloneIModel(state, filename) {
@@ -107,10 +109,10 @@ export default {
                 await this.buildViewList(state);
                
                
-                if (!GLOBAL_DATA.theViewPort){
-                    GLOBAL_DATA.theViewPort = ScreenViewport.create(parent, state.viewState);
+                if (!theViewPort){
+                    theViewPort = ScreenViewport.create(parent, state.viewState);
                 }
-                IModelApp.viewManager.addViewport(GLOBAL_DATA.theViewPort);
+                IModelApp.viewManager.addViewport(theViewPort);
             }
         },
     }

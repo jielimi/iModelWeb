@@ -138,26 +138,26 @@ export default {
       		provider.appearance = FeatureSymbology.Appearance.fromJSON(props);
         },
         apply(){
-			for(const id of GLOBAL_DATA.theViewPort.iModel.selectionSet.elements){
+			for(const id of IModelApp.viewManager.selectedView.iModel.selectionSet.elements){
 				provider.elementOvrs.set(id, provider.appearance);
 			}
-			GLOBAL_DATA.theViewPort.featureOverrideProvider = provider;
+			IModelApp.viewManager.selectedView.featureOverrideProvider = provider;
 			this.sync();
         },
         setDefault(){
-        	let pro = GLOBAL_DATA.theViewPort.featureOverrideProvider;
+        	let pro = IModelApp.viewManager.selectedView.featureOverrideProvider;
         	provider.defaultOvrs = provider.appearance;
-        	GLOBAL_DATA.theViewPort.featureOverrideProvider = provider;
+        	IModelApp.viewManager.selectedView.featureOverrideProvider = provider;
         	this.sync();
         },
         clear(){
 			provider.elementOvrs.clear();
 			provider.defaultOvrs = undefined;
-			GLOBAL_DATA.theViewPort.featureOverrideProvider = provider;
+			IModelApp.viewManager.selectedView.featureOverrideProvider = provider;
 			this.sync();
         },
         sync(){
-        	GLOBAL_DATA.theViewPort.setFeatureOverrideProviderChanged();
+        	IModelApp.viewManager.selectedView.setFeatureOverrideProviderChanged();
         },
         convertHexToRgb(hex) {
 		  // Parse a hex color string formatted as "#FFFFFF"

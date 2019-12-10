@@ -19,10 +19,10 @@ export default {
     created () {},
     methods: {
         show(){
-            
-            GLOBAL_DATA.theViewPort.clearNeverDrawn();
-            GLOBAL_DATA.activeViewState.iModelConnection.selectionSet.emptyAll();
-            GLOBAL_DATA.activeViewState.moveCameraWorld
+            let vp = IModelApp.viewManager.selectedView;
+            debugger;
+            IModelApp.viewManager.selectedView.clearNeverDrawn();
+            IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
         }
     }
     

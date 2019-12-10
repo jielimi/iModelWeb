@@ -59,7 +59,7 @@ export default {
 
         },
         edit(){
-            ViewClipDecorationProvider.create().toggleDecoration(GLOBAL_DATA.theViewPort);
+            ViewClipDecorationProvider.create().toggleDecoration(IModelApp.viewManager.selectedView);
         },
         clear(){
             IModelApp.tools.run("ViewClip.Clear", ViewClipDecorationProvider.create())

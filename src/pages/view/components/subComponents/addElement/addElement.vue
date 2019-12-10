@@ -84,7 +84,7 @@ export default {
                   console.log("curSnapDetail",curSnapDetail);
                   if (curSnapDetail){
                       let param = {
-                        imodeltoken:JSON.stringify(GLOBAL_DATA.activeViewState.iModelConnection.iModelToken),
+                        imodeltoken:JSON.stringify(IModelApp.viewManager.selectedView.view.iModel._token),
                         modelId:curSnapDetail.modelId,
                         subCategoryId:'0x20000000008',
                         hitPoint:curSnapDetail.snapPoint.clone(),

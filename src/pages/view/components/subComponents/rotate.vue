@@ -20,7 +20,7 @@ export default {
     created () {},
     methods: {
         rotate(){
-            IModelApp.tools.run("View.Rotate", GLOBAL_DATA.theViewPort);
+            IModelApp.tools.run("View.Rotate", IModelApp.viewManager.selectedView);
         }
     }
 }

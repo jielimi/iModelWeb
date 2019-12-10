@@ -34,7 +34,7 @@
 
 <script>
 //import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
-import { StandardViewId, AccuDraw } from '@bentley/imodeljs-frontend';
+import { StandardViewId, AccuDraw,IModelApp } from '@bentley/imodeljs-frontend';
 import { Transform } from "@bentley/geometry-core/lib/geometry-core";
 export default {
     name: 'gyroscope',
@@ -52,8 +52,7 @@ export default {
             this.isShowDetail = !this.isShowDetail;
         },
         direction (e,dir) {
-            // GLOBAL_DATA.theViewPort;
-            let theViewport = GLOBAL_DATA.theViewPort;
+            let theViewport = IModelApp.viewManager.selectedView;
             e.stopPropagation();
             this.isShowDetail = false;
             if (undefined === theViewport)

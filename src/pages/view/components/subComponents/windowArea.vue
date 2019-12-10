@@ -18,7 +18,7 @@ export default {
     created () {},
     methods: {
         windowArea() {
-            IModelApp.tools.run("View.WindowArea", GLOBAL_DATA.theViewPort);
+            IModelApp.tools.run("View.WindowArea", IModelApp.viewManager.selectedView);
         }
     }
     

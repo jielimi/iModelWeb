@@ -159,6 +159,7 @@
 
 <script>
 import {
+  IModelApp,  
   Environment,
   SkyBox,
   SkyGradient,
@@ -176,7 +177,7 @@ export default {
         return {
             isShowDetail: false,
             view: '',
-            is3d: '',
+            is3d:true,
             style: '',
             styleEntries: [],
             displayStyles: new Map(),
@@ -266,8 +267,8 @@ export default {
             this.isShowDetail = !this.isShowDetail;
         },
         initSetting(){
-            this.view = GLOBAL_DATA.theViewPort.view;
-            this.is3d = this.view.is3d();
+            //IModelApp.viewManager.selectedView.view = JSON.parse(JSON.stringify(IModelApp.viewManager.selectedView.view));
+            this.is3d = IModelApp.viewManager.selectedView.view.is3d();
             this.initStylePicker();
             this.addViewFlagAttribute();
             this.initEdgeDisplay();
@@ -277,32 +278,32 @@ export default {
         async initStylePicker(){
             this.styleEntries = [];
             this.displayStyles = new Map();
-            let is3d = this.view.is3d();
-            let sqlName = is3d ? DisplayStyle3dState.classFullName : DisplayStyle2dState.classFullName;
-            let displayStyleProps = await this.view.iModel.elements.queryProps({ from: sqlName, where: "IsPrivate=FALSE" });
+            // let is3d = IModelApp.viewManager.selectedView.view.is3d();
+            let sqlName = this.is3d ? DisplayStyle3dState.classFullName : DisplayStyle2dState.classFullName;
+            let displayStyleProps = await IModelApp.viewManager.selectedView.view.iModel.elements.queryProps({ from: sqlName, where: "IsPrivate=FALSE" });
             let promises = [];
             for (const displayStyleProp of displayStyleProps) {
                 this.styleEntries.push({ name: displayStyleProp.code.value, value: displayStyleProp.id });
                 let displayStyle;
-                if (is3d){
-                    displayStyle = new DisplayStyle3dState(displayStyleProp, this.view.iModel);
+                if (this.is3d){
+                    displayStyle = new DisplayStyle3dState(displayStyleProp, IModelApp.viewManager.selectedView.view.iModel);
                 }
                 else{
-                    displayStyle = new DisplayStyle2dState(displayStyleProp, this.view.iModel);
+                    displayStyle = new DisplayStyle2dState(displayStyleProp, IModelApp.viewManager.selectedView.view.iModel);
                 }
                 // ###TODO: Is there such a concept as "2d reality models"???
                 // promises.push(displayStyle.loadContextRealityModels());
                 this.displayStyles.set(displayStyleProp.id, displayStyle);
             }
-            this.style = this.view.displayStyle.id;
+            this.style = IModelApp.viewManager.selectedView.view.displayStyle.id;
             await Promise.all(promises);
         },
         handleStyleChange(id){
-            GLOBAL_DATA.theViewPort.displayStyle = this.displayStyles.get(id);
-            GLOBAL_DATA.theViewPort.invalidateScene();
+            IModelApp.viewManager.selectedView.displayStyle = this.displayStyles.get(id);
+            IModelApp.viewManager.selectedView.invalidateScene();
         },
         addViewFlagAttribute(label, flag){
-            const viewflags = this.view.viewFlags;
+            const viewflags = IModelApp.viewManager.selectedView.view.viewFlags;
             let that = this;
             this.options.forEach(function(value,index){
                 // that.options.set(value.label,viewflags[value.label]);
@@ -313,18 +314,18 @@ export default {
             this.addShadowsToggle();
         },
         addShadowsToggle(){
-            if (GLOBAL_DATA.theViewPort.view.is3d()){
-                this.currentShadowColor = GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color;
+            if (this.is3d){
+                this.currentShadowColor = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.solarShadowsSettings.color;
             }
             let that = this;
-            GLOBAL_DATA.theViewPort.onDisplayStyleChanged.addListener(function(vp){
+            IModelApp.viewManager.selectedView.onDisplayStyleChanged.addListener(function(vp){
                 that.updateShadowUI(vp.view)
             });
         },
         handleShadowCheckChange($event){
-            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
             vf.shadows = $event;
-            GLOBAL_DATA.theViewPort.viewFlags = vf;
+            IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
         },
         updateShadowUI(view){
@@ -335,37 +336,37 @@ export default {
         },
         handleShadowColorChange($event){
             this.currentShadowColor = $event.target.value;
-            GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.solarShadowsSettings.color = new ColorDef(this.currentShadowColor);
+            IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.solarShadowsSettings.color = new ColorDef(this.currentShadowColor);
             this.sync();
         },
         handelViewFlagChange($event,label){
-            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
             vf[label] = $event;
-            GLOBAL_DATA.theViewPort.viewFlags = vf;
+            IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
         },
         changeRenderMode(thing){
-            this.view.viewFlags.renderMode = Number.parseInt(thing, 10);
+            IModelApp.viewManager.selectedView.view.viewFlags.renderMode = Number.parseInt(thing, 10);
             this.sync();
         },
         initEdgeDisplay(){
-            const hlSettings = this.view.is3d() ? this.view.getDisplayStyle3d().settings.hiddenLineSettings : HiddenLine.Settings.defaults;
+            const hlSettings = this.is3d ? IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings : HiddenLine.Settings.defaults;
             this.currTransparency = hlSettings.transparencyThreshold.toString();
             this.currColor = hlSettings.visible.color ? hlSettings.visible.color.toHexString() : "#FFFFFF";
             this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid
             this.hiddenPattern = hlSettings.hidden.pattern ? hlSettings.hidden.pattern : LinePixels.Invalid
-            this.showVisibleEdges = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags).visibleEdges;
+            this.showVisibleEdges = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags).visibleEdges;
         },
         handleVisibleEdgesCheckChange($event){
-            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
             vf.visibleEdges = $event;
-            GLOBAL_DATA.theViewPort.viewFlags = vf;
+            IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
         },
         handleHiddenEdgesCheckChange($event){
-            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
             vf.hiddenEdges = $event;
-            GLOBAL_DATA.theViewPort.viewFlags = vf;
+            IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
         },
         handleTransparencyCheckChange($event){
@@ -384,7 +385,7 @@ export default {
             this.updateEdgeDisplayItem();
         },
         handleHiddenWeightCheckChange($event){
-            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLSettings = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const oldHLEdgeSettings = oldHLSettings.visible;
             const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
             this.updateEdgeDisplay(
@@ -400,7 +401,7 @@ export default {
             this.updateEdgeDisplayItem();
         },
         handleHiddenWeightChange($event){
-            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLSettings = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const oldHLEdgeSettings = oldHLSettings.visible;
             const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
             this.updateEdgeDisplay(
@@ -416,7 +417,7 @@ export default {
             this.updateEdgeDisplayItem();
         },
         handleHiddenStyleChange($event){
-            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLSettings = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const oldHLEdgeSettings = oldHLSettings.visible;
             const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
             this.updateEdgeDisplay(
@@ -429,7 +430,7 @@ export default {
                 true);
         },
         updateEdgeDisplayItem(){
-            const oldHLSettings = this.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLSettings = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const oldHLEdgeSettings = oldHLSettings.visible;
             const oldHLEdgeSettingsHidden = oldHLSettings.hidden;
             this.updateEdgeDisplay(
@@ -442,7 +443,7 @@ export default {
                 false);
         },
         updateEdgeDisplay(transThresh,color,pattern,hiddenPattern,width,hiddenWidth,hiddenEdge){
-            const oldHLSettings = GLOBAL_DATA.theViewPort.view.getDisplayStyle3d().settings.hiddenLineSettings;
+            const oldHLSettings = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings;
             const newHLSettings = HiddenLine.Settings.fromJSON({
                 visible: hiddenEdge ? oldHLSettings.visible : HiddenLine.Style.fromJSON({
                     ovrColor: color ? true : false,
@@ -463,13 +464,13 @@ export default {
                 }, true),
                 transThreshold: transThresh
             });
-            this.view.getDisplayStyle3d().settings.hiddenLineSettings = newHLSettings;
+            IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings = newHLSettings;
             this.sync();
         },
         initEnvironment(){
             let currentEnvironment;
-            if (this.view.is3d()) {
-                const view3d = this.view;
+            if (this.is3d) {
+                const view3d = IModelApp.viewManager.selectedView.view;
                 const style = view3d.getDisplayStyle3d();
                 const env = style.environment.sky;
                 this.showSkyBox = env.display;
@@ -486,7 +487,7 @@ export default {
             this.groundTransparency = undefined === currentEnvironment ? "#FFFFFF" : currentEnvironment.groundExponent.toString();
         },
         handleShowSkyBoxCheckChange($event){
-            const view3d = this.view;
+            const view3d = IModelApp.viewManager.selectedView.view;
             const style = view3d.getDisplayStyle3d();
             const env = style.environment;
             env['sky'].display = $event;
@@ -515,7 +516,7 @@ export default {
             this.updateEnvironment({ groundExponent: parseFloat(e.target.value) });
         },
         handleShowGroundPlaneChange($event){
-            const view3d = this.view;
+            const view3d = IModelApp.viewManager.selectedView.view;
             const style = view3d.getDisplayStyle3d();
             const env = style.environment;
             env['ground'].display = $event;
@@ -523,7 +524,7 @@ export default {
             this.sync();
         },
         updateEnvironment(newEnv){
-            const oldEnv = this.view.getDisplayStyle3d().environment;
+            const oldEnv = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().environment;
             const oldSkyEnv = oldEnv.sky;
             newEnv = {
               display: oldSkyEnv.display,
@@ -535,7 +536,7 @@ export default {
               skyExponent: undefined !== newEnv.skyExponent ? newEnv.skyExponent : oldSkyEnv.skyExponent,
               groundExponent: undefined !== newEnv.groundExponent ? newEnv.groundExponent : oldSkyEnv.groundExponent,
             };
-            this.view.getDisplayStyle3d().environment = new Environment(
+            IModelApp.viewManager.selectedView.view.getDisplayStyle3d().environment = new Environment(
                 {
                     sky: new SkyGradient(newEnv),
                     ground: oldEnv.ground
@@ -546,9 +547,9 @@ export default {
 
         },
         handleOcclusionCheckChange($event){
-            const vf = GLOBAL_DATA.theViewPort.viewFlags.clone(this.scratchViewFlags);
+            const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
             vf.ambientOcclusion = $event;
-            GLOBAL_DATA.theViewPort.viewFlags = vf;
+            IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
         },
         handelBiasChange($event){
@@ -580,7 +581,7 @@ export default {
             this.updateAmbientOcclusion(undefined, undefined, undefined, undefined, undefined, undefined, parseFloat(value));
         },
         updateAmbientOcclusion(newBias, newZLengthCap, newIntensity, newTexelStepSize, newBlurDelta, newBlurSigma, newBlurTexelStepSize){
-            const oldAOSettings = this.view.getDisplayStyle3d().settings.ambientOcclusionSettings;
+            const oldAOSettings = IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.ambientOcclusionSettings;
             const newAOSettings = AmbientOcclusion.Settings.fromJSON({
                 bias: newBias !== undefined ? newBias : oldAOSettings.bias,
                 zLengthCap: newZLengthCap !== undefined ? newZLengthCap : oldAOSettings.zLengthCap,
@@ -590,11 +591,11 @@ export default {
                 blurSigma: newBlurSigma !== undefined ? newBlurSigma : oldAOSettings.blurSigma,
                 blurTexelStepSize: newBlurTexelStepSize !== undefined ? newBlurTexelStepSize : oldAOSettings.blurTexelStepSize,
             });
-            this.view.getDisplayStyle3d().settings.ambientOcclusionSettings = newAOSettings;
+            IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.ambientOcclusionSettings = newAOSettings;
             this.sync();
         },
         sync() {
-            GLOBAL_DATA.theViewPort.synchWithView(true);
+            IModelApp.viewManager.selectedView.synchWithView(true);
         }
     }
 }

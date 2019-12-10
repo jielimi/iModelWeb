@@ -18,7 +18,7 @@ export default {
     created () {},
     methods: {
         walk(){
-            IModelApp.tools.run("View.Walk", GLOBAL_DATA.theViewPort);
+            IModelApp.tools.run("View.Walk", IModelApp.viewManager.selectedView);
         }
     }
     

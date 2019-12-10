@@ -2,7 +2,7 @@
     <div class="registerTool">
         <markComponent ref="redMark"></markComponent>
         <graffitiComponent ref='graffiti'></graffitiComponent>
-        <addComponent ref='add'></addComponent>
+        <!-- <addComponent ref='add'></addComponent> -->
         <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
     </div>
 </template>
@@ -11,13 +11,13 @@
 import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,Tool} from "@bentley/imodeljs-frontend";
 import markComponent from './redMark/redMark'
 import graffitiComponent from './graffiti'
-import addComponent from './addElement/addElement'
+// import addComponent from './addElement/addElement'
 import tipComponent from './tip'
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
 import { FrontendDevTools } from "@bentley/frontend-devtools";
 import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
-// import { DrawingAidTestTool } from './registerTool/DrawingAidTestTool'
+
 
 export default {
     name: 'registerTool',
@@ -28,7 +28,6 @@ export default {
     components: {
         markComponent,
         graffitiComponent,
-        addComponent,
         tipComponent
     },
     props:['projectId','url', 'contextId', 'accessToken','versionName'],
@@ -60,7 +59,7 @@ export default {
                         const toolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
-                        that.$refs.add.register(toolNamespace);
+                        // that.$refs.add.register(toolNamespace);
                         RefreshTilesTool.register(toolNamespace);
                         PurgeTileTreesTool.register(toolNamespace);
                         window.eventHub.$emit('iModel_startup_finish');

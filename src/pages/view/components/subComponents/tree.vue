@@ -68,8 +68,8 @@ export default {
     },
     methods: {
        async focusElement(data){
-            const view = GLOBAL_DATA.theViewPort.view;
-            await GLOBAL_DATA.theViewPort.zoomToElements(data.id);
+            const view = IModelApp.viewManager.selectedView.view;
+            await IModelApp.viewManager.selectedView.zoomToElements(data.id);
             view.iModel.hilited.clear();
             view.iModel.hilited.setHilite(data.id,true)
         },
@@ -80,7 +80,7 @@ export default {
             }else {
                 searchElemSql = `SELECT * FROM BisCore.GeometricElement3d WHERE parent.id=${data.id}`
             }
-            const view = GLOBAL_DATA.theViewPort.view;
+            const view = IModelApp.viewManager.selectedView.view;
             let elems = [];
             for await (const row of view.iModel.query(`${searchElemSql}`, undefined)) {
                 if(row.hasOwnProperty("parent")){
@@ -97,7 +97,7 @@ export default {
        }, 
        async getCellByCatelogyId(id){
             const searchElemSql = `SELECT * FROM BisCore.GeometricElement3d WHERE category.id=${id} `;
-            const view = GLOBAL_DATA.theViewPort.view;
+            const view = IModelApp.viewManager.selectedView.view;
             let elem = '';
             let elems = [];
             let elemArray = [];
@@ -169,7 +169,7 @@ export default {
 
             const selectCategoryProps = "SELECT ECInstanceId as id, CodeValue as code, UserLabel as label FROM ";
             const selectSpatialCategoryProps = selectCategoryProps + "BisCore.SpatialCategory WHERE ECInstanceId IN (" + selectUsedSpatialCategoryIds + ")";
-            const view = GLOBAL_DATA.theViewPort.view;
+            const view = IModelApp.viewManager.selectedView.view;
 
             for await (const row of view.iModel.query(`${selectSpatialCategoryProps} LIMIT 1000`, undefined)) {
              
@@ -184,11 +184,11 @@ export default {
         
         },
         async buildTree(){
-            this.is3d = GLOBAL_DATA.theViewPort.view.is3d();
+            this.is3d = IModelApp.viewManager.selectedView.view.is3d();
             if(!this.is3d){
                 return;
             }
-            const view = GLOBAL_DATA.theViewPort.view;
+            const view = IModelApp.viewManager.selectedView.view;
             const selector = view.modelSelector;
             const query = { from: SpatialModelState.classFullName, wantPrivate: false };
             this.modelList = await view.iModel.models.queryProps(query);

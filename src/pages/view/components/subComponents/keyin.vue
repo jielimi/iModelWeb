@@ -12,13 +12,6 @@
             <input type= "checkbox" id="fps"/>FPS：
             <span id="fpsValue"></span>
         </span>
-        <!-- <span class="fps">
-            <el-checkbox v-model="showFPS"  @change="handleFPSCheckChange">
-                <span v-show="fpsStatus == 0">Track FPS</span>
-                <span v-show="fpsStatus == 1">Tracking FPS...</span>
-                <span v-show="fpsStatus == 2">FPS: <span>{{ fps }}</span></span>
-            </el-checkbox>
-        </span> -->
     </div>
 </template>
 
@@ -45,6 +38,9 @@ export default {
     created () {
          window.eventHub.$on('keyin_init',this.init);
     },
+    mounted(){
+
+    },
     methods: {
         init(){
             let tools = IModelApp.tools.getToolList();
@@ -56,12 +52,12 @@ export default {
             }
 
             document.getElementById("fps").addEventListener('click',function(event){
-                GLOBAL_DATA.theViewPort.continuousRendering = true;
-                GLOBAL_DATA.theViewPort.target.performanceMetrics = new PerformanceMetrics(false, true)
+                IModelApp.viewManager.selectedView.continuousRendering = true;
+                IModelApp.viewManager.selectedView.target.performanceMetrics = new PerformanceMetrics(false, true)
                
                 if(event.target.checked){
                     curIntervalId = setInterval(() => {
-                    const metrics =  GLOBAL_DATA.theViewPort.target.performanceMetrics;
+                    const metrics =  IModelApp.viewManager.selectedView.target.performanceMetrics;
                     let fps = (metrics.spfTimes.length / metrics.spfSum).toFixed(2);
                     
                     document.getElementById("fpsValue").innerText = fps;
@@ -76,31 +72,6 @@ export default {
                 
             })
         },
-            
-        
-        // handleFPSCheckChange($event){
-        //     if($event){
-        //         this.fpsStatus = 1;
-        //         GLOBAL_DATA.theViewPort.continuousRendering = $event;
-        //         this._curIntervalId = setInterval(() => this.updateFPS(), 500);
-        //     }else{
-        //         this.fpsStatus = 0;
-        //         this._metrics = undefined;
-        //         this.clearInterval();
-        //     }
-        //     GLOBAL_DATA.theViewPort.target.performanceMetrics = new PerformanceMetrics(false, true)
-        // },
-        // updateFPS(){
-        //     const metrics =  GLOBAL_DATA.theViewPort.target.performanceMetrics;
-        //     this.fps = (metrics.spfTimes.length / metrics.spfSum).toFixed(2);
-        //     this.fpsStatus = 2;
-        // },
-        // clearInterval(){
-        //     if (undefined !== this._curIntervalId) {
-        //         clearInterval(this._curIntervalId);
-        //         this._curIntervalId = undefined;
-        //     }
-        // },
         toolChange(e){
             let item = e.target.value;
             this.currTool = item;
@@ -124,7 +95,6 @@ export default {
             } catch (e) {
                 console.log("Key-in caused the following exception to occur: " + e);
             }
-            //IModelApp.tools.run(item, GLOBAL_DATA.theViewPort);
         },
         parseKeyin(input) {
             const tools = IModelApp.tools.getToolList();
