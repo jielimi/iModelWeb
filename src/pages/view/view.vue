@@ -22,8 +22,10 @@
 </template>
 
 <script>
-import { ScreenViewport} from '@bentley/imodeljs-frontend';
+//import * as frontend_1 from "@bentley/imodeljs-frontend/lib/frontend"
+import { ScreenViewport } from '@bentley/imodeljs-frontend';
 import { IModelVersion } from '@bentley/imodeljs-common'
+//import * as common_1 from "@bentley/imodeljs-common/lib/common"
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
@@ -48,7 +50,6 @@ class SimpleViewState {
     constructor(){};
 }
 let activeViewState = new SimpleViewState();
-let theViewPort = undefined;
 export default {
     name:'imodelviewer',
     data(){
@@ -71,15 +72,15 @@ export default {
         toolBarComponent
     },
     created(){
-       window.eventHub.$on('iModel_startup_finish',this.main)
+        //window.eventHub.$on('categories_viewList_change',this.categoryChange);
     },
     mounted(){
-     
+     window.eventHub.$on('iModel_startup_finish',this.main)
     },
     beforeDestroy(){
-        if (theViewPort){
-            IModelApp.viewManager.dropViewport(theViewPort);
-            theViewPort = undefined;
+        if (GLOBAL_DATA.theViewPort){
+            IModelApp.viewManager.dropViewport(GLOBAL_DATA.theViewPort);
+            GLOBAL_DATA.theViewPort = undefined;
         }
 
         if (activeViewState.iModelConnection !== undefined){
@@ -145,10 +146,10 @@ export default {
             if (parent) {
                 await this.buildViewList(state);
                 
-                if (!theViewPort){
-                    theViewPort = ScreenViewport.create(parent, state.viewState);
+                if (!GLOBAL_DATA.theViewPort){
+                    GLOBAL_DATA.theViewPort = ScreenViewport.create(parent, state.viewState);
                 }
-                IModelApp.viewManager.addViewport(theViewPort);
+                IModelApp.viewManager.addViewport(GLOBAL_DATA.theViewPort);
             }
         },
         async main() {
@@ -169,10 +170,9 @@ export default {
                 this.isLoading = false; 
                 return;
             }
-           
+           // GLOBAL_DATA.activeViewState = activeViewState;
             await this.openView(activeViewState);
-            //GLOBAL_DATA.activeViewState = activeViewState;
-            
+            GLOBAL_DATA.activeViewState = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
             window.eventHub.$emit('categories_init');
@@ -196,15 +196,13 @@ export default {
     }
     .imodelview {
         position: absolute;
-        top:82px;
+        top: 5px;
         left: 5px;
         right: 5px;
         bottom: 5px;
         border-color: black;
         border-style: solid;
         border-width: 1px;
-        margin-left: 5px;
-        margin-bottom: 5px;
         background-color: gray;
     }
 </style>

@@ -296,7 +296,7 @@
         tableData: [],
         uploadParams: {
           // action: 'http://39.100.156.154:3000/api/version/upload',
-					action: 'http://127.0.0.1:5566/api/version/upload',
+					action: 'http://10.232.178.40:5566/api/version/upload',
 					data: {
 						type: '0',
 						projectId: '',
