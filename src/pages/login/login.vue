@@ -2,9 +2,9 @@
 <div style="width:100%;height:100%">
   <div class="background-login">
         <img class="img" id="img" src="../../assets/images/fa.png"/>
-        <ul class="bg-bubbles">
+        <!-- <ul class="bg-bubbles">
             <li v-for="(item, index) in bubbles" :key="index"></li>
-        </ul>
+        </ul> -->
   </div>
   <div class="login" id="login">
             <el-form :model="loginForm" :rules="loginRules">         
