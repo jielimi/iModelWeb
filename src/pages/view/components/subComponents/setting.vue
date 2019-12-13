@@ -185,7 +185,7 @@ export default {
             scratchViewFlags: new ViewFlags(),
             shadowActive: false,
             currentShadowColor: '#FFFFFF',
-            modeValue: RenderMode.SmoothShade,
+            modeValue: '',
             renderModeOptions: {
                 flags: new Map(),
                 mode: RenderMode.SmoothShade
@@ -274,6 +274,7 @@ export default {
             this.initEdgeDisplay();
             this.initEnvironment();
             this.initOcclusion();
+            this.modeValue = IModelApp.viewManager.selectedView.view.viewFlags.renderMode;
         },
         async initStylePicker(){
             this.styleEntries = [];

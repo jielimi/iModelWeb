@@ -1,18 +1,18 @@
 <template>
     <div>
-        <div class="top-tools">
+        <!-- <div class="top-tools">
             <keyinComponent style="float: left;"></keyinComponent>
             <tileprogressComponent style="float: right;"></tileprogressComponent>
-        </div>
+        </div> -->
         <div class="tool-bar">
-            <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
+            <!-- <img src="@/assets/images/cake.svg" style="width:30px;height:30px;display:none" id="testSvg" >
             <debug-info-component></debug-info-component>
             <open-file-component style="display:none"></open-file-component>
             <change-view-component></change-view-component>
             <model-component></model-component>
-            <categories-component></categories-component>
+            <categories-component></categories-component> -->
             <!-- <save-component :projectId="projectId" :versionName="versionName"></save-component> -->
-            <hide-component></hide-component>
+            <!-- <hide-component></hide-component>
             <show-component></show-component>
             <fit-to-view-component></fit-to-view-component>
             <zoomin-component></zoomin-component>
@@ -23,11 +23,11 @@
             <settingComponent></settingComponent>
             <undoComponent></undoComponent>
             <redoComponent></redoComponent>
-            <clipComponent></clipComponent>
+            <clipComponent></clipComponent> -->
             <regeisterToolComponent :projectId="projectId" :url="url" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
-            <isolateComponent></isolateComponent>
+            <!-- <isolateComponent></isolateComponent>
             <measureComponent></measureComponent>
-            <shadowComponent></shadowComponent>
+            <shadowComponent></shadowComponent> -->
             <!-- <editComponent v-if="openMode==2"></editComponent> -->
             <!-- <treeComponent></treeComponent> -->
             <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
@@ -36,30 +36,30 @@
 </template>
 <script>
  
- import keyinComponent from './subComponents/keyin'
-import debugInfoComponent from './subComponents/debugInfo'
-import openFileComponent from './subComponents/openFile'
-import modelComponent from './subComponents/model'
-import changeViewComponent from './subComponents/changeView'
-import categoriesComponent from './subComponents/categories'
-import fitToViewComponent from './subComponents/fitToView'
-import zoominComponent from './subComponents/zoomIn'
-import windowAreaComponent from './subComponents/windowArea'
-import walkComponent from './subComponents/walk'
-import rotateComponent from './subComponents/rotate'
-import gyroscopeComponent from './subComponents/gyroscope'
-import settingComponent from './subComponents/setting'
-import undoComponent from './subComponents/undo'
-import redoComponent from './subComponents/redo'
-import saveComponent from './subComponents/save'
-import hideComponent from './subComponents/hide'
-import showComponent from './subComponents/show'
-import clipComponent from './subComponents/clip'
+// import keyinComponent from './subComponents/keyin'
+// import debugInfoComponent from './subComponents/debugInfo'
+// import openFileComponent from './subComponents/openFile'
+// import modelComponent from './subComponents/model'
+// import changeViewComponent from './subComponents/changeView'
+// import categoriesComponent from './subComponents/categories'
+// import fitToViewComponent from './subComponents/fitToView'
+// import zoominComponent from './subComponents/zoomIn'
+// import windowAreaComponent from './subComponents/windowArea'
+// import walkComponent from './subComponents/walk'
+// import rotateComponent from './subComponents/rotate'
+// import gyroscopeComponent from './subComponents/gyroscope'
+// import settingComponent from './subComponents/setting'
+// import undoComponent from './subComponents/undo'
+// import redoComponent from './subComponents/redo'
+// import saveComponent from './subComponents/save'
+// import hideComponent from './subComponents/hide'
+// import showComponent from './subComponents/show'
+// import clipComponent from './subComponents/clip'
 import regeisterToolComponent from './subComponents/regeisterTool'
-import isolateComponent from './subComponents/isolate'
-import tileprogressComponent from './subComponents/tileprogress'
-import measureComponent from './subComponents/measure'
-import shadowComponent from './subComponents/shadow'
+// import isolateComponent from './subComponents/isolate'
+// import tileprogressComponent from './subComponents/tileprogress'
+// import measureComponent from './subComponents/measure'
+// import shadowComponent from './subComponents/shadow'
 // import treeComponent from './subComponents/tree'
 // import versionUpdateComponent from './subComponents/versionUpdate'
 
@@ -70,30 +70,30 @@ export default {
     },
     props:['projectId','url','versionName','contextId','accessToken','openMode'],
     components: {
-        keyinComponent,
-        debugInfoComponent,
-        openFileComponent,
-        modelComponent,
-        changeViewComponent,
-        categoriesComponent,
-        fitToViewComponent,
-        zoominComponent,
-        windowAreaComponent,
-        walkComponent,
-        rotateComponent,
-        gyroscopeComponent,
-        settingComponent,
-        undoComponent,
-        redoComponent,
-        saveComponent,
-        hideComponent,
-        showComponent,
-        clipComponent,
-        regeisterToolComponent,
-        isolateComponent,
-        tileprogressComponent,
-        measureComponent,
-        shadowComponent
+        // keyinComponent,
+        // debugInfoComponent,
+        // openFileComponent,
+        // modelComponent,
+        // changeViewComponent,
+        // categoriesComponent,
+        // fitToViewComponent,
+        // zoominComponent,
+        // windowAreaComponent,
+        // walkComponent,
+        // rotateComponent,
+        // gyroscopeComponent,
+        // settingComponent,
+        // undoComponent,
+        // redoComponent,
+        // saveComponent,
+        // hideComponent,
+        // showComponent,
+        // clipComponent,
+        // isolateComponent,
+        // tileprogressComponent,
+        // measureComponent,
+        // shadowComponent，
+        regeisterToolComponent
     },
     created () {
     },
@@ -108,18 +108,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
-.top-tools {
-    height: 28px;
-    position: relative;
-    padding: 4px 15px 0;
-}
-.tool-bar{
-    height: 30px;
-    padding: 10px 10px 5px 10px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-}
+// .top-tools {
+//     height: 28px;
+//     position: relative;
+//     padding: 4px 15px 0;
+// }
+// .tool-bar{
+//     height: 30px;
+//     padding: 10px 10px 5px 10px;
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: wrap;
+//     justify-content: flex-start;
+//     align-items: center;
+// }
 </style>
