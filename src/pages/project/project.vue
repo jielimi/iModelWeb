@@ -1,7 +1,7 @@
 <template>
   <div class="main" v-loading="isLoading">
     <h1>Project</h1>
-    <div class="search-area">
+    <!-- <div class="search-area">
       <el-input v-model.trim="queryWord" placeholder="project name" @keyup.enter.native="getProjectList(1)" maxlength="30">
         <i
           class="el-icon-search el-input__icon"
@@ -13,7 +13,7 @@
       <el-button type="primary" @click="getProjectList(1)">Search</el-button>
       <el-button @click="reset">Reset</el-button>
       
-    </div>
+    </div> -->
 
     <el-dialog :title="isNewProject? 'Create Project':'Modify Project'" :visible.sync="dialogFormVisible"  :close-on-click-modal="false" center>
       <el-form :model="projectForm" :rules="rules" ref="projectForm" @submit.native.prevent>
@@ -43,15 +43,15 @@
 
     <div class="table-area">
       <div class="operate-area">
-        <el-button v-if="!readOnlyAuth" type="primary" @click="createProject">Create Project</el-button>
+        <!-- <el-button v-if="!readOnlyAuth" type="primary" @click="createProject">Create Project</el-button> -->
 
         
         <!-- 打开standalone   -->
-        <el-button type="primary" @click="stdialogVisible=true;inputFileUrl='';">Open Standalone</el-button>
+        <!-- <el-button type="primary" @click="stdialogVisible=true;inputFileUrl='';">Open Standalone</el-button> -->
         <!-- 打开在线版本 -->
-        <el-button type="primary" @click="onlinedialogVisible=true;onlineViewForm.url='';onlineViewForm.versionName=''">Open Online</el-button>
+        <!-- <el-button type="primary" @click="onlinedialogVisible=true;onlineViewForm.url='';onlineViewForm.versionName=''">Open Online</el-button> -->
 
-        <el-dialog title="Open Standalone" :visible.sync="stdialogVisible" width="30%" :close-on-click-modal="false" center>
+        <!-- <el-dialog title="Open Standalone" :visible.sync="stdialogVisible" width="30%" :close-on-click-modal="false" center>
           <el-input v-model.trim="inputFileUrl" placeholder=""></el-input>
           <span slot="footer" class="dialog-footer">
             <el-button @click="stdialogVisible = false">Cancel</el-button>
@@ -70,15 +70,15 @@
             <el-form-item label="Url Addr:" :label-width="formLabelWidth"  prop="url">
               <el-input v-model.trim="onlineViewForm.url" autocomplete="off"></el-input>
             </el-form-item>
-          </div>
+          </div> -->
 
           
-        </el-form>
-        <div slot="footer" class="dialog-footer">
+        <!-- </el-form> -->
+        <!-- <div slot="footer" class="dialog-footer">
           <el-button @click="onlinedialogVisible = false">Cancel</el-button>
           <el-button type="primary" @click="openOnlineFile">Confirm</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -->
 
       </div>
       <div>
@@ -91,13 +91,13 @@
         stripe
         style="width: 100%"
         :row-class-name="tableRowClassName">
-        <el-table-column
+        <!-- <el-table-column
           label="Index"
           width="60"
           align="center"
           :formatter="formatter"
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="name"
           label="Project Name"
@@ -113,7 +113,7 @@
           label="Project Description"
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           prop="thumbnail"
           label="Thumbnail">
@@ -121,7 +121,7 @@
             <img v-if="scope.row.thumbnail" class="thumbnail" :src="scope.row.thumbnail" @click="expandThumbNail(scope.row.thumbnail)"/>
             <img v-else class="thumbnail" src="../../assets/images/default.png"/>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           align="center"
           prop="created"
@@ -129,7 +129,7 @@
           :formatter="dateFormat"
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           label="Operations"
           width="200">
@@ -139,8 +139,8 @@
               @click="modifyProject(scope.row)">Modify
             </el-button>
           </template>
-        </el-table-column>
-        <el-table-column
+        </el-table-column> -->
+        <!-- <el-table-column
           v-if="username==='Admin'"
           align="center"
           label="Delete">
@@ -150,7 +150,7 @@
               @click="delProj(scope.row.projectId)">Delete
             </el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
 
@@ -477,7 +477,7 @@
   }
 
   .main {
-    padding: 10px 30px 0px 30px;
+    // padding: 10px 30px 0px 30px;
     .search-area {
       text-align: left;
       box-sizing: border-box;
@@ -495,13 +495,13 @@
       width: 100%;
       height: auto;
       margin-bottom: 30px;
-      .operate-area {
-        border-top: 1px solid #DDDDDD;
-        border-left: 1px solid #DDDDDD;
-        border-right: 1px solid #DDDDDD;
-        text-align: left;
-        padding: 20px 30px;
-      }
+      // .operate-area {
+      //   border-top: 1px solid #DDDDDD;
+      //   border-left: 1px solid #DDDDDD;
+      //   border-right: 1px solid #DDDDDD;
+      //   text-align: left;
+      //   padding: 20px 30px;
+      // }
     }
 
     .link {
