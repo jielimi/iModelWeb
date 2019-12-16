@@ -197,7 +197,7 @@ export default {
             scratchViewFlags: new ViewFlags(),
             shadowActive: false,
             currentShadowColor: '#FFFFFF',
-            modeValue: RenderMode.SmoothShade,
+            modeValue: '',
             tileSizeValue:1,
             tileSizeOptions:[
                 {"value": 0.1,"name": "Low"},
