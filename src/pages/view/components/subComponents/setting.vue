@@ -21,6 +21,18 @@
                         </el-select>
                     </el-form-item>
                 </el-form>
+                <!-- <el-form label-width="100px">
+                    <el-form-item label="Tile Size:">
+                        <el-select v-model="tileSizeValue" @change="changeTileSize" size="mini">
+                            <el-option
+                                v-for="tileSize in tileSizeOptions"
+                                :key="tileSize.value"
+                                :label="tileSize.name"
+                                :value="tileSize.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form> -->
                 <el-collapse v-model="activeName" accordion>
                     <el-collapse-item title="View Flags" name="1">
                         <el-checkbox-group v-model="checkList">
@@ -186,6 +198,12 @@ export default {
             shadowActive: false,
             currentShadowColor: '#FFFFFF',
             modeValue: RenderMode.SmoothShade,
+            tileSizeValue:1,
+            tileSizeOptions:[
+                {"value": 0.1,"name": "Low"},
+                {"value": 1,"name": "Media"},
+                {"value": 10000,"name": "High"}
+            ],
             renderModeOptions: {
                 flags: new Map(),
                 mode: RenderMode.SmoothShade
@@ -347,6 +365,10 @@ export default {
         },
         changeRenderMode(thing){
             IModelApp.viewManager.selectedView.view.viewFlags.renderMode = Number.parseInt(thing, 10);
+            this.sync();
+        },
+        changeTileSize(tilesize){
+            IModelApp.viewManager.selectedView.setTileSizeModifier(tilesize);
             this.sync();
         },
         initEdgeDisplay(){
