@@ -292,6 +292,7 @@ export default {
             this.initEdgeDisplay();
             this.initEnvironment();
             this.initOcclusion();
+            this.modeValue = IModelApp.viewManager.selectedView.view.viewFlags.renderMode;
         },
         async initStylePicker(){
             this.styleEntries = [];
