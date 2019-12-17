@@ -121,7 +121,7 @@ export default {
                 })
              }
              else{
-                 setCookie('token',res.data.token,3600);
+                 setCookie('token',res.data.token,3600*2);
                  setCookie('refreshToken',res.data.refreshToken,3600*24);
                  setCookie('username',res.data.userName);
                  setCookie('readonly',res.data.readonly);

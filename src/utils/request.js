@@ -37,7 +37,7 @@ axios.interceptors.response.use(
         if (!isRefreshing) {
           isRefreshing = true;
           return refresh().then(res => {
-            setCookie('token',res.data.token,3600);
+            setCookie('token',res.data.token,3600*2);
             const config = response.config;
             requests.forEach(cb=>cb());
             requests = [];
