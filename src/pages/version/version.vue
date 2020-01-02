@@ -619,6 +619,7 @@
               type:'warning'
             })
           }else{
+              param.versionName = encodeURIComponent(row.name);
               this.$get('api/version/steps',{},param).then(res=>{
                 if(res.state == 0) {
                   that.steps = res.data.steps;

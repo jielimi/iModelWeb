@@ -44,7 +44,7 @@ export default {
             this.timeout = setInterval(()=>{
                 var param = {
                     projectId:this.projectId,
-                    versionName:this.versionName
+                    versionName: (encodeURIComponent(this.versionName))
                 }
 
                 this.$get('api/version/progress',{}, param).then(res => {
