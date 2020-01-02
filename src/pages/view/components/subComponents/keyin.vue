@@ -1,5 +1,10 @@
 <template>
     <div class='keyin'>
+        <!-- <el-breadcrumb separator-class="el-icon-arrow-right" style="display:inline-block">
+		  <el-breadcrumb-item :to="{ path: '/' }">Project</el-breadcrumb-item>
+		  <el-breadcrumb-item :to="{ path: '/version?projectId='+projectId }">Version</el-breadcrumb-item>
+		  <el-breadcrumb-item >View</el-breadcrumb-item>
+        </el-breadcrumb> -->
         <el-select v-model="currTool" filterable :clearable="true" placeholder="Select A Tool" size="mini" @keyup.enter.native="toolChange">
             <el-option
             v-for="item in keyins"
@@ -41,6 +46,7 @@ export default {
     mounted(){
 
     },
+    props:['projectId'],
     methods: {
         init(){
             let tools = IModelApp.tools.getToolList();

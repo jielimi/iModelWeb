@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="top-tools">
-            <keyinComponent style="float: left;"></keyinComponent>
+            <keyinComponent :projectId="projectId" style="float: left;"></keyinComponent>
             <tileprogressComponent style="float: right;"></tileprogressComponent>
         </div>
         <div class="tool-bar">

@@ -1,7 +1,7 @@
 <template>
     <div class="inherit">
         <div class="tool-bar">
-                <div class="change-view">
+                <div style="display:inline-block">
                     <el-select v-model="value" placeholder="Select" @change="selectChange">
                         <el-option
                         v-for="item in options"
@@ -11,6 +11,10 @@
                         </el-option>
                     </el-select>
                 </div>
+                <div style="display:inline-block">
+                   <model-component></model-component>
+                </div>
+                
         </div>
         <div class="view-area" :id=id>
             
@@ -39,6 +43,7 @@ import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { handleColorChange, clear } from "./color"
+import modelComponent from './subComponent/modelForStart'
 
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
@@ -82,7 +87,7 @@ export default {
     },
     props:['projectId','versionName','versionUrl','id'],
     components: {
-        
+        modelComponent
     },
     created () {},
     beforeDestroy(){
@@ -216,7 +221,7 @@ export default {
             this.progress = 0;
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init');
+            window.eventHub.$emit('render_model_init_start');
             
         }
     }

@@ -1,7 +1,7 @@
 <template>
      <div class="inherit">
         <div class="tool-bar">
-                <div class="change-view">
+                <div style="display:inline-block">
                     <el-select v-model="value" placeholder="Select" @change="selectChange">
                         <el-option
                         v-for="item in options"
@@ -10,6 +10,9 @@
                         :value="item">
                         </el-option>
                     </el-select>
+                </div>
+                <div style="display:inline-block">
+                   <model-component></model-component>
                 </div>
         </div>
         <div class="view-area" :id=id></div>
@@ -38,6 +41,8 @@ import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { handleColorChange, clear } from "./color"
+import modelComponent from './subComponent/modelForEnd'
+
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
         this._userInfo = UserInfo.fromJson(jsonObj);
@@ -80,7 +85,7 @@ export default {
     },
     props:['projectId','versionName','versionUrl','id'],
     components: {
-        
+        modelComponent
     },
     created () {},
     beforeDestroy(){
@@ -190,7 +195,6 @@ export default {
                 await this.buildViewList(state);
                 
                 if (!this.theViewPort){
-                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
                     GLOBAL_DATA.diffViewPort[1] = this.theViewPort;
                 }
@@ -216,7 +220,7 @@ export default {
             this.progress = 0;
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init');
+            window.eventHub.$emit('render_model_init_end');
 
         }
     }
