@@ -14,33 +14,48 @@
 <script>
 import { IModelApp,Viewport, SpatialViewState, SpatialModelState } from "@bentley/imodeljs-frontend";
 import { compareStringsOrUndefined } from "@bentley/bentleyjs-core";
+
 export default {
     name: 'model',
     data () {
         return {
+            version:this.id == 'versionStart' ? 0:1,
             isShowDetail: false,
             hasModel: false,
             modelList: [],
             checkList: [],
             checkNameList: [],
-            hasCheckAll: false
+            hasCheckAll: false,
+            index:0
         };
     },
+    props:['id'],
     components: {
         
     },
     created () {
-       window.eventHub.$on('render_model_init_end',this.updateRenderModelOptionsMap);
+        window.eventHub.$on('render_model_init',this.updateRenderModelOptionsMap);
+    },
+    mounted(){
+        
     },
     methods: {
         detail() {
             this.isShowDetail = !this.isShowDetail;
         },
         async updateRenderModelOptionsMap(){
+            
             this.checkNameList = [];
             this.checkList = [];
-            const vp = GLOBAL_DATA.diffViewPort[1];
-            const view = GLOBAL_DATA.diffViewPort[1].view;
+         
+            if(IModelApp.viewManager._viewports.length === 1){
+                this.index = 0;
+            }else {
+                this.index = IModelApp.viewManager._viewports[0].parentDiv.id === this.id ? 0:1;
+            }
+            
+            const vp = IModelApp.viewManager._viewports[this.index];
+            const view = IModelApp.viewManager._viewports[this.index]._view;
             if(view.modelSelector){
                 this.hasModel = true;
                 const selector = view.modelSelector;
@@ -64,8 +79,8 @@ export default {
              }
         },
         async applyModelChange(id,name){
-            const vp = GLOBAL_DATA.diffViewPort[1];
-            const view = GLOBAL_DATA.diffViewPort[1].view;
+            const vp = IModelApp.viewManager._viewports[this.index];
+            const view = IModelApp.viewManager._viewports[this.index]._view;
             const selector = view.modelSelector;
            
             let checked = this.checkNameList.indexOf(name) >= 0 ? true : false;
@@ -75,16 +90,16 @@ export default {
                 model = view.iModel.models.getLoaded(id);
             }
             if(checked){
-                GLOBAL_DATA.diffViewPort[1].addViewedModels(id);
+                IModelApp.viewManager._viewports[this.index].addViewedModels(id);
             }else{
-                GLOBAL_DATA.diffViewPort[1].changeModelDisplay(id, false);
+                IModelApp.viewManager._viewports[this.index].changeModelDisplay(id, false);
             }
             this.isCheckAll();
             vp.invalidateScene();
         },
         async handleCheckAllChange(value){
-            const vp = GLOBAL_DATA.diffViewPort[1];
-            const view = GLOBAL_DATA.diffViewPort[1].view;
+            const vp = IModelApp.viewManager._viewports[this.index];
+            const view = IModelApp.viewManager._viewports[this.index]._view;
             const selector = view.modelSelector;
             this.checkNameList = [];
             this.checkList = [];
@@ -98,11 +113,11 @@ export default {
                         await view.iModel.models.load(val.id);
                         model = view.iModel.models.getLoaded(val.id);
                     }
-                    GLOBAL_DATA.diffViewPort[1].addViewedModels(val.id);
+                    IModelApp.viewManager._viewports[this.index].addViewedModels(val.id);
                 }
             }else{
                 this.modelList.forEach(function(val,index){
-                    GLOBAL_DATA.diffViewPort[1].changeModelDisplay(val.id, false);
+                    IModelApp.viewManager._viewports[that.index].changeModelDisplay(val.id, false);
                 });
             }
             vp.invalidateScene();

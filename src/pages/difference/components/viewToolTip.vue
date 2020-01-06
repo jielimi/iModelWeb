@@ -132,10 +132,12 @@ export default {
                     that.baseInfo.model = message.Model;
                     let imodeltoken = '';
                     
-                    if(el.parentElement.parentElement.id == 'imodelEnd'){
-                        imodeltoken = GLOBAL_DATA.diffActiveViewState[1].iModelConnection.iModelToken
-                    }else if(el.parentElement.parentElement.id == 'imodelStart'){
-                        imodeltoken = GLOBAL_DATA.diffActiveViewState[0].iModelConnection.iModelToken
+                    let id = el.parentElement.parentElement.id;//versionStart or versionEnd
+                    if(IModelApp.viewManager._viewports[0].parentDiv.id === id){
+                        imodeltoken = IModelApp.viewManager._viewports[0]._view.iModel._token; // token is different due to different version
+                       
+                    }else if(IModelApp.viewManager._viewports[1].parentDiv.id === id){
+                        imodeltoken = IModelApp.viewManager._viewports[1]._view.iModel._token;
                     }else{
                         return;
                     }

@@ -92,7 +92,7 @@ export default {
     },
     methods: {
         focusElement(id){
-            GLOBAL_DATA.diffViewPort[this.version0].zoomToElements(id);
+            GLOBAL_DATA.diffViewPort[this.version].zoomToElements(id);
         },
         color(result){
             for(var i = 0;i<result.insert.length;i++ ){
@@ -164,8 +164,9 @@ export default {
             const parent = document.getElementById(this.id);
             if (parent) {
                 await this.buildViewList(state);
-                
                 if (!this.theViewPort){
+                    // console.log("id",this.id)
+                    // console.log("state.viewState",state.viewState)
                     this.theViewPort = ScreenViewport.create(parent, state.viewState);
                     GLOBAL_DATA.diffViewPort[this.version] = this.theViewPort;
                 }
@@ -199,12 +200,12 @@ export default {
             let that = this;
            
             
-            await this.openView(activeViewState);
-            if(this.version == 0){
-                await this.openView(activeViewState);
-            }else{
-                await this.openView1(activeViewState);
-            }
+             await this.openView(activeViewState);
+            // if(this.version == 0){
+            //     await this.openView(activeViewState);
+            // }else{
+            //     await this.openView1(activeViewState);
+            // }
             
             GLOBAL_DATA.diffActiveViewState[this.version] = activeViewState;
             this.isLoading = false; 

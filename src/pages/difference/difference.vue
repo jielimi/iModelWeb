@@ -33,8 +33,10 @@
     </div>
     <div class="views-area">
         <viewToolTip ref='tip'></viewToolTip>
-        <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelStart'"></view-start>
-        <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelEnd'"></view-end>
+        <!-- <viewCompare :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'imodelStart'"></viewCompare>
+        <viewCompare :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'imodelEnd'"></viewCompare> -->
+        <view-start :projectId="projectId"  :versionName="startVersionName"  :versionUrl="startVersionUrl" :id="'versionStart'"></view-start>
+        <view-end :projectId="projectId"  :versionName="endVersionName"  :versionUrl="endVersionUrl" :id="'versionEnd'"></view-end>
     </div>
  
   <div class="search">
@@ -85,7 +87,8 @@ export default {
         differenceResult,
         viewStart,
         viewEnd,
-        viewToolTip
+        viewToolTip,
+        viewCompare
     },
     created(){
        
@@ -131,10 +134,7 @@ export default {
             this.$refs.result.color();
         },
         main(){
-            // const imbcontext= new IModelBankAccessContext(this.projectId, this.startVersionUrl, IModelApp.hubDeploymentEnv);
-            // let opts={}
-            // opts.imodelClient = imbcontext.client;
-            // IModelApp.startup(opts);
+           
             this.iModelStartup();
             
             RPC.init();
@@ -144,9 +144,9 @@ export default {
         },
         sync(){
             this.isSync = !this.isSync;
-            this.vpConnection.connect(GLOBAL_DATA.diffViewPort[0], GLOBAL_DATA.diffViewPort[1]);
-            IModelApp.tools.run("View.Rotate", GLOBAL_DATA.diffViewPort[1])
-            IModelApp.tools.run("View.Rotate", GLOBAL_DATA.diffViewPort[0])
+            this.vpConnection.connect(IModelApp.viewManager._viewports[0], IModelApp.viewManager._viewports[1]);
+            IModelApp.tools.run("View.Rotate", IModelApp.viewManager._viewports[0])
+            IModelApp.tools.run("View.Rotate", IModelApp.viewManager._viewports[1])
         },
         unSync(){
              this.isSync = !this.isSync;

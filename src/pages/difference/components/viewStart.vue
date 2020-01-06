@@ -12,7 +12,7 @@
                     </el-select>
                 </div>
                 <div style="display:inline-block">
-                   <model-component></model-component>
+                   <model-component :id="'versionStart'"></model-component>
                 </div>
                 
         </div>
@@ -43,7 +43,7 @@ import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { handleColorChange, clear } from "./color"
-import modelComponent from './subComponent/modelForStart'
+import modelComponent from './subComponent/model'
 
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
@@ -63,6 +63,7 @@ class SimpleViewState {
     constructor(){};
 }
 let activeViewState = new SimpleViewState();
+let theViewPort = undefined;
 export default {
     name: 'differenceResult',
     data () {
@@ -70,7 +71,6 @@ export default {
             options: [],
             value: '',
             isLoading:false,
-            theViewPort:undefined,
             configuration:{
                 "useIModelBank": true
             },
@@ -91,8 +91,8 @@ export default {
     },
     created () {},
     beforeDestroy(){
-        if (this.theViewPort){
-            IModelApp.viewManager.dropViewport(this.theViewPort);
+        if (theViewPort){
+            IModelApp.viewManager.dropViewport(theViewPort);
         }
 
         if (activeViewState.iModelConnection !== undefined){
@@ -108,23 +108,23 @@ export default {
     },
     methods: {
         focusElement(id){
-            GLOBAL_DATA.diffViewPort[0].zoomToElements(id);
+            theViewPort.zoomToElements(id);
         },
         color(result){
             for(var i = 0;i<result.insert.length;i++ ){
-                GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.insert[i].id);
+                activeViewState.iModelConnection.selectionSet.elements.add(result.insert[i].id);
             } 
-            handleColorChange("#3CB371",GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#3CB371",theViewPort)
 
-            GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.clear();
+            activeViewState.iModelConnection.selectionSet.elements.clear();
 
             for(var i = 0;i<result.update.length;i++ ){
-                GLOBAL_DATA.diffActiveViewState[0].iModelConnection.selectionSet.elements.add(result.update[i].id);
+                activeViewState.iModelConnection.selectionSet.elements.add(result.update[i].id);
             } 
-            handleColorChange("#FCD037",GLOBAL_DATA.diffViewPort[0])
+            handleColorChange("#FCD037",theViewPort)
         },
         removeColor(){
-            clear(GLOBAL_DATA.diffViewPort[0]);
+            clear(theViewPort);
         },
         randomNum(minNum,maxNum){ 
             switch(arguments.length){ 
@@ -166,13 +166,13 @@ export default {
         async selectChange(view){
             this.value = view.name;
             if (!(view instanceof ViewState)) {
-                view = await  GLOBAL_DATA.diffActiveViewState[0].iModelConnection.views.load(view.id);
+                view = await  activeViewState.iModelConnection.views.load(view.id);
             }
-            await GLOBAL_DATA.diffViewPort[0].changeView(view);
+            await theViewPort.changeView(view);
             await this.notify(view.clone());
         },
         async notify(view) {
-            GLOBAL_DATA.diffActiveViewState[0].viewState = view;
+            activeViewState.viewState = view;
         },
         async buildViewList(state, configurations) {
             const config = undefined !== configurations ? configurations : {};
@@ -195,12 +195,10 @@ export default {
             if (parent) {
                 await this.buildViewList(state);
                 
-                if (!this.theViewPort){
-                    // this.theViewPort = frontend_1.ScreenViewport.create(parent, state.viewState); 
-                    this.theViewPort = ScreenViewport.create(parent, state.viewState);
-                    GLOBAL_DATA.diffViewPort[0] = this.theViewPort;
+                if (!theViewPort){
+                    theViewPort = ScreenViewport.create(parent, state.viewState);
                 }
-                IModelApp.viewManager.addViewport(this.theViewPort);
+                IModelApp.viewManager.addViewport(theViewPort);
             }
         },
         async main() {
@@ -216,12 +214,11 @@ export default {
             }
            
             await this.openView(activeViewState);
-            GLOBAL_DATA.diffActiveViewState[0] = activeViewState;
             this.isLoading = false; 
             this.progress = 0;
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init_start');
+            window.eventHub.$emit('render_model_init');
             
         }
     }
