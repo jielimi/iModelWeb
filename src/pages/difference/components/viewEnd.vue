@@ -13,6 +13,8 @@
                 </div>
                 <div style="display:inline-block">
                    <model-component :id="'versionEnd'"></model-component>
+                   <categoriesComponent :id="'versionEnd'"></categoriesComponent>
+                   <fitComponent :id="'versionEnd'"></fitComponent>
                 </div>
         </div>
         <div class="view-area" :id=id></div>
@@ -42,6 +44,8 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelban
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { handleColorChange, clear } from "./color"
 import modelComponent from './subComponent/model'
+import categoriesComponent from './subComponent/catergories'
+import fitComponent from './subComponent/fit'
 
 class IModelBankAuthorizationClient {
     constructor(jsonObj) {
@@ -85,7 +89,9 @@ export default {
     },
     props:['projectId','versionName','versionUrl','id'],
     components: {
-        modelComponent
+        modelComponent,
+        categoriesComponent,
+        fitComponent
     },
     created () {},
     beforeDestroy(){

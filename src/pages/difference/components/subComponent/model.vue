@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="display:inline-block">
         <i class="iconfont icon-erji-Djifang model" v-show="hasModel" @click.self="detail">
             <div v-show="isShowDetail" class="detail">
                 <el-checkbox v-model="hasCheckAll" label="Toggle All" @change="handleCheckAllChange"></el-checkbox>
