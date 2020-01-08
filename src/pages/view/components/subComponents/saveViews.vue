@@ -12,16 +12,16 @@
                         clearable
                     />
                     <div class="viewsNameGroup">
-                        <el-radio-group v-model="radio">
-                            <el-radio v-for="(item,index) in viewsList" :label="item.viewName" :key="index"></el-radio>                        
+                        <el-radio-group v-model="selectedLabel">
+                            <el-radio v-for="(item,index) in viewsList" :label="item.viewName" :key="index" @change="handelViewChange(item)"></el-radio>                        
                         </el-radio-group>
                     </div>
                     
                     <div class="btn-group">
                         
-                        <el-button size="mini" type="primary" @click="create" slot="reference">Create</el-button>
-                        <el-button size="mini" type="primary" @click="recall">Recall</el-button>
-                        <el-button size="mini" type="primary" click="delete" slot="reference">Delete</el-button>
+                        <el-button size="mini" type="primary" @click="createItem" slot="reference">Create</el-button>
+                        <el-button size="mini" type="primary" @click="recallItem">Recall</el-button>
+                        <el-button size="mini" type="primary" @click="delItem">Delete</el-button>
                         
                     </div>
                 </div>
@@ -40,7 +40,8 @@ export default {
             isShowDetail:false,
             newViewName:'',
             viewsList:[],
-            radio: '',
+            selectedView: undefined,
+            selectedLabel:undefined
             
         };
     },
@@ -50,17 +51,20 @@ export default {
     },
     created () {},
     methods: {
+        handelViewChange(item){
+            this.selectedView = item;
+        },
         open(){
             this.isShowDetail = !this.isShowDetail;
         },
         findArrayItemByName(array,name){
-            const index = array.findIndex(item => item.name === name);
+            const index = array.findIndex(item => item.viewName === name);
             return index;
         },
         deleteArrayItem: function (array,index) {
             array.splice(index, 1);
         },
-        create(){
+        createItem(){
             if(this.newViewName.length === 0) {
                 return;
             }
@@ -99,15 +103,35 @@ export default {
                 'overrideElementsString':overrideElementsString
             }
 
-            this.viewsList.push(item);
-            debugger;
+            this.viewsList=[item,...this.viewsList];
             this.newViewName = '';
         },
-        recall(){
+        async recallItem(){
+            
+            if( this.selectedView === undefined ) {
+                return; 
+            }
+
+            let vp = IModelApp.viewManager.selectedView.view;
+
+            const vsp = JSON.parse(this.selectedView.viewStateJson);
+            const viewState = await deserializeViewState(vsp, vp.iModel);
+            viewState.code.value = this.selectedView.viewName;
+            await IModelApp.viewManager.selectedView.changeView(viewState);
+
+            
             
         },
-        delete(){
+        delItem(){
+            if( this.selectedView === undefined ) {
+                return; 
+            }
 
+            let index = this.findArrayItemByName(this.viewsList,this.selectedView.viewName)
+            
+            if(-1 !== index){
+                this.deleteArrayItem(this.viewsList,index)
+            }
         }
         
     }
