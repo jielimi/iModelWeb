@@ -36,10 +36,13 @@ export default {
             this.isShowDetail = !this.isShowDetail;
         },
         // build list of categories; enable those defined in category selector
-        async buildCategoryMenu() {
+        async buildCategoryMenu(versionIndex) {
+           
             this.categoryList = [];
             this.checkList = [];
             this.checkCodeList = [];
+
+            if(versionIndex !== this.id) return;
 
             if(IModelApp.viewManager._viewports.length === 1){
                 this.index = 0;
@@ -53,16 +56,16 @@ export default {
             const selectSpatialCategoryProps = selectCategoryProps + "BisCore.SpatialCategory WHERE ECInstanceId IN (" + selectUsedSpatialCategoryIds + ")";
             const selectDrawingCategoryProps = selectCategoryProps + "BisCore.DrawingCategory WHERE ECInstanceId IN (" + selectUsedDrawingCategoryIds + ")";
 
-            const view = IModelApp.viewManager._viewports[this.index];
-            const ecsql = view._view.is3d() ? selectSpatialCategoryProps : selectDrawingCategoryProps;
-            const bindings = view._view.is2d() ? [view.baseModelId] : undefined;
+            const view = IModelApp.viewManager._viewports[this.index]._view;
+            const ecsql = view.is3d() ? selectSpatialCategoryProps : selectDrawingCategoryProps;
+            const bindings = view.is2d() ? [view.baseModelId] : undefined;
            
 
             for await (const row of view.iModel.query(`${ecsql} LIMIT 1000`, bindings)) {
                 this.categoryList.push(row);
             }
            
-            this.checkList = Array.from(view._view.categorySelector.categories);
+            this.checkList = Array.from(view.categorySelector.categories);
             let that = this;
             this.categoryList.forEach(function(val,index){
                 if(that.checkList.indexOf(val.id) >= 0){
@@ -77,7 +80,7 @@ export default {
             let vp = IModelApp.viewManager._viewports[this.index];
             
             let invis = this.checkCodeList.indexOf(code) >= 0 ? true : false;
-            const alreadyInvis = vp.view.viewsCategory(id);
+            const alreadyInvis = vp._view.viewsCategory(id);
             if (alreadyInvis !== invis){
                 vp.changeCategoryDisplay(id, invis);
             }
@@ -93,7 +96,7 @@ export default {
                     if(that.checkList.indexOf(val.id) < 0){
                         that.checkCodeList.push(val.code);
                         that.checkList.push(val.id);
-                        const alreadyInvis = vp.view.viewsCategory(val.id);
+                        const alreadyInvis = vp._view.viewsCategory(val.id);
                         if (alreadyInvis !== true){
                             vp.changeCategoryDisplay(val.id, true);
                         }
@@ -101,7 +104,7 @@ export default {
                 });
             }else{
                 this.categoryList.forEach(function(val,index){
-                    const alreadyInvis = vp.view.viewsCategory(val.id);
+                    const alreadyInvis = vp._view.viewsCategory(val.id);
                     if (alreadyInvis !== false){
                         vp.changeCategoryDisplay(val.id, false);
                     }

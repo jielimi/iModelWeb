@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { ScreenViewport } from '@bentley/imodeljs-frontend';
+import { ScreenViewport,EmphasizeElements,MarginPercent } from '@bentley/imodeljs-frontend';
 import { IModelVersion } from '@bentley/imodeljs-common'
 
 import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
@@ -113,8 +113,16 @@ export default {
         window.eventHub.$on('diff_viewport_update',this.focusElement);
     },
     methods: {
-        focusElement(id){
-            theViewPort.zoomToElements(id);
+      async focusElement(id){
+          theViewPort.zoomToElements(id);
+            // const elems = [id];
+            // const ee = EmphasizeElements.getOrCreate(theViewPort);
+            // ee.wantEmphasis = true;
+            // ee.clearOverriddenElements(theViewPort);
+            // ee.clearEmphasizedElements(theViewPort);
+            // ee.clearIsolatedElements(theViewPort);
+            // ee.emphasizeElements(elems, theViewPort);
+            // await theViewPort.zoomToElements(elems, { marginPercent: new MarginPercent(0.2, 0.2, 0.2, 0.2) });
         },
         color(result){
             for(var i = 0;i<result.insert.length;i++ ){
@@ -224,7 +232,7 @@ export default {
             this.progress = 0;
             window.eventHub.$emit('categories_init');
             window.eventHub.$emit('render_mode_init');
-            window.eventHub.$emit('render_model_init');
+            window.eventHub.$emit('render_model_init','versionStart');
             
         }
     }

@@ -43,10 +43,12 @@ export default {
         detail() {
             this.isShowDetail = !this.isShowDetail;
         },
-        async updateRenderModelOptionsMap(){
+        async updateRenderModelOptionsMap(versionIndex){
             
             this.checkNameList = [];
             this.checkList = [];
+
+            if(versionIndex !== this.id) return;
          
             if(IModelApp.viewManager._viewports.length === 1){
                 this.index = 0;
