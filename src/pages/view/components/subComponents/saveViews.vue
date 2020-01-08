@@ -6,21 +6,23 @@
                     <el-input 
                         type="text"
                         placeholder=""
-                        v-model="inputName"
+                        v-model="newViewName"
                         maxlength="15"
                         show-word-limit
                         clearable
                     />
                     <div class="viewsNameGroup">
                         <el-radio-group v-model="radio">
-                            <el-radio v-for="item in viewsList" :label="item.name" :key="item.name"></el-radio>                        
+                            <el-radio v-for="(item,index) in viewsList" :label="item.viewName" :key="index"></el-radio>                        
                         </el-radio-group>
                     </div>
                     
                     <div class="btn-group">
-                        <el-button size="mini" type="primary" click="create">Create</el-button>
-                        <el-button size="mini" type="primary" click="recall">Recall</el-button>
-                        <el-button size="mini" type="primary" click="delete">Delete</el-button>
+                        
+                        <el-button size="mini" type="primary" @click="create" slot="reference">Create</el-button>
+                        <el-button size="mini" type="primary" @click="recall">Recall</el-button>
+                        <el-button size="mini" type="primary" click="delete" slot="reference">Delete</el-button>
+                        
                     </div>
                 </div>
             </div>
@@ -30,18 +32,16 @@
 
 <script>
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { deserializeViewState,serializeViewState} from "@bentley/frontend-devtools";
 export default {
     name: 'save',
     data () {
         return {
             isShowDetail:false,
-            inputName:'',
-            viewsList:[{
-                name:1
-            },{
-                name:2
-            }],
-            radio: 3
+            newViewName:'',
+            viewsList:[],
+            radio: '',
+            
         };
     },
     props:[],
@@ -52,6 +52,62 @@ export default {
     methods: {
         open(){
             this.isShowDetail = !this.isShowDetail;
+        },
+        findArrayItemByName(array,name){
+            const index = array.findIndex(item => item.name === name);
+            return index;
+        },
+        deleteArrayItem: function (array,index) {
+            array.splice(index, 1);
+        },
+        create(){
+            if(this.newViewName.length === 0) {
+                return;
+            }
+
+            let index = this.findArrayItemByName(this.viewsList,this.newViewName)
+            
+            if(-1 !== index){
+                this.deleteItem(index)
+            }
+
+            let vp = IModelApp.viewManager.selectedView.view;
+
+            const props = serializeViewState(vp);
+            const viewStatejson = JSON.stringify(props);
+
+            let selectedElementsString;
+            let selectSetElem = IModelApp.viewManager.selectedView.iModel.selectionSet.elements
+            if (selectSetElem.size > 0) {
+                const seList = [];
+                selectSetElem.forEach((id) => { seList.push(id); });
+                selectedElementsString = JSON.stringify(seList);
+            }
+
+            let overrideElementsString;
+            const provider = IModelApp.viewManager.selectedView.featureOverrideProvider;
+            if (undefined !== provider) {
+                const overrideElements = provider.toJSON();
+                overrideElementsString = JSON.stringify(overrideElements);
+            }
+
+            const nvsp = {viewStatejson,selectedElementsString,overrideElementsString}
+            let item = {
+                'viewName':this.newViewName,
+                'viewStateJson':viewStatejson,
+                'selectedElementsString':selectedElementsString,
+                'overrideElementsString':overrideElementsString
+            }
+
+            this.viewsList.push(item);
+            debugger;
+            this.newViewName = '';
+        },
+        recall(){
+            
+        },
+        delete(){
+
         }
         
     }
