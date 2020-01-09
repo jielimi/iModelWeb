@@ -42,19 +42,7 @@
 import { dispose, Id64String, IDisposable } from "@bentley/bentleyjs-core";
 import { ColorByName, ColorDef, LinePixels, RgbColor } from "@bentley/imodeljs-common";
 import { IModelApp, EmphasizeElements,FeatureOverrideProvider, FeatureSymbology  } from "@bentley/imodeljs-frontend";
-const provider = {
-	elementOvrs: new Map(),
-	appearance: FeatureSymbology.Appearance.defaults,
-	defaultOvrs: undefined,
-    addFeatureOverrides(ovrs, _vp) {
-    	this.elementOvrs.forEach(function(value, key){
-    		ovrs.overrideElement(key, value);
-    	});
-    	if (undefined !== this.defaultOvrs){
-    		ovrs.setDefaultOverrides(this.defaultOvrs);
-    	}
-    }
-};
+import { provider } from '../subComponents/utils/provider';
 export default {
     name: 'isolate',
     data () {

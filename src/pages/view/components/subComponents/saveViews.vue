@@ -33,6 +33,7 @@
 <script>
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { deserializeViewState,serializeViewState} from "@bentley/frontend-devtools";
+import { provider } from '../subComponents/utils/provider' 
 export default {
     name: 'save',
     data () {
@@ -42,7 +43,6 @@ export default {
             viewsList:[],
             selectedView: undefined,
             selectedLabel:undefined
-            
         };
     },
     props:[],
@@ -89,7 +89,7 @@ export default {
             }
 
             let overrideElementsString;
-            const provider = IModelApp.viewManager.selectedView.featureOverrideProvider;
+            
             if (undefined !== provider) {
                 const overrideElements = provider.toJSON();
                 overrideElementsString = JSON.stringify(overrideElements);
@@ -107,20 +107,35 @@ export default {
             this.newViewName = '';
         },
         async recallItem(){
-            
             if( this.selectedView === undefined ) {
                 return; 
             }
 
             let vp = IModelApp.viewManager.selectedView.view;
-
             const vsp = JSON.parse(this.selectedView.viewStateJson);
             const viewState = await deserializeViewState(vsp, vp.iModel);
             viewState.code.value = this.selectedView.viewName;
             await IModelApp.viewManager.selectedView.changeView(viewState);
 
+            const overrideElementsString = this.selectedView.overrideElementsString;
             
-            
+            if (undefined !== overrideElementsString) {
+                const overrideElements = JSON.parse(overrideElementsString);
+                if (undefined !== provider && undefined !== overrideElements) {
+                    provider.overrideElementsByArray(IModelApp.viewManager.selectedView,overrideElements);
+                }
+            } else{
+                   provider.clear(IModelApp.viewManager.selectedView);
+            }
+
+
+            const selectedElementsString = this.selectedView.selectedElementsString;
+            if (undefined !== selectedElementsString) {
+                const selectedElements = JSON.parse(selectedElementsString);
+                IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
+                IModelApp.viewManager.selectedView.iModel.selectionSet.add(selectedElements);
+                this.IModelApp.viewManager.selectedView.renderFrame();
+            }
         },
         delItem(){
             if( this.selectedView === undefined ) {
@@ -128,7 +143,6 @@ export default {
             }
 
             let index = this.findArrayItemByName(this.viewsList,this.selectedView.viewName)
-            
             if(-1 !== index){
                 this.deleteArrayItem(this.viewsList,index)
             }
