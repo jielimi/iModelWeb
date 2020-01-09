@@ -105,6 +105,7 @@ export default {
 
             this.viewsList=[item,...this.viewsList];
             this.newViewName = '';
+            this.selectedLabel = '';
         },
         async recallItem(){
             if( this.selectedView === undefined ) {
@@ -134,7 +135,7 @@ export default {
                 const selectedElements = JSON.parse(selectedElementsString);
                 IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
                 IModelApp.viewManager.selectedView.iModel.selectionSet.add(selectedElements);
-                this.IModelApp.viewManager.selectedView.renderFrame();
+                IModelApp.viewManager.selectedView.renderFrame();
             }
         },
         delItem(){
