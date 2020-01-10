@@ -45,11 +45,13 @@ export default {
             selectedLabel:undefined
         };
     },
-    props:[],
+    props:['projectId','versionId'],
     components: {
         
     },
-    created () {},
+    created () {
+        this.getViews();
+    },
     methods: {
         handelViewChange(item){
             this.selectedView = item;
@@ -63,6 +65,33 @@ export default {
         },
         deleteArrayItem: function (array,index) {
             array.splice(index, 1);
+        },
+        getViews(){
+            let param = {
+                'projectId':this.projectId,
+                'versionId':this.versionId,
+            }
+            this.$get('/api/view/viewsList',{},param).then(res=>{
+                if(res.state === 0) {
+                    this.viewsList = JSON.parse(res.data)
+                }
+            })
+        },
+        saveViews(){
+            let param = {
+                'projectId':this.projectId,
+                'versionId':this.versionId,
+                'viewsList':JSON.stringify(this.viewsList)
+            }
+            
+            this.$post('/api/view/viewsList', param).then(res => {
+                 if (res.state !== 0) {
+                    this.$message({
+                        message: res.message,
+                        type: 'warning'
+                    });
+                 }
+            });
         },
         createItem(){
             if(this.newViewName.length === 0) {
@@ -89,7 +118,6 @@ export default {
             }
 
             let overrideElementsString;
-            
             if (undefined !== provider) {
                 const overrideElements = provider.toJSON();
                 overrideElementsString = JSON.stringify(overrideElements);
@@ -106,6 +134,7 @@ export default {
             this.viewsList=[item,...this.viewsList];
             this.newViewName = '';
             this.selectedLabel = '';
+            this.saveViews();
         },
         async recallItem(){
             if( this.selectedView === undefined ) {
@@ -147,6 +176,7 @@ export default {
             if(-1 !== index){
                 this.deleteArrayItem(this.viewsList,index)
             }
+            this.saveViews();
         }
         
     }

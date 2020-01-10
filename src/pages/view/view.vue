@@ -1,6 +1,7 @@
 <template>
 <div class="view" v-loading="isLoading">
-    <tool-bar-component :projectId="iminfo.iModelId" :url="iminfo.url" 
+    <tool-bar-component :projectId="iminfo.iModelId" :versionId="iminfo.versionId" 
+    :url="iminfo.url" 
     :versionName="iminfo.versionName" :contextId="iminfo.contextId" 
     :accessToken="iminfo.accessToken"
     :openMode="iminfo.openMode">

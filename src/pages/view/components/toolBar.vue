@@ -12,7 +12,7 @@
             <model-component></model-component>
             <categories-component></categories-component>
             <!-- <save-component :projectId="projectId" :versionName="versionName"></save-component> -->
-            <saveViewsComponent></saveViewsComponent>
+            <saveViewsComponent :projectId="projectId" :versionId="versionId"></saveViewsComponent>
             <hide-component></hide-component>
             <show-component></show-component>
             <fit-to-view-component></fit-to-view-component>
@@ -70,7 +70,7 @@ export default {
     data () {
         return {};
     },
-    props:['projectId','url','versionName','contextId','accessToken','openMode'],
+    props:['projectId','url','versionName','contextId','accessToken','openMode',"versionId"],
     components: {
         keyinComponent,
         debugInfoComponent,
