@@ -12,7 +12,7 @@
             <model-component></model-component>
             <categories-component></categories-component>
             <!-- <save-component :projectId="projectId" :versionName="versionName"></save-component> -->
-            <saveViewsComponent :projectId="projectId" :versionId="versionId"></saveViewsComponent>
+            <!-- <saveViewsComponent :projectId="projectId" :versionId="versionId"></saveViewsComponent> -->
             <hide-component></hide-component>
             <show-component></show-component>
             <fit-to-view-component></fit-to-view-component>
@@ -61,7 +61,7 @@ import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
-import saveViewsComponent from './subComponents/saveViews'
+// import saveViewsComponent from './subComponents/saveViews'
 // import treeComponent from './subComponents/tree'
 // import versionUpdateComponent from './subComponents/versionUpdate'
 
@@ -95,8 +95,8 @@ export default {
         isolateComponent,
         tileprogressComponent,
         measureComponent,
-        shadowComponent,
-        saveViewsComponent
+        shadowComponent
+        // saveViewsComponent
     },
     created () {
     },

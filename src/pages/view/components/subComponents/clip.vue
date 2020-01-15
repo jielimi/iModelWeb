@@ -55,7 +55,8 @@ export default {
             }
         },
         define(){
-            IModelApp.tools.run(this.style, ViewClipDecorationProvider.create()); setFocusToHome();
+            IModelApp.tools.run(this.style, ViewClipDecorationProvider.create()); 
+            this.setFocusToHome();
 
         },
         edit(){

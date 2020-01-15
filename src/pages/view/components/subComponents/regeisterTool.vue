@@ -51,7 +51,8 @@ export default {
                         opts.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
                         opts.notifications = that.$refs.tip.notifications();
                         opts.tileAdmin = TileAdmin.create(DisplayTestApp.tileAdminProps);
-                                               
+                        opts.tileAdmin._disableMagnification=true;
+                        opts.tileAdmin._useProjectExtents=true;
                         const imbcontext= new IModelBankAccessContext(that.projectId, that.url, IModelApp.hubDeploymentEnv);
                         opts.imodelClient = imbcontext.client;
                         IModelApp.startup(opts);

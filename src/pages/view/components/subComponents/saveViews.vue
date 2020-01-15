@@ -72,7 +72,7 @@ export default {
                 'versionId':this.versionId,
             }
             this.$get('/api/view/viewsList',{},param).then(res=>{
-                if(res.state === 0) {
+                if(res.state === 0 && res.data.length !=0 ) {
                     this.viewsList = JSON.parse(res.data)
                 }
             })
