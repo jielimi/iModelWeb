@@ -1,7 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-xianshi" @click="show">
-        </i>
+        <i class="iconfont icon-xianshi" @click="show"></i>
     </div>
 </template>
 
@@ -24,8 +23,7 @@ export default {
             IModelApp.viewManager.selectedView.clearNeverDrawn();
             IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
         }
-    }
-    
+    }  
 }
 </script>
 

@@ -196,10 +196,10 @@ export default {
     }
     .imodelview {
         position: absolute;
-        top: 5px;
-        left: 5px;
-        right: 5px;
-        bottom: 5px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         border-color: black;
         border-style: solid;
         border-width: 1px;

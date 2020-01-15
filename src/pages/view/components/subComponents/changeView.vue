@@ -1,18 +1,12 @@
 <template>
     <div class="change-view">
-        <el-select v-model="value" placeholder="Select" @change="selectChange">
-            <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.name"
-            :value="item">
-            </el-option>
-        </el-select>
+        <i class="iconfont icon-xianshi" id="change_view" style="display: inline-block;"></i>
     </div>
 </template>
 
 <script>
 import { ViewState,IModelApp } from "@bentley/imodeljs-frontend";
+import MobileSelect from "mobile-select";
 export default {
     name: 'changeView',
     data () {
@@ -29,8 +23,24 @@ export default {
     },
     methods: {
         getViewList(viewList){
-            this.options = viewList;
-            this.value = this.options[0].name
+            let that = this;
+            let mobileSelect4 = new MobileSelect({
+                trigger: "#change_view",
+                triggerDisplayData: false,
+                ensureBtnText: "ensure",
+                cancelBtnText: "cancel",
+                title: "Change View",
+                wheels: [
+                    {data: viewList}
+                ],
+                keyMap: {
+                    id: 'id',
+                    value: 'name'
+                },
+                callback:function(indexArr, data){
+                    that.selectChange(data[0]);
+                }
+            });
         },
         async selectChange(view){
             this.value = view.name;
@@ -52,7 +62,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.change-view {
-    margin-left: 5px;
-};
+.change-view {}
 </style>

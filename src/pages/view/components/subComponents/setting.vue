@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-Gear- setting" @click.self="detail">
+        <i class="iconfont icon-Gear- setting" @click.self="detail" style="display: inline-block;">
             <div v-show="isShowDetail" class="detail" id="changeRenderModeMenu">
                 <el-form label-width="100px">
                     <el-form-item label="Style:">
@@ -611,8 +611,8 @@ export default {
         position: relative;
         .detail {
             position: absolute;
-            left: 0;
-            top: 38px;
+            left: 38px;
+            top: 0;
             z-index: 999;
             width: 320px;
             max-height: 400px;

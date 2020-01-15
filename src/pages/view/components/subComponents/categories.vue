@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-layers-1 category" @click.self="detail">
+        <i class="iconfont icon-layers-1 category" @click.self="detail" style="display: inline-block;">
             <div v-show="isShowDetail" class="detail">
                 <el-checkbox id="cbxCatToggleAll" v-model="hasCheckAll" label="Toggle All" @change="handleCheckAllChange"></el-checkbox>
                 <el-checkbox-group v-model="checkCodeList">
@@ -119,8 +119,8 @@ export default {
         position: relative;
         .detail {
             position: absolute;
-            left: 0;
-            top: 38px;
+            left: 38px;
+            top: 0;
             z-index: 999;
             width: 200px;
             max-height: 350px;

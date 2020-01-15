@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-cut1 isolote" @click="clip">
+        <i class="iconfont icon-cut1 isolote" @click="clip" style="display: inline-block;">
              <div v-show="showPop" class="detail">
                 <el-form>
                     <el-form-item label="Clip Type:">
@@ -55,7 +55,8 @@ export default {
             }
         },
         define(){
-            IModelApp.tools.run(this.style, ViewClipDecorationProvider.create()); setFocusToHome();
+            IModelApp.tools.run(this.style, ViewClipDecorationProvider.create());
+            this.setFocusToHome();
 
         },
         edit(){
@@ -76,8 +77,8 @@ export default {
     .detail {
         position: absolute;
         text-align: center;
-        right: 0;
-        top: 38px;
+        left: 38px;
+        top: 0;
         z-index: 999;
         width: 300px;
         max-height: 350px;
