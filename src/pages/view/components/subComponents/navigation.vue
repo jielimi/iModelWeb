@@ -7,7 +7,7 @@
             <div class="direction left" @click="changeDirection('left')"></div>
             <div class="direction right" @click="changeDirection('right')"></div>
             <div id=navigation>
-                <div id="a" @mousedown="down($event)" @mousemove="move($event)" @mouseup="up($event)">
+                <div id="a" @mousedown="down($event)" >
                     <div>前</div>
                     <div>后</div>
                     <div>上</div>
@@ -23,40 +23,84 @@
 
 <script>
 import { IModelApp,ToolSettings } from "@bentley/imodeljs-frontend";
-import {Matrix3d,Vector3d,Angle,Transform} from "@bentley/geometry-core";
+import {Matrix3d,Vector3d,Angle,Transform,Vector2d,AxisIndex} from "@bentley/geometry-core";
 import {NpcCenter} from "@bentley/imodeljs-common"
 export default {
     name: 'navigation',
     data () {
         return {
             endRotMatrix: Matrix3d.createIdentity(),
-            startRotMatrix: Matrix3d.createIdentity(),
             _lastTargetPoint:undefined,
             x:0,
             y:0,
-            mousedown:false
+            mousedown:false,
+            _lastClientXY:Vector2d.createZero(),
+            _start:Vector2d.createZero()
         };
     },
     components: {
         
     },
-    created () {},
+    created () {
+    },
     methods: {
         down(ev){
+            ev.preventDefault()
             this.x=ev.clientX;        //获取当前鼠标的位置
             this.y=ev.clientY;
             this.mousedown = true;
+
+            window.addEventListener("mousemove", this.move, false);
+            window.addEventListener("mouseup", this.up, false);
+
+            this._lastClientXY = Vector2d.create(ev.clientX, ev.clientY);
+            this._start = this._lastClientXY;
         },
         move(ev){
-            if(!this.mousedown) return;
+            // if(!this.mousedown) return;
             let x1=ev.clientX-this.x 
             let y1=ev.clientY-this.y
             let a = document.getElementById("a")
 　　　　　　　　　　　　　　　　　　　
             a.style.transform="perspective(1000px) rotateY("+ x1 +"deg) rotateX("+ -(y1) +"deg)";
+
+            const mousePos = Vector2d.create(ev.clientX, ev.clientY);
+            this._processDrag(mousePos);
         },
         up(ev){
-           this.mousedown = false;
+        //    this.mousedown = false;
+           window.removeEventListener("mousemove", this.move);
+           window.removeEventListener("mouseup", this.up);
+        },
+        _processDrag(mousePos){
+            if (!this._start.isAlmostEqual(mousePos)) {
+                const movement = mousePos.minus(this._lastClientXY);
+                
+                const diff = movement.scale(0.05);
+                const yaw = Angle.createRadians(diff.x);
+                const pitch = Angle.createRadians(diff.y);
+                const matX = Matrix3d.createRotationAroundAxisIndex(AxisIndex.X, pitch);
+                const matZ = Matrix3d.createRotationAroundAxisIndex(AxisIndex.Z, yaw);
+                const mat = matX.multiplyMatrixMatrix(this.endRotMatrix).multiplyMatrixMatrix(matZ);
+                
+                this.setRotation(mat)
+            }
+            this._lastClientXY = mousePos;
+           
+        },
+        setRotation(newRotation){
+            let vp = IModelApp.viewManager.selectedView;
+            if (vp.rotation !== newRotation) {
+                const inverse = newRotation.transpose();
+                const center = this._getRotatePoint(vp);
+                const targetMatrix = inverse.multiplyMatrixMatrix(vp.view.getRotation());
+                const worldTransform = Transform.createFixedPointAndMatrix(center, targetMatrix);
+                const frustum = vp.getWorldFrustum();
+                frustum.multiply(worldTransform);
+                vp.view.setupFromFrustum(frustum);
+                vp.synchWithView(true);
+                this.endRotMatrix = newRotation;
+            }
         },
         changeDirection(arrow){
             const localRotationAxis = Vector3d.create(0, 0, 0);
