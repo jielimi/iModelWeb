@@ -8,12 +8,12 @@
             <div class="direction right" @click="changeDirection('right')"></div>
             <div id=navigation>
                 <div id="a" @mousedown="down($event)" >
-                    <div>前</div>
-                    <div>后</div>
-                    <div>上</div>
-                    <div>下</div>
-                    <div>左</div>
-                    <div>右</div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
                 </div>
             </div>
         </div>
@@ -241,47 +241,47 @@ export default {
 }
 #navigation{
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 22px;
+    right: 25px;
     z-index: 1001;
     #a{
-        width: 64px;
-        height: 64px;
+        width: 50px;
+        height: 50px;
         position:relative; /*给父元素相对定位*/
         transform-style: preserve-3d; /*父元素设为3d*/
         transform: perspective(1000px) ; /*设置父元素得景深*/
     }
     #a>div{
         position:absolute;/*盒子每面的默认样式*/
-        width: 64px;
-        height: 64px;
+        width: 50px;
+        height: 50px;
         border: 1px solid #000000;
         text-align: center;
-        line-height: 64px;
+        line-height: 50px;
     }
     #a>div:nth-child(1){
-        transform: translateZ(32px);/*前面盒子宽为200px所以先向前位移32px*/
-        background: rgba(0,0,255,0.2);
+        transform: translateZ(25px);/*前面盒子宽为200px所以先向前位移25px*/
+        background: rgba(0,0,255,0.5);
     }
     #a>div:nth-child(2){
-        transform: translateZ(-32px);/*第二元素向后位移32px 这样盒子前后面就有了*/
-        background: rgba(0,255,0,0.2);
+        transform: translateZ(-25px);/*第二元素向后位移25px 这样盒子前后面就有了*/
+        background: rgba(0,255,0,0.5);
     }
     #a>div:nth-child(3){
-        transform: rotateX(90deg) translateZ(32px);/*第三个让他平躺下，也就是x轴旋转90°，旋转后在位移，这样就会向他面对的那面去位移*/
-        background: rgba(255,0,0,0.2);
+        transform: rotateX(90deg) translateZ(25px);/*第三个让他平躺下，也就是x轴旋转90°，旋转后在位移，这样就会向他面对的那面去位移*/
+        background: rgba(255,0,0,0.5);
     }
     #a>div:nth-child(4){
-        transform: rotateX(90deg) translateZ(-32px);
-        background: rgba(255,255,0,0.2);
+        transform: rotateX(90deg) translateZ(-25px);
+        background: rgba(255,255,0,0.5);
     }
     #a>div:nth-child(5){
-        transform: rotateY(90deg) translateZ(-32px);
-        background: rgba(0,255,255,0.2);
+        transform: rotateY(90deg) translateZ(-25px);
+        background: rgba(0,255,255,0.5);
     }
 
     #a>div:nth-child(6){
-        transform: rotateY(90deg) translateZ(32px);
+        transform: rotateY(90deg) translateZ(25px);
         background: rgba();
     }
 }

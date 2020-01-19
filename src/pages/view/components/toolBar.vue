@@ -29,7 +29,7 @@
             <isolateComponent></isolateComponent>
             <measureComponent></measureComponent>
             <shadowComponent></shadowComponent>
-            <navigationComponent></navigationComponent>
+            <!-- <navigationComponent></navigationComponent> -->
             <!-- <editComponent v-if="openMode==2"></editComponent> -->
             <!-- <treeComponent></treeComponent> -->
             <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
@@ -62,7 +62,7 @@ import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
-import navigationComponent from './subComponents/navigation'
+// import navigationComponent from './subComponents/navigation'
 // import saveViewsComponent from './subComponents/saveViews'
 // import treeComponent from './subComponents/tree'
 // import versionUpdateComponent from './subComponents/versionUpdate'
@@ -97,8 +97,8 @@ export default {
         isolateComponent,
         tileprogressComponent,
         measureComponent,
-        shadowComponent,
-        navigationComponent
+        shadowComponent
+        // navigationComponent
         // saveViewsComponent
     },
     created () {
