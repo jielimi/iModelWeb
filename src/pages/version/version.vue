@@ -18,6 +18,7 @@
 			</el-date-picker>
       <el-button type="primary" class="btn-search" @click="getVersionList(1)">Search</el-button>
       <el-button @click="reset">Reset</el-button>
+      <el-button @click="searchProgress">progress</el-button>
     </div>
 
     <el-dialog title="Create Version" :close-on-click-modal="false" :visible.sync="dialogFormVisible" center>
@@ -84,7 +85,7 @@
         <el-table-column
           label="Version Name">
           <template slot-scope="scope">
-            <a href="javascript:;" class="link" @click="skipToView(scope.row,1)" :class="{'link-disabled':!scope.row.generated}">
+            <a href="javascript:;" class="link" @click="skipToView(scope.row,1)" :class="{'link-disabled':scope.row.versionState != 2}">
               <span>{{ scope.row.name }}</span>
             </a>
           </template>
@@ -129,13 +130,13 @@
               @click="getFiles(scope.row)">Files
             </el-button>
             <el-button
-              v-if="scope.row.generated===false"
+              v-if="scope.row.versionState===0"
               type="primary"
               size="mini"
               @click="uploadFiles(scope.row)">Upload
             </el-button>
             <el-button
-            	v-if="scope.row.generated===false"
+            	v-if="scope.row.versionState===0"
               type="success"
               size="mini"
               @click="Generate(scope.row)">Generate
@@ -224,10 +225,7 @@
       :openDialog="showProgress" :projectId="projectId" :versionName="versionNameForGen" 
       :steps="steps">
     </uploadProgress>
-    
   </div>
-
-  
 
 </template>
 
@@ -310,7 +308,14 @@
         referenceFileList: [],
         confirmDisable:false,
         showProgress:false,
-        steps:[],
+        steps:[
+        "Starting iModel Bank",
+        "Acquiring briefcase",
+        "Initializing bridge",
+        "Converting data",
+        "Pushing data changeset",
+        "Creating named version"
+       ],
         multipleSelection : []
       };
     },
@@ -323,7 +328,7 @@
     },
     methods: {
       checkSelectable(row){
-        return row.generated;
+        return row.versionState === 2; // only generate success version can select 
       },
       clearSelection () {
         this.$refs.table.clearSelection();
@@ -355,6 +360,28 @@
       
         this.multipleSelection = val;
       },
+      searchProgress(){
+        let param = {
+          projectid: this.projectId,
+          versionState:1
+        };
+      	this.isLoading = true;
+        this.$get('api/version/versionState',{}, param).then(res => {
+          this.isLoading = false;
+          if (res.state === 0 && res.data && res.data.versionNames ) {
+            this.findGenerateingVersion(res.data.versionNames);
+          }
+        });
+      },
+      findGenerateingVersion(data){
+        if(data.length === 0) {
+          this.$message.success("No version is generating.")
+          return;
+        };
+        this.versionNameForGen = data[0];
+        this.showProgress = true;
+        this.$refs.progress.startQuery();
+      },
       getVersionList (index) {
         let param = {
         	projectId: this.projectId,
@@ -376,6 +403,7 @@
           }
         }
       }
+      
       removeProperty(param);
       	this.isLoading = true;
         this.$get('api/version/list',{}, param).then(res => {
@@ -402,7 +430,6 @@
         this.req.pageIndex = 1;
         this.getVersionList();
       },
-      
       handleSizeChange(val) {
         this.req.pageIndex = 1;
         this.req.pageSize = val;
@@ -470,7 +497,7 @@
         });
       },
       skipToView(row,openMode){
-        if(row.generated === false){
+        if(row.versionState !== 2){
           return false;
         }
         let routeData = this.$router.resolve({ path: 'view', query: {projectId: row.projectId,versionName: row.name,versionId: row.versionId,url: row.url,openMode:openMode}});
@@ -618,18 +645,20 @@
               message:res.message,
               type:'warning'
             })
+            this.getVersionList();
           }else{
-              param.versionName = encodeURIComponent(row.name);
-              this.$get('api/version/steps',{},param).then(res=>{
-                if(res.state == 0) {
-                  that.steps = res.data.steps;
-                  that.showProgress = true;
-                  that.$refs.progress.startQuery();
-                }
-              })
+              this.showProgress = true;
+              this.$refs.progress.startQuery();
+              // param.versionName = encodeURIComponent(row.name);
+              // this.$get('api/version/steps',{}).then(res=>{
+              //   if(res.state == 0) {
+              //     that.steps = res.data.steps;
+              //     that.showProgress = true;
+              //     that.$refs.progress.startQuery();
+              //   }
+              // })
           }
         })
-        
       },
 			getFiles(row){
 				this.masterFileList = [];

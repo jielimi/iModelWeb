@@ -3,10 +3,11 @@
      <el-dialog
     title=""
     width="50%"
-    :visible.sync="openDialog"
+    :visible.sync="showProgress"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :show-close="false"
+    :show-close="true"
+    :before-close="endQuery"
     center>
     <div>
         <el-steps :active="step" align-center finish-status="success">
@@ -30,7 +31,8 @@ export default {
             step:0,
             timeout:'',
             description:'',
-            progress:0
+            progress:0,
+            showProgress:false
         };
     },
     components: {
@@ -41,26 +43,28 @@ export default {
     },
     methods: {
         startQuery() {
+            let that = this;
             this.timeout = setInterval(()=>{
                 var param = {
                     projectId:this.projectId,
                     versionName: (encodeURIComponent(this.versionName))
                 }
-
+                
                 this.$get('api/version/progress',{}, param).then(res => {
                     if (res.state == 0) {
                         this.step = res.data.step -1 ;
                         this.description = res.data.description;
                         this.progress = Number(Number(res.data.progress).toFixed(0));
                         if( res.data.done == true ){
-                            this.$message({
+                            that.$message({
                             message:'Version successfully generated',
                             type:'success'
                             })
-                            this.endQuery();
-                            this.$emit('endQueryVersionGenerate')
-                            this.step = 0;
-                            this.progress = 0;
+                            
+                            that.endQuery();
+                            that.$emit('endQueryVersionGenerate')
+                            that.step = 0;
+                            that.progress = 0;
 
                         }
                     }else{
@@ -79,8 +83,17 @@ export default {
             if (this.timeout){
                 clearTimeout(this.timeout)
             }
+            // this.showProgress = false;
+            this.$emit('endQueryVersionGenerate')
         }
+        
+    },
+     watch: {
+      openDialog(val) {
+         this.showProgress = val
+      }
     }
+    
     
 }
 </script>

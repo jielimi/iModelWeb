@@ -29,6 +29,7 @@
             <isolateComponent></isolateComponent>
             <measureComponent></measureComponent>
             <shadowComponent></shadowComponent>
+            <navigationComponent></navigationComponent>
             <!-- <editComponent v-if="openMode==2"></editComponent> -->
             <!-- <treeComponent></treeComponent> -->
             <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
@@ -37,7 +38,7 @@
 </template>
 <script>
  
- import keyinComponent from './subComponents/keyin'
+import keyinComponent from './subComponents/keyin'
 import debugInfoComponent from './subComponents/debugInfo'
 import openFileComponent from './subComponents/openFile'
 import modelComponent from './subComponents/model'
@@ -61,6 +62,7 @@ import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
+import navigationComponent from './subComponents/navigation'
 // import saveViewsComponent from './subComponents/saveViews'
 // import treeComponent from './subComponents/tree'
 // import versionUpdateComponent from './subComponents/versionUpdate'
@@ -95,7 +97,8 @@ export default {
         isolateComponent,
         tileprogressComponent,
         measureComponent,
-        shadowComponent
+        shadowComponent,
+        navigationComponent
         // saveViewsComponent
     },
     created () {

@@ -74,7 +74,7 @@ export default {
             const newFrustum = startFrustum.clone();
             newFrustum.multiply(rotateTransform);
 
-            theViewport.animateFrustumChange(startFrustum, newFrustum);
+            theViewport.animateFrustumChange(startFrustum, newFrustum,{});
             theViewport.view.setupFromFrustum(newFrustum);
             theViewport.synchWithView(true);
         }
