@@ -1,13 +1,10 @@
 <template>
-<div style="width:100%;height:100%">
+<div class="box">
   <div class="background-login">
-        <img class="img" id="img" src="../../assets/images/fa.png"/>
-        <ul class="bg-bubbles">
-            <li v-for="(item, index) in bubbles" :key="index"></li>
-        </ul>
+        <img class="img" id="img" src="../../../assets/images/fa.png"/>
   </div>
-  <div class="login-pc" id="login">
-            <el-form :model="loginForm" :rules="loginRules">         
+  <div class="login-m" id="login">
+        <el-form :model="loginForm" :rules="loginRules">         
             <h2>iModel Web</h2>
             <el-form-item prop="username">
                 <el-input v-model="loginForm.useremail" name="useremail" placeholder="UserEmail" auto-complete="on"></el-input>
@@ -22,7 +19,12 @@
 
             <el-form-item label="" prop="identityCode">
               <div class="vertifyCode">
-                <el-input  v-model.number="loginForm.identityCode" autocomplete="off"></el-input>
+                <el-input  v-model.number="loginForm.identityCode" autocomplete="off" placeholder="Vertify Code"></el-input>
+              </div>
+            </el-form-item>
+
+            <el-form-item >
+              <div>
                 <img @load="verifyLoadState=true"  @click="toggleVerify()" :src="img_src" alt="">
               </div>
             </el-form-item>
@@ -30,11 +32,11 @@
             <el-form-item>
                 <el-button type="primary" @click="login">Login</el-button>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
                 <router-link :to="{ path: 'register'}">Register</router-link>
-            </el-form-item>
+            </el-form-item> -->
         </el-form>
-        </div>
+  </div>
 </div>
     
 </template>
@@ -121,7 +123,7 @@ export default {
                 })
              }
              else{
-                 setCookie('token',res.data.token,3600*2);
+                 setCookie('token',res.data.token,3600);
                  setCookie('refreshToken',res.data.refreshToken,3600*24);
                  setCookie('username',res.data.userName);
                  setCookie('readonly',res.data.readonly);
@@ -150,31 +152,36 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+
 .background-login{
-  position: relative;
-  // background: url("../../assets/images/fa.png") no-repeat;
-  height: 100%;
-  width: 50%;
-  overflow: hidden;
-  background-size: 100%;
+    position: absolute;
+    top: 2rem;
+    left: 0;
 }
 .el-input {
-        width:300px;
+    width:300px;
 }    
 .img{
     height: auto;
-    width: 60%;
-    opacity: 0.6;
+    width: 30%;
 }
-.login-pc{
-    background: none no-repeat scroll 0 0 rgba(0,0,0,0.6);
-    padding: 22px 41px 33px;
-    position: absolute;
-    top: 22%;
-    right: 10%;
-    width: 550px;
+.box{
+  width: 100%;
+  height: 100%;
+}
+.box:before{
+  content:'';
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+.login-m{
+    vertical-align: middle;
+    height: 50%;
+    display: inline-block;
     h2 {
-        color:white
+      text-shadow: 0 1px 4px rgba(0,0,0,.2);
+       
     }
     a{
         color: white;
@@ -187,103 +194,6 @@ export default {
           right: 130px;
     }
 }
-
-.bg-bubbles {
-    position: absolute;
-    margin: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    li {
-      position: absolute;
-      bottom: -160px;
-      width: 40px;
-      height: 40px;
-      background-color: rgba(255, 255, 255, 0.5);
-      list-style: none;
-      animation: square 15s infinite;
-      transition-timing-function: linear;
-      &:nth-child(1) {
-        left: 10%;
-      }
-      &:nth-child(2) {
-        left: 20%;
-        width: 90px;
-        height: 90px;
-        animation-delay: 2s;
-        animation-duration: 7s;
-      }
-      &:nth-child(3) {
-        left: 25%;
-        animation-delay: 4s;
-      }
-      &:nth-child(4) {
-        left: 40%;
-        width: 60px;
-        height: 60px;
-        animation-duration: 8s;
-        background-color: rgba(255, 255, 255, 0.3);
-      }
-      &:nth-child(5) {
-        left: 70%;
-      }
-      &:nth-child(6) {
-        left: 80%;
-        width: 120px;
-        height: 120px;
-        animation-delay: 3s;
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-      &:nth-child(7) {
-        left: 32%;
-        width: 160px;
-        height: 160px;
-        animation-delay: 2s;
-      }
-      &:nth-child(8) {
-        left: 55%;
-        width: 20px;
-        height: 20px;
-        animation-delay: 4s;
-        animation-duration: 15s;
-      }
-      &:nth-child(9) {
-        left: 25%;
-        width: 10px;
-        height: 10px;
-        animation-delay: 2s;
-        animation-duration: 12s;
-        background-color: rgba(255, 255, 255, 0.3);
-      }
-      &:nth-child(10) {
-        left: 85%;
-        width: 160px;
-        height: 160px;
-        animation-delay: 5s;
-      }
-    }
-    // 自定义 square 动画；
-    @keyframes square {
-      0% {
-        opacity: 0.5;
-        transform: translateY(0px) rotate(45deg);
-      }
-      25% {
-        opacity: 0.75;
-        transform: translateY(-400px) rotate(90deg)
-      }
-      50% {
-        opacity: 1;
-        transform: translateY(-600px) rotate(135deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-1000px) rotate(180deg);
-      }
-    }
-  }
-  
   .vertifyCode img{
     height: 40px;
     cursor: pointer;

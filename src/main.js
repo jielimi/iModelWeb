@@ -2,17 +2,22 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
 import ElementUI from 'element-ui'
+import router from './router/index.js'
+import routerMobile from './router/index-mobile.js'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/common.less';
 import locale from 'element-ui/lib/locale/lang/en';
 import './polyfills';
-
+var r;
+var ua = navigator.userAgent.toLowerCase();
+if (/mobile|android|iphone|ipad|phone/i.test(ua)) {
+	r = routerMobile;
+}else {
+	r = router;
+}
 Vue.config.productionTip = false
-
 Vue.use(ElementUI, { size: 'small', zIndex: 3000, locale });
-
 import {
   post,
   get,
@@ -31,7 +36,7 @@ Vue.config.performance = true
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router: r,
   components: { App },
   template: '<App/>'
 })
