@@ -1,0 +1,236 @@
+<template>
+    <div>
+        <i class="iconfont icon-mark" @click="mark">
+        </i>
+    </div>
+    
+</template>
+
+<script>
+// import {IModelApp, PrimitiveTool, EventHandled} from "@bentley/imodeljs-frontend";
+import {IncidentMarkerDemo} from "./incentMaker"
+import { Arc3d} from "@bentley/geometry-core";
+
+import {
+    IModelJson as GeomJson,
+    LineString3d,
+    Point3d,
+    Vector3d,
+  } from "@bentley/geometry-core";
+  import {
+    AccuDrawHintBuilder,
+    AccuDrawShortcuts,
+    BeButtonEvent,
+    DecorateContext,
+    DynamicsContext,
+    EventHandled,
+    GraphicType,
+    HitDetail,
+    IModelApp,
+    PrimitiveTool,
+    SnapStatus,
+  } from "@bentley/imodeljs-frontend";
+  import {
+    ColorDef,
+    GeometryStreamProps,
+  } from "@bentley/imodeljs-common";
+
+
+export default {
+    name: 'imodelmark',
+    data () {
+        return {
+            tips:'hello',
+            
+        };
+    },
+    components: {
+        
+    },
+    created () {
+        
+    },
+    methods: {
+        
+        register(toolNamespace){
+                let that = this;
+                class MarkTool extends PrimitiveTool {
+                  constructor() {
+                    super(...arguments);
+                    this.points = [];
+                    this._snapGeomId=undefined;
+                  }
+                  requireWriteableTarget() { return false; }
+                  onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
+                  setupAndPromptForNextAction() {
+                    IModelApp.accuSnap.enableSnap(true);
+                
+                    if (0 === this.points.length)
+                        return;
+                
+                    const hints = new AccuDrawHintBuilder();
+                    hints.enableSmartRotation = true;
+                
+                    if (this.points.length > 1 && !(this.points[this.points.length - 1].isAlmostEqual(this.points[this.points.length - 2])))
+                        hints.setXAxis(Vector3d.createStartEnd(this.points[this.points.length - 2], this.points[this.points.length - 1])); // Rotate AccuDraw to last segment...
+                
+                    hints.setOrigin(this.points[this.points.length - 1]);
+                    hints.sendHints();
+                }
+  
+            testDecorationHit(id) { return id === this._snapGeomId; }
+        
+            getDecorationGeometry(_hit){
+                // if (this.points.length < 2)
+                //     return undefined;
+            
+                // const geomData = GeomJson.Writer.toIModelJson(LineString3d.create(this.points));
+                // return (undefined === geomData ? undefined : [geomData]);
+            }
+        
+            decorate(context) { // whole
+                if (this.points.length < 2)
+                    return;
+            
+                if (undefined === this._snapGeomId)
+                    this._snapGeomId = this.iModel.transientIds.next;
+            
+                const builder = context.createGraphicBuilder(GraphicType.WorldDecoration, undefined, this._snapGeomId);
+            
+                builder.setSymbology(ColorDef.red, ColorDef.blue, 1);
+                // builder.addLineString(this.points);
+                
+                for(let i = 0;i<this.points.length;i++){
+                    let p = this.points[i];
+                    let ellipse = Arc3d.createXYEllipse(p, 0.1, 0.1);
+                    builder.addArc(ellipse, true, true);
+                    builder.addArc(ellipse, false, false);
+
+                }
+            
+                context.addDecorationFromBuilder(builder);
+            }
+        
+            onDynamicFrame(ev, context) { // last line
+                if (this.points.length < 1)
+                    return;
+            
+                const builder = context.createSceneGraphicBuilder();
+
+                // for(let i = 0;i<this.points.length;i++){
+                //     let p = this.points[i];
+
+                // }
+            
+                builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.black, 1);
+                builder.addLineString([this.points[this.points.length - 1], ev.point]); // Only draw current segment in dynamics, accepted segments are drawn as pickable decorations...
+            
+                context.addGraphic(builder.finish());
+            }
+        
+            async onDataButtonDown(ev) {
+                this.points.push(ev.point.clone());
+                this.setupAndPromptForNextAction();
+            
+                if (!this.isDynamicsStarted)
+                    this.beginDynamics();
+            
+                return EventHandled.No;
+            }
+        
+            async onResetButtonUp(_ev) {
+            if (undefined !== IModelApp.accuSnap.currHit) {
+                const status = await IModelApp.accuSnap.resetButton(); // TESTING ONLY - NOT NORMAL TOOL OPERATION - Exercise AccuSnap hit cycling...only restart when no current hit or not hot snap on next hit...
+                if (SnapStatus.Success === status)
+                return EventHandled.No;
+            }
+            this.onReinitialize();
+                return EventHandled.No;
+            }
+        
+            async onUndoPreviousStep(){
+            if (0 === this.points.length)
+                return false;
+        
+            this.points.pop();
+            if (0 === this.points.length)
+                this.onReinitialize();
+            else
+                this.setupAndPromptForNextAction();
+            return true;
+            }
+        
+            async onKeyTransition(wentDown, keyEvent) {
+            if (EventHandled.Yes === await super.onKeyTransition(wentDown, keyEvent))
+                return EventHandled.Yes;
+            return (wentDown && AccuDrawShortcuts.processShortcutKey(keyEvent)) ? EventHandled.Yes : EventHandled.No;
+            }
+        
+            onRestartTool() {
+            const tool = new DrawingAidTestTool();
+            if (!tool.run())
+                this.exitTool();
+            }
+         }
+            //     constructor() {
+            //         super(...arguments);
+            //         this.points = [];
+            //     }
+            //     isCompatibleViewport(vp, isSelectedViewChange) { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
+            //     requireWriteableTarget(){ return false; }
+            //     onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
+
+            //     setupAndPromptForNextAction() {
+            //         IModelApp.accuSnap.enableSnap(true);
+            //     }
+            
+            //     async onDataButtonDown(ev){
+            //         const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
+            //         if (curSnapDetail) {
+            //             IncidentMarkerDemo.toggle(curSnapDetail.snapPoint.clone(),that.tips)
+            //         }
+            //         return EventHandled.No;
+            //     }
+
+            //     onRestartTool() {
+            //         const tool = new MarkTool();
+            //         if (!tool.run())
+            //             this.exitTool();
+            //     }
+            //     async onKeyTransition(wentDown, keyEvent) {
+            //         if (wentDown) {
+            //             switch (keyEvent.key.toLowerCase()) {
+            //                 case "delete":
+            //                 IncidentMarkerDemo.undo();
+            //                 break;
+            //                 case "escape":
+            //                 IncidentMarkerDemo.cancel();
+            //                 break;
+            //             }
+            //         }
+            //         return EventHandled.No;
+            //     }
+            // }
+
+            MarkTool.toolId = 'iModelWeb.Mark';
+            MarkTool.register(toolNamespace);
+        },
+        mark() {
+            this.active = !this.active;
+            if(this.active){
+                IModelApp.tools.run("iModelWeb.Mark");
+            }else{
+                IncidentMarkerDemo.cancel()
+            }
+            
+        },
+        
+    }
+    
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="less" scoped>
+
+</style>
