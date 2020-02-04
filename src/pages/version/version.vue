@@ -124,11 +124,11 @@
               size="mini"
               @click="modifyVersion(scope.row)">Modify
             </el-button>
-            <el-button
+            <!-- <el-button
               type="primary"
               size="mini"
               @click="getFiles(scope.row)">Files
-            </el-button>
+            </el-button> -->
             <el-button
               v-if="scope.row.versionState===0"
               type="primary"
@@ -156,7 +156,7 @@
         <div class="file-upload">
 					<el-upload class="uploader" accept=".dgn,.rvt"
 					  :show-file-list="true"
-					  :file-list="uploadPrimaryList"
+					  :file-list="masterFileList"
 					  :multiple="true"
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
@@ -171,7 +171,7 @@
 					<br />
 					<el-upload class="uploader" accept=".dgn,.rvt"
 					  :show-file-list="true"
-					  :file-list="uploadReferenceList"
+					  :file-list="referenceFileList"
 					  :multiple="true"
 					  :action="uploadParams.action"
 					  :data="uploadParams.data"
@@ -302,8 +302,8 @@
 					}
 				}, 
 				activeTab: 'master',
-				uploadPrimaryList:[],
-				uploadReferenceList:[],
+				// uploadPrimaryList:[],
+				// uploadReferenceList:[],
 				masterFileList: [],
         referenceFileList: [],
         confirmDisable:false,
@@ -533,8 +533,24 @@
       },
       uploadFiles (row) {
       		this.uploadParams.data.projectId = this.projectId;
-      		this.uploadParams.data.versionName = row.name;
-      		this.uploadVisible = true;
+          this.uploadParams.data.versionName = row.name;
+          // judge if the first ungen version
+          let param ={
+            projectId:this.projectId,
+            versionName:row.name
+          }
+          let that = this
+
+          this.$post('api/version/loadfiles',param).then(res => {
+            if(res.state == 0){
+              this.getFiles(row)
+            }else{
+              this.$message({
+              message:res.message,
+              type:'warning'
+            })
+            }
+          })
       },
       changeParam (type) {
       	this.uploadParams.data.type = type;
@@ -559,8 +575,8 @@
         if(response.state === 0){
           this.$message.success("Successfully uploaded.");
         }else {
-          this.uploadPrimaryList = [];
-          this.uploadReferenceList = [];
+          // this.uploadPrimaryList = [];
+          // this.uploadReferenceList = [];
           this.$message.error(response.message);
         }
       },
@@ -568,7 +584,7 @@
         if(response.state === 0){
           this.$message.success("Successfully uploaded.");
         }else {
-          this.uploadReferenceList = [];
+          // this.uploadReferenceList = [];
           this.$message.error(response.message);
         }
       },
@@ -663,7 +679,7 @@
 			getFiles(row){
 				this.masterFileList = [];
         this.referenceFileList = [];
-				this.dialogFileList = true;
+				// this.dialogFileList = true;
 				let param = {
         	projectId: this.projectId,
           versionName: encodeURIComponent(row.name)
@@ -675,13 +691,16 @@
           		that.masterFileList.push(value);
           	}else {
           		that.referenceFileList.push(value);
-          	}
+            }
+            that.uploadVisible = true;
           });
         });
 			},
 			clearUploadList(){
-				this.uploadPrimaryList = [];
-				this.uploadReferenceList = [];
+        this.masterFileList = [];
+        this.referenceFileList = []
+				// this.uploadPrimaryList = [];
+				// this.uploadReferenceList = [];
 			},
       expandThumbNail(base64src){
         this.dialogVisible = true;

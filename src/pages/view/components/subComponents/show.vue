@@ -20,7 +20,6 @@ export default {
     methods: {
         show(){
             let vp = IModelApp.viewManager.selectedView;
-            debugger;
             IModelApp.viewManager.selectedView.clearNeverDrawn();
             IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
         }

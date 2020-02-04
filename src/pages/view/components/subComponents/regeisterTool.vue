@@ -2,6 +2,7 @@
     <div class="registerTool">
         <markComponent ref="redMark"></markComponent>
         <graffitiComponent ref='graffiti'></graffitiComponent>
+        <heatmapComponent ref='heatmap'></heatmapComponent>
         <!-- <addComponent ref='add'></addComponent> -->
         <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
     </div>
@@ -17,6 +18,7 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelban
 import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
 import { FrontendDevTools } from "@bentley/frontend-devtools";
 import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
+import  heatmapComponent  from "./heatMap2D/heatMap"
 
 
 export default {
@@ -28,7 +30,8 @@ export default {
     components: {
         markComponent,
         graffitiComponent,
-        tipComponent
+        tipComponent,
+        heatmapComponent
     },
     props:['projectId','url', 'contextId', 'accessToken','versionName'],
     created () {
@@ -51,8 +54,8 @@ export default {
                         opts.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
                         opts.notifications = that.$refs.tip.notifications();
                         opts.tileAdmin = TileAdmin.create(DisplayTestApp.tileAdminProps);
-                        opts.tileAdmin._disableMagnification=true;
-                        opts.tileAdmin._useProjectExtents=true;
+                        opts.disableMagnification=true;
+                        opts.useProjectExtents=true;
                         const imbcontext= new IModelBankAccessContext(that.projectId, that.url, IModelApp.hubDeploymentEnv);
                         opts.imodelClient = imbcontext.client;
                         IModelApp.startup(opts);
@@ -60,6 +63,7 @@ export default {
                         const toolNamespace = IModelApp.i18n.registerNamespace("SVTTools");
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
+                        //that.$refs.heatmap.register(toolNamespace);
                         // that.$refs.add.register(toolNamespace);
                         RefreshTilesTool.register(toolNamespace);
                         PurgeTileTreesTool.register(toolNamespace);
