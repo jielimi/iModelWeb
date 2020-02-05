@@ -18,7 +18,7 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelban
 import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
 import { FrontendDevTools } from "@bentley/frontend-devtools";
 import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
-import  heatmapComponent  from "./heatMap2D/heatMap"
+import  heatmapComponent  from "./heatMap/heatMap"
 
 
 export default {
