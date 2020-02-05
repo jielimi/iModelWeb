@@ -534,6 +534,7 @@
       uploadFiles (row) {
       		this.uploadParams.data.projectId = this.projectId;
           this.uploadParams.data.versionName = row.name;
+          this.uploadVisible = true;
           // judge if the first ungen version
           let param ={
             projectId:this.projectId,
