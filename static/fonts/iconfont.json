@@ -167,6 +167,13 @@
       "unicode_decimal": 58903
     },
     {
+      "icon_id": "1345543",
+      "name": "飞行漫游",
+      "font_class": "icon-feixingmanyou",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
       "icon_id": "1834565",
       "name": "操作-显示",
       "font_class": "xianshi",
@@ -263,6 +270,13 @@
       "font_class": "Colorpicker",
       "unicode": "e665",
       "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "7711999",
+      "name": "热力图",
+      "font_class": "relitu",
+      "unicode": "e6be",
+      "unicode_decimal": 59070
     }
   ]
 }

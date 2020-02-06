@@ -3,6 +3,7 @@
         <markComponent ref="redMark"></markComponent>
         <graffitiComponent ref='graffiti'></graffitiComponent>
         <heatmapComponent ref='heatmap'></heatmapComponent>
+        <roadroamComponent ref='roadroam'></roadroamComponent>
         <!-- <addComponent ref='add'></addComponent> -->
         <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
     </div>
@@ -19,6 +20,7 @@ import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
 import { FrontendDevTools } from "@bentley/frontend-devtools";
 import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
 import  heatmapComponent  from "./heatMap/heatMap"
+import roadroamComponent from './roadRoam/roadRoam'
 
 
 export default {
@@ -31,7 +33,8 @@ export default {
         markComponent,
         graffitiComponent,
         tipComponent,
-        heatmapComponent
+        heatmapComponent,
+        roadroamComponent
     },
     props:['projectId','url', 'contextId', 'accessToken','versionName'],
     created () {
@@ -64,6 +67,8 @@ export default {
                         that.$refs.redMark.register(toolNamespace);
                         that.$refs.graffiti.register(toolNamespace);
                         //that.$refs.heatmap.register(toolNamespace);
+                        that.$refs.roadroam.register(toolNamespace);
+
                         // that.$refs.add.register(toolNamespace);
                         RefreshTilesTool.register(toolNamespace);
                         PurgeTileTreesTool.register(toolNamespace);

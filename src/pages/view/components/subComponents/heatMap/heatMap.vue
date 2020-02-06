@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="iconfont icon-mark heatMap"  @click.self="pop">
+        <i class="iconfont icon-relitu heatMap"  @click.self="pop">
             <div v-show="showPop" class="detail">
                 <el-switch
                     v-model="showHeatMap"
