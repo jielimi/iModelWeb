@@ -64,6 +64,18 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
+      },{
+        from: path.resolve(__dirname, '../node_modules/@bentley/imodeljs-frontend/lib/public/locales'),
+        to:  'locales',
+        ignore: ['.*']
+      },{
+        from: path.resolve(__dirname, '../node_modules/@bentley/frontend-devtools/lib/public/locales'),
+        to:  'locales',
+        ignore: ['.*']
+      },{
+        from: path.resolve(__dirname, '../src/locales'), // SVTTools.json
+        to:  'locales',
+        ignore: ['.*']
       }
     ])
   ]
