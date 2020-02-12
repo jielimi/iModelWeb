@@ -9,7 +9,7 @@ import {
     RpcConfiguration 
   } from "@bentley/imodeljs-common";
 import { OpenMode } from "@bentley/bentleyjs-core";
-import SVTRpcInterface from "./SVTRpcInterface";
+import SVTRpcInterface from "./components/subComponents/saveViews/SVTRpcInterface";
 
 let RPC = {
     init:function() {

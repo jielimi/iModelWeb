@@ -13,7 +13,7 @@
                     />
                     <div class="viewsNameGroup">
                         <el-radio-group v-model="selectedLabel">
-                            <el-radio v-for="(item,index) in viewsList" :label="item._name" :key="index" @change="handelViewChange(item)"></el-radio>                        
+                            <el-radio v-for="(item,index) in viewsList" :label="item.viewName" :key="index" @change="handelViewChange(item)"></el-radio>                        
                         </el-radio-group>
                     </div>
                     
@@ -34,9 +34,6 @@
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { deserializeViewState,serializeViewState} from "@bentley/frontend-devtools";
 import { provider } from '../subComponents/utils/provider' 
-import SVTRpcInterface from './saveViews/SVTRpcInterface'
-import { NamedViewStatePropsString, NamedVSPSList } from "./saveViews/NamedVSPSList";
-
 export default {
     name: 'save',
     data () {
@@ -45,15 +42,15 @@ export default {
             newViewName:'',
             viewsList:[],
             selectedView: undefined,
-            selectedLabel:undefined,
-            _views: undefined
+            selectedLabel:undefined
         };
     },
+    props:['projectId','versionId'],
     components: {
         
     },
     created () {
-        this._views = NamedVSPSList.create();
+        this.getViews();
     },
     methods: {
         handelViewChange(item){
@@ -61,9 +58,6 @@ export default {
         },
         open(){
             this.isShowDetail = !this.isShowDetail;
-            if(this.isShowDetail) {
-               this.getViews()
-            }
         },
         findArrayItemByName(array,name){
             const index = array.findIndex(item => item.viewName === name);
@@ -72,21 +66,42 @@ export default {
         deleteArrayItem: function (array,index) {
             array.splice(index, 1);
         },
-        async getViews(){
-            const filename = IModelApp.viewManager.selectedView.iModel.iModelToken.key;
-            const esvString = await SVTRpcInterface.getClient().readExternalSavedViews(filename);
-            this._views.loadFromString(esvString);
-            this.viewsList = this._views._array;
+        getViews(){
+            let param = {
+                'projectId':this.projectId,
+                'versionId':this.versionId,
+            }
+            this.$get('/api/view/viewsList',{},param).then(res=>{
+                if(res.state === 0 && res.data.length !=0 ) {
+                    this.viewsList = JSON.parse(res.data)
+                }
+            })
         },
-        async createItem(){
+        saveViews(){
+            let param = {
+                'projectId':this.projectId,
+                'versionId':this.versionId,
+                'viewsList':JSON.stringify(this.viewsList)
+            }
+            
+            this.$post('/api/view/viewsList', param).then(res => {
+                 if (res.state !== 0) {
+                    this.$message({
+                        message: res.message,
+                        type: 'warning'
+                    });
+                 }
+            });
+        },
+        createItem(){
             if(this.newViewName.length === 0) {
-                return Promise.resolve();
+                return;
             }
 
             let index = this.findArrayItemByName(this.viewsList,this.newViewName)
             
             if(-1 !== index){
-                this._views.removeName(this.newViewName)
+                this.deleteItem(index)
             }
 
             let vp = IModelApp.viewManager.selectedView.view;
@@ -108,23 +123,18 @@ export default {
                 overrideElementsString = JSON.stringify(overrideElements);
             }
 
-            const nvsp = new NamedViewStatePropsString(this.newViewName, viewStatejson, selectedElementsString, overrideElementsString);
-            this._views.insert(nvsp);
-            await this.saveNamedViews();
-
+            const nvsp = {viewStatejson,selectedElementsString,overrideElementsString}
             let item = {
-                '_name':this.newViewName
-            };
+                'viewName':this.newViewName,
+                'viewStateJson':viewStatejson,
+                'selectedElementsString':selectedElementsString,
+                'overrideElementsString':overrideElementsString
+            }
+
             this.viewsList=[item,...this.viewsList];
             this.newViewName = '';
             this.selectedLabel = '';
-        },
-        async saveNamedViews() {
-            const filename = IModelApp.viewManager.selectedView.iModel.iModelToken.key;
-            if (undefined === filename)
-                return;
-            const namedViews = this._views.getPrintString();
-            await SVTRpcInterface.getClient().writeExternalSavedViews(filename, namedViews);
+            this.saveViews();
         },
         async recallItem(){
             if( this.selectedView === undefined ) {
@@ -132,7 +142,7 @@ export default {
             }
 
             let vp = IModelApp.viewManager.selectedView.view;
-            const vsp = JSON.parse(this.selectedView.viewStatePropsString);
+            const vsp = JSON.parse(this.selectedView.viewStateJson);
             const viewState = await deserializeViewState(vsp, vp.iModel);
             viewState.code.value = this.selectedView.viewName;
             await IModelApp.viewManager.selectedView.changeView(viewState);
@@ -149,7 +159,7 @@ export default {
             }
 
 
-            const selectedElementsString = this.selectedView.selectedElements;
+            const selectedElementsString = this.selectedView.selectedElementsString;
             if (undefined !== selectedElementsString) {
                 const selectedElements = JSON.parse(selectedElementsString);
                 IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
