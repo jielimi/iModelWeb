@@ -1,4 +1,4 @@
-import { FeatureSymbology  } from "@bentley/imodeljs-frontend";
+import { FeatureSymbology,IModelApp  } from "@bentley/imodeljs-frontend";
 let provider = {
 	elementOvrs: new Map(),
 	appearance: FeatureSymbology.Appearance.defaults,
@@ -40,8 +40,8 @@ let provider = {
           else
             this.elementOvrs.set(eo.id, fsa);
         });
-    
-        this.sync(vp);
+       
+        //this.sync(vp);
       }
 };
 

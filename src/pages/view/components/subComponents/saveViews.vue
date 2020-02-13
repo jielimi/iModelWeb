@@ -155,6 +155,8 @@ export default {
                 if (undefined !== provider && undefined !== overrideElements) {
                     provider.clear(IModelApp.viewManager.selectedView)
                     provider.overrideElementsByArray(IModelApp.viewManager.selectedView,overrideElements);
+                    IModelApp.viewManager.selectedView.featureOverrideProvider = provider;
+                    provider.sync(IModelApp.viewManager.selectedView);
                 }
             }
 
