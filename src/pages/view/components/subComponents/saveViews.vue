@@ -18,10 +18,11 @@
                     </div>
                     
                     <div class="btn-group">
-                        
                         <el-button size="mini" type="primary" @click="createItem" slot="reference">Create</el-button>
                         <el-button size="mini" type="primary" @click="recallItem">Recall</el-button>
                         <el-button size="mini" type="primary" @click="delItem">Delete</el-button>
+                    </div>
+                    <div>
                         
                     </div>
                 </div>
@@ -33,6 +34,7 @@
 <script>
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { deserializeViewState,serializeViewState} from "@bentley/frontend-devtools";
+// import { Provider } from '../subComponents/utils/providernew' 
 import { provider } from '../subComponents/utils/provider' 
 import SVTRpcInterface from './saveViews/SVTRpcInterface'
 import { NamedViewStatePropsString, NamedVSPSList } from "./saveViews/NamedVSPSList";
@@ -66,11 +68,8 @@ export default {
             }
         },
         findArrayItemByName(array,name){
-            const index = array.findIndex(item => item.viewName === name);
+            const index = array.findIndex(item => item._name === name);
             return index;
-        },
-        deleteArrayItem: function (array,index) {
-            array.splice(index, 1);
         },
         async getViews(){
             const filename = IModelApp.viewManager.selectedView.iModel.iModelToken.key;
@@ -78,17 +77,7 @@ export default {
             this._views.loadFromString(esvString);
             this.viewsList = this._views._array;
         },
-        async createItem(){
-            if(this.newViewName.length === 0) {
-                return Promise.resolve();
-            }
-
-            let index = this.findArrayItemByName(this.viewsList,this.newViewName)
-            
-            if(-1 !== index){
-                this._views.removeName(this.newViewName)
-            }
-
+        async addNewItem(){
             let vp = IModelApp.viewManager.selectedView.view;
 
             const props = serializeViewState(vp);
@@ -103,6 +92,7 @@ export default {
             }
 
             let overrideElementsString;
+            
             if (undefined !== provider) {
                 const overrideElements = provider.toJSON();
                 overrideElementsString = JSON.stringify(overrideElements);
@@ -111,13 +101,33 @@ export default {
             const nvsp = new NamedViewStatePropsString(this.newViewName, viewStatejson, selectedElementsString, overrideElementsString);
             this._views.insert(nvsp);
             await this.saveNamedViews();
-
-            let item = {
-                '_name':this.newViewName
-            };
-            this.viewsList=[item,...this.viewsList];
+            
             this.newViewName = '';
             this.selectedLabel = '';
+        },
+        async createItem(){
+            if(this.newViewName.length === 0) {
+                return Promise.resolve();
+            }
+
+            let index = this.findArrayItemByName(this.viewsList,this.newViewName)
+            let result = 0;
+            
+            if(-1 !== index) {
+                result = this.$confirm('This view name is already exists. Replace it?', 'Tips', {
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                type: 'warning'
+                }).then(async() => {
+                   this._views.removeName(this.newViewName)
+                   await this.addNewItem()
+                }).catch(() => {
+                   return;         
+                });
+            }else{
+                this.addNewItem()
+            }
+            
         },
         async saveNamedViews() {
             const filename = IModelApp.viewManager.selectedView.iModel.iModelToken.key;
@@ -132,24 +142,23 @@ export default {
             }
 
             let vp = IModelApp.viewManager.selectedView.view;
-            const vsp = JSON.parse(this.selectedView.viewStatePropsString);
+            const vsp = JSON.parse(this.selectedView._viewStatePropsString);
             const viewState = await deserializeViewState(vsp, vp.iModel);
-            viewState.code.value = this.selectedView.viewName;
+            viewState.code.value = this.selectedView._name;
             await IModelApp.viewManager.selectedView.changeView(viewState);
 
-            const overrideElementsString = this.selectedView.overrideElementsString;
+            const overrideElementsString = this.selectedView._overrideElements;
             
+            provider.clear(IModelApp.viewManager.selectedView) // bug clear anyway
             if (undefined !== overrideElementsString) {
                 const overrideElements = JSON.parse(overrideElementsString);
                 if (undefined !== provider && undefined !== overrideElements) {
+                    provider.clear(IModelApp.viewManager.selectedView)
                     provider.overrideElementsByArray(IModelApp.viewManager.selectedView,overrideElements);
                 }
-            } else{
-                   provider.clear(IModelApp.viewManager.selectedView);
             }
 
-
-            const selectedElementsString = this.selectedView.selectedElements;
+            const selectedElementsString = this.selectedView._selectedElements;
             if (undefined !== selectedElementsString) {
                 const selectedElements = JSON.parse(selectedElementsString);
                 IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
@@ -157,16 +166,21 @@ export default {
                 IModelApp.viewManager.selectedView.renderFrame();
             }
         },
-        delItem(){
+        async delItem(){
             if( this.selectedView === undefined ) {
                 return; 
             }
 
-            let index = this.findArrayItemByName(this.viewsList,this.selectedView.viewName)
-            if(-1 !== index){
-                this.deleteArrayItem(this.viewsList,index)
-            }
-            this.saveViews();
+            this.$confirm('Do you really want to delete saved view?', 'Tips', {
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                type: 'warning'
+                }).then(async () => {
+                   this._views.removeName(this.selectedView.name);
+                   await this.saveNamedViews();
+                }).catch(() => {
+                   return;         
+            });
         }
         
     }
