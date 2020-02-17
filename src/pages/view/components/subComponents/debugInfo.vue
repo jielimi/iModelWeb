@@ -241,7 +241,6 @@ export default {
             _curRequestIntervalId: undefined,
             fps: 0,
             maxActiveRequests: 0,
-            debugControl: '',
             showTileRequests: false,
             isShowRequest: false,
             showProfileGPU: false,
@@ -296,8 +295,6 @@ export default {
     methods: {
         init(){
             this.maxActiveRequests = IModelApp.tileAdmin.maxActiveRequests;
-            this.debugControl = JSON.parse(JSON.stringify(IModelApp.renderSystem.debugControl));
-          
         },
         detail() {
             this.dialogVisible = !this.dialogVisible;
@@ -323,9 +320,9 @@ export default {
         },
         toggleProfileGPU(){
             if (this.showProfileGPU) {
-                this.debugControl.resultsCallback = this.resultsCallback;
+                IModelApp.renderSystem.debugControl.resultsCallback = this.resultsCallback;
             } else {
-                this.debugControl.resultsCallback = undefined;
+                IModelApp.renderSystem.debugControl.resultsCallback = undefined;
                 this.stopRecording();
             }
         },
