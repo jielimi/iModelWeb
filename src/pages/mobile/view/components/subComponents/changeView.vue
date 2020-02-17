@@ -6,7 +6,7 @@
 
 <script>
 import { ViewState,IModelApp } from "@bentley/imodeljs-frontend";
-// import MobileSelect from "mobile-select";
+import MobileSelect from "mobile-select";
 export default {
     name: 'changeView',
     data () {
