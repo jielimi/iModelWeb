@@ -1,18 +1,18 @@
 <template>
     <div>
-        <i class="iconfont icon-xianshi" @click="show">
+        <i class="iconfont icon-yincang" @click="saveImage">
         </i>
     </div>
 </template>
 
 <script>
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Point3d } from "@bentley/geometry-core";
+import { SaveImageTool } from "./saveImageTool"
 export default {
-    name: 'show',
+    name: 'saveImage',
     data () {
         return {
-            k:0
+            
         };
     },
     components: {
@@ -20,9 +20,8 @@ export default {
     },
     created () {},
     methods: {
-        show(){
-            IModelApp.viewManager.selectedView.clearNeverDrawn();
-            IModelApp.viewManager.selectedView.iModel.selectionSet.emptyAll();
+        saveImage(){
+           IModelApp.tools.run(SaveImageTool.toolId);
         }
     }
     

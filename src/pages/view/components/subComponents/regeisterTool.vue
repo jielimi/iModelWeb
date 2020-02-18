@@ -21,6 +21,7 @@ import { FrontendDevTools } from "@bentley/frontend-devtools";
 import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
 // import  heatmapComponent  from "./heatMap/heatMap"
 // import roadroamComponent from './roadRoam/roadRoam'
+import { SaveImageTool } from "./saveImage/saveImageTool"
 
 
 export default {
@@ -70,6 +71,7 @@ export default {
                         // that.$refs.add.register(toolNamespace);
                         RefreshTilesTool.register(toolNamespace);
                         PurgeTileTreesTool.register(toolNamespace);
+                        // SaveImageTool.register(toolNamespace)
                         window.eventHub.$emit('iModel_startup_finish');
                         return FrontendDevTools.initialize()
                     })

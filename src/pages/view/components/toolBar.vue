@@ -16,6 +16,7 @@
             <saveViewsComponent></saveViewsComponent>
             <hide-component></hide-component>
             <show-component></show-component>
+            <!-- <saveimage-component></saveimage-component> -->
             <fit-to-view-component></fit-to-view-component>
             <zoomin-component></zoomin-component>
             <window-area-component></window-area-component>
@@ -67,6 +68,7 @@ import shadowComponent from './subComponents/shadow'
 import saveViewsComponent from './subComponents/saveViews'
 // import treeComponent from './subComponents/tree'
 // import versionUpdateComponent from './subComponents/versionUpdate'
+// import saveimageComponent from './subComponents/saveImage/saveImage'
 
 export default {
     name: 'toolBar',
