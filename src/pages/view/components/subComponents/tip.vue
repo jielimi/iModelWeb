@@ -192,26 +192,8 @@ export default {
                     window.eventHub.$emit('component_edit',data);
                 }
             });
-
        },
-       displayTestAppAccuSnap() {
-           class DisplayTestAppAccuSnap extends AccuSnap {
-                constructor() {
-                    super(...arguments);
-                    this._activeSnaps =  [SnapMode.NearestKeypoint];
-                }
-                keypointDivisor() { return 2; }
-                getActiveSnapModes() { 
-                    return this._activeSnaps; 
-                }
-                setActiveSnapModes(snaps) {
-                    this._activeSnaps.length = snaps.length;
-                    for (let i = 0; i < snaps.length; i++)
-                    this._activeSnaps[i] = snaps[i];
-                }
-            }
-            return new DisplayTestAppAccuSnap();
-       },
+       
        notifications(){
            let that = this;
            class Notifications extends NotificationManager {
@@ -246,9 +228,6 @@ export default {
        },
        closeTip() {
             this.showToolTip = false;
-       },
-       handleClickTab(tab, event){
-
        }
     }
 }

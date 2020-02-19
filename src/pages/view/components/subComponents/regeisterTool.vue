@@ -5,7 +5,7 @@
         <!-- <heatmapComponent ref='heatmap'></heatmapComponent>
         <roadroamComponent ref='roadroam'></roadroamComponent> -->
         <!-- <addComponent ref='add'></addComponent> -->
-        <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent>
+        <!-- <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent> -->
     </div>
 </template>
 
@@ -14,7 +14,7 @@ import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,Tool} from
 import markComponent from './redMark/redMark'
 import graffitiComponent from './graffiti'
 // import addComponent from './addElement/addElement'
-import tipComponent from './tip'
+// import tipComponent from './tip'
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
 import { FrontendDevTools } from "@bentley/frontend-devtools";
@@ -22,6 +22,8 @@ import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
 // import  heatmapComponent  from "./heatMap/heatMap"
 // import roadroamComponent from './roadRoam/roadRoam'
 import { SaveImageTool } from "./saveImage/saveImageTool"
+import { Notifications } from "./tip/Notification"
+import { DisplayTestAppAccuSnap } from "./tip/DisplayTestAppAccuSnap"
 
 
 export default {
@@ -32,8 +34,7 @@ export default {
     },
     components: {
         markComponent,
-        graffitiComponent,
-        tipComponent
+        graffitiComponent
     },
     props:['projectId','url', 'contextId', 'accessToken','versionName'],
     created () {
@@ -53,8 +54,8 @@ export default {
                    opts = opts ? opts : {};
                     
                    that.$nextTick(() => {
-                        opts.accuSnap = that.$refs.tip.displayTestAppAccuSnap();
-                        opts.notifications = that.$refs.tip.notifications();
+                        opts.accuSnap = new DisplayTestAppAccuSnap();
+                        opts.notifications = new Notifications();
                         opts.tileAdmin = TileAdmin.create(DisplayTestApp.tileAdminProps);
                         opts.disableMagnification=true;
                         opts.useProjectExtents=true;

@@ -6,22 +6,22 @@ import Dom from "@bentley/imodeljs-markup/node_modules/@svgdotjs/svg.js/src/elem
 import * as utils from '@bentley/imodeljs-markup/node_modules/@svgdotjs/svg.js/src/utils/utils';
 import {adopt} from '@bentley/imodeljs-markup/node_modules/@svgdotjs/svg.js/src/utils/adopter.js'
 
-HitDetail.prototype.getToolTip = async function() {
+// HitDetail.prototype.getToolTip = async function() {
   
     
-    if (!this.isElementHit)
+//     if (!this.isElementHit)
 
-        return IModelApp.viewManager.getDecorationToolTip(this);
+//         return IModelApp.viewManager.getDecorationToolTip(this);
 
-    const msg = await this.viewport.iModel.getToolTipMessage(this.sourceId); // wait for the locate message(s) from the backend
+//     const msg = await this.viewport.iModel.getToolTipMessage(this.sourceId); // wait for the locate message(s) from the backend
 
-    // now combine all the lines into one string, replacing any instances of ${tag} with the translated versions.
+//     // now combine all the lines into one string, replacing any instances of ${tag} with the translated versions.
 
-    // Add "<br>" at the end of each line to cause them to come out on separate lines in the tooltip.
+//     // Add "<br>" at the end of each line to cause them to come out on separate lines in the tooltip.
 
-    return msg[0];
+//     return msg[0];
 
-};
+// };
 
 RealityModelTileClient.prototype.parseUrl = function(url) {
     const urlParts = url.split("/").map((entry) => entry.replace(/%2D/g, "-"));
