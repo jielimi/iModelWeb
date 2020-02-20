@@ -2,10 +2,10 @@
     <div class="registerTool">
         <markComponent ref="redMark"></markComponent>
         <graffitiComponent ref='graffiti'></graffitiComponent>
+        <elementTipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></elementTipComponent>
         <!-- <heatmapComponent ref='heatmap'></heatmapComponent>
         <roadroamComponent ref='roadroam'></roadroamComponent> -->
         <!-- <addComponent ref='add'></addComponent> -->
-        <!-- <tipComponent ref='tip' :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></tipComponent> -->
     </div>
 </template>
 
@@ -13,10 +13,10 @@
 import { IModelApp, SnapMode, AccuSnap, NotificationManager,TileAdmin,Tool} from "@bentley/imodeljs-frontend";
 import markComponent from './redMark/redMark'
 import graffitiComponent from './graffiti'
+import elementTipComponent from './elementTip'
 // import addComponent from './addElement/addElement'
-// import tipComponent from './tip'
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
-import {RefreshTilesTool} from './registerTool/RefreshTilesTool'
+import { RefreshTilesTool } from './registerTool/RefreshTilesTool'
 import { FrontendDevTools } from "@bentley/frontend-devtools";
 import { PurgeTileTreesTool } from "./registerTool/PurgeTileTreesTool"
 // import  heatmapComponent  from "./heatMap/heatMap"
@@ -34,7 +34,8 @@ export default {
     },
     components: {
         markComponent,
-        graffitiComponent
+        graffitiComponent,
+        elementTipComponent
     },
     props:['projectId','url', 'contextId', 'accessToken','versionName'],
     created () {

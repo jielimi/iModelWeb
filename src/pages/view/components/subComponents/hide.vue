@@ -18,6 +18,9 @@ export default {
         
     },
     created () {},
+    mounted(){
+       
+    },
     methods: {
         hide(){
            let selectSet = IModelApp.viewManager.selectedView.iModel.selectionSet.elements;
