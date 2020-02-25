@@ -11,12 +11,9 @@
             <change-view-component></change-view-component>
             <model-component></model-component>
             <categories-component></categories-component>
-            <!-- <save-component :projectId="projectId" :versionName="versionName"></save-component> -->
-            <!-- <saveViewsComponent :projectId="projectId" :versionId="versionId"></saveViewsComponent> -->
             <saveViewsComponent></saveViewsComponent>
             <hide-component></hide-component>
             <show-component></show-component>
-            <!-- <saveimage-component></saveimage-component> -->
             <fit-to-view-component></fit-to-view-component>
             <zoomin-component></zoomin-component>
             <window-area-component></window-area-component>
@@ -27,14 +24,12 @@
             <undoComponent></undoComponent>
             <redoComponent></redoComponent>
             <clipComponent></clipComponent>
-            <regeisterToolComponent :projectId="projectId" :url="url" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></regeisterToolComponent>
             <isolateComponent></isolateComponent>
             <measureComponent></measureComponent>
             <shadowComponent></shadowComponent>
-            <!-- <navigationComponent></navigationComponent> -->
-            <!-- <editComponent v-if="openMode==2"></editComponent> -->
-            <!-- <treeComponent></treeComponent> -->
-            <!-- <versionUpdateComponent :projectId="projectId"  :versionName="versionName"></versionUpdateComponent> -->
+            <markComponent></markComponent>
+            <graffitiComponent></graffitiComponent>
+            <elementTipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></elementTipComponent>
         </div>
     </div>
 </template>
@@ -59,16 +54,15 @@ import saveComponent from './subComponents/save'
 import hideComponent from './subComponents/hide'
 import showComponent from './subComponents/show'
 import clipComponent from './subComponents/clip'
-import regeisterToolComponent from './subComponents/regeisterTool'
 import isolateComponent from './subComponents/isolate'
 import tileprogressComponent from './subComponents/tileprogress'
 import measureComponent from './subComponents/measure'
 import shadowComponent from './subComponents/shadow'
-// import navigationComponent from './subComponents/navigation'
 import saveViewsComponent from './subComponents/saveViews'
-// import treeComponent from './subComponents/tree'
-// import versionUpdateComponent from './subComponents/versionUpdate'
-// import saveimageComponent from './subComponents/saveImage/saveImage'
+import markComponent from './subComponents/redMark/redMark'
+import graffitiComponent from './subComponents/graffiti/graffiti'
+import elementTipComponent from './subComponents/elementTip'
+
 
 export default {
     name: 'toolBar',
@@ -96,13 +90,14 @@ export default {
         hideComponent,
         showComponent,
         clipComponent,
-        regeisterToolComponent,
         isolateComponent,
         tileprogressComponent,
         measureComponent,
         shadowComponent,
-        // navigationComponent
-        saveViewsComponent
+        saveViewsComponent,
+        markComponent,
+        graffitiComponent,
+        elementTipComponent
     },
     created () {
     },

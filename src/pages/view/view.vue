@@ -34,7 +34,8 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelban
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import RPC from './rpc';
-import { configViewFlags } from './simpleViewApp'
+import { configViewFlags,DisplayTestApp } from './simpleViewApp'
+
 
 
 class IModelBankAuthorizationClient {
@@ -90,7 +91,7 @@ export default {
         toolBarComponent
     },
     created(){
-       window.eventHub.$on('iModel_startup_finish',this.main)
+          this.main()
     },
     mounted(){
      
@@ -170,6 +171,8 @@ export default {
         async main() {
             this.isLoading = true; 
             RPC.init();
+            DisplayTestApp.startup({},this.iminfo.projectId, this.iminfo.url);
+
             if(this.$route.query && this.$route.query.isStandalone){
                 window.eventHub.$emit('tile_progress_init');
                 window.eventHub.$emit('keyin_init');

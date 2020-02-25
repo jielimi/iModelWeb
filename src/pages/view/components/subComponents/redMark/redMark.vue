@@ -7,34 +7,9 @@
 </template>
 
 <script>
-// import {IModelApp, PrimitiveTool, EventHandled} from "@bentley/imodeljs-frontend";
-import {IncidentMarkerDemo} from "./incentMaker"
-import { Arc3d} from "@bentley/geometry-core";
+import { IncidentMarkerDemo } from "./incentMaker"
 
-import {
-    IModelJson as GeomJson,
-    LineString3d,
-    Point3d,
-    Vector3d,
-  } from "@bentley/geometry-core";
-  import {
-    AccuDrawHintBuilder,
-    AccuDrawShortcuts,
-    BeButtonEvent,
-    DecorateContext,
-    DynamicsContext,
-    EventHandled,
-    GraphicType,
-    HitDetail,
-    IModelApp,
-    PrimitiveTool,
-    SnapStatus,
-  } from "@bentley/imodeljs-frontend";
-  import {
-    ColorDef,
-    GeometryStreamProps,
-  } from "@bentley/imodeljs-common";
-
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
 export default {
     name: 'imodelmark',
@@ -51,52 +26,6 @@ export default {
         
     },
     methods: {
-        register(toolNamespace){
-            let that = this;
-            class MarkTool extends PrimitiveTool {
-                constructor() {
-                    super(...arguments);
-                    this.points = [];
-                }
-                isCompatibleViewport(vp, isSelectedViewChange) { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
-                requireWriteableTarget(){ return false; }
-                onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
-
-                setupAndPromptForNextAction() {
-                    IModelApp.accuSnap.enableSnap(true);
-                }
-            
-                async onDataButtonDown(ev){
-                    const curSnapDetail = IModelApp.accuSnap.getCurrSnapDetail();
-                    if (curSnapDetail) {
-                        IncidentMarkerDemo.toggle(curSnapDetail.snapPoint.clone(),that.tips)
-                    }
-                    return EventHandled.No;
-                }
-
-                onRestartTool() {
-                    const tool = new MarkTool();
-                    if (!tool.run())
-                        this.exitTool();
-                }
-                async onKeyTransition(wentDown, keyEvent) {
-                    if (wentDown) {
-                        switch (keyEvent.key.toLowerCase()) {
-                            case "delete":
-                            IncidentMarkerDemo.undo();
-                            break;
-                            case "escape":
-                            IncidentMarkerDemo.cancel();
-                            break;
-                        }
-                    }
-                    return EventHandled.No;
-                }
-        }  
-
-        MarkTool.toolId = 'iModelWeb.Mark';
-        MarkTool.register(toolNamespace);
-        },
         mark() {
             this.active = !this.active;
             if(this.active){
