@@ -34,6 +34,7 @@ import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelban
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
 import RPC from './rpc';
+import { configViewFlags } from './simpleViewApp'
 
 
 class IModelBankAuthorizationClient {
@@ -186,7 +187,7 @@ export default {
             }
            
             await this.openView(activeViewState);
-            //GLOBAL_DATA.activeViewState = activeViewState;
+            configViewFlags();
             
             this.isLoading = false; 
             this.progress = 0;

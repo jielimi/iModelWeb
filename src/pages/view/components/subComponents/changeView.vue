@@ -13,6 +13,7 @@
 
 <script>
 import { ViewState,IModelApp } from "@bentley/imodeljs-frontend";
+import { configViewFlags } from "../../simpleViewApp"
 export default {
     name: 'changeView',
     data () {
@@ -38,6 +39,7 @@ export default {
                 view = await IModelApp.viewManager.selectedView.iModel.views.load(view.id);
             }
             await IModelApp.viewManager.selectedView.changeView(view);
+            configViewFlags();
             await this.notify(view.clone());
         },
         async notify(view) {
