@@ -23,14 +23,15 @@
                 </el-form>
                 <el-form label-width="100px">
                     <el-form-item label="Tile Size:">
-                        <el-select v-model="tileSizeValue" @change="changeTileSize" size="mini">
+                        <el-input v-model="tileSizeValue" @blur="changeTileSize"></el-input>
+                        <!-- <el-select v-model="tileSizeValue" @change="changeTileSize" size="mini">
                             <el-option
                                 v-for="tileSize in tileSizeOptions"
                                 :key="tileSize.value"
                                 :label="tileSize.name"
                                 :value="tileSize.value">
                             </el-option>
-                        </el-select>
+                        </el-select> -->
                     </el-form-item>
                 </el-form>
                 <el-collapse v-model="activeName" accordion>
@@ -131,6 +132,67 @@
                         </el-checkbox>
                     </el-collapse-item>
                 </el-collapse>
+                <el-checkbox class="background-map" v-show="isMapSupported" v-model="showBackgroundMap" @change="handleBackgroundMapChange">
+                    <span>Background Map</span>
+                </el-checkbox>
+                <el-form v-show="isMapSupported && showBackgroundMap" label-width="120px">
+                       <el-form-item label="Imagery:">
+                            <el-select v-model="imagery" size="mini" @change="handleImageryChange">
+                                <el-option v-for="item in imageryEntries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="Type:">
+                            <el-select v-model="type" size="mini" @change="handleTypeChange">
+                                <el-option v-for="item in typeEntries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="Globe:">
+                            <el-select v-model="globe" size="mini" @change="handleGlobeChange">
+                                <el-option v-for="item in globeEntries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-checkbox  v-model="terrainShow" @change="handleTerrainChange">
+                                <span>Terrain</span>
+                            </el-checkbox>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-checkbox  v-model="transparency" @change="handleMapTransparencyChange">
+                                <span>Transparency</span>
+                            </el-checkbox>
+                        </el-form-item>
+                        <div v-show="terrainShow">
+                                <el-form-item label="Model Height:">
+                                    <el-input-number v-model="heightOrigin" controls-position="right" @change="handleModelHeightChange" ></el-input-number>
+                                    <el-select v-model="heightOriginMode" size="mini" @change="handleModelHeightOriginChange">
+                                            <el-option v-for="item in modelHeightOriginEntries" :label="item.name" :key="item.value" :value="item.value"></el-option>
+                                        </el-select>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-checkbox  v-model="terrainLighting" @change="handleTerrainLightingChange">
+                                        <span>Terrain Lighting</span>
+                                    </el-checkbox>
+                                </el-form-item>
+                                <el-form-item label="Exaggeration:">
+                                    <el-input-number v-model="exaggeration" controls-position="right" @change="handleExaggerationChange" ></el-input-number>
+                                    <!-- <el-checkbox  v-model="exaggeration" @change="handleExaggerationChange">
+                                        <span>Exaggeration</span>
+                                    </el-checkbox> -->
+                                </el-form-item>
+                            
+                        </div>
+                        <div v-show="!terrainShow">
+                                <el-form-item label="Ground Bias:">
+                                    <el-input-number v-model="groundBias" controls-position="right" @change="handleGroundBiasChange"></el-input-number>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-checkbox  v-model="depth" @change="handleDepthChange">
+                                        <span>Depth</span>
+                                    </el-checkbox>
+                                </el-form-item>
+                        </div>
+                </el-form>
+                
                 <el-checkbox class="occlusion" v-model="showOcclusion" @change="handleOcclusionCheckChange">
                     <span>Ambient Occlusion</span>
                 </el-checkbox>
@@ -182,7 +244,7 @@ import {
   DisplayStyle2dState,
   DisplayStyleState,
 } from "@bentley/imodeljs-frontend";
-import { RenderMode, ViewFlags, ColorDef, HiddenLine, LinePixels, AmbientOcclusion } from "@bentley/imodeljs-common";
+import { RenderMode, ViewFlags, ColorDef, HiddenLine, LinePixels, AmbientOcclusion, BackgroundMapType, GlobeMode } from "@bentley/imodeljs-common";
 export default {
     name: 'setting',
     data () {
@@ -192,6 +254,37 @@ export default {
             is3d:true,
             style: '',
             styleEntries: [],
+            isMapSupported: false,
+            showBackgroundMap: false,
+            imagery: '',
+            imageryEntries: [
+                { name: "Bing", value: "BingProvider" },
+                { name: "MapBox", value: "MapBoxProvider" }
+            ],
+            type: '',
+            typeEntries: [
+                { name: "Street", value: BackgroundMapType.Street },
+                { name: "Aerial", value: BackgroundMapType.Aerial },
+                { name: "Hybrid", value: BackgroundMapType.Hybrid }
+            ],
+            globe: '',
+            globeEntries: [
+                { name: "3D", value: GlobeMode.ThreeD },
+                { name: "Columbus", value: GlobeMode.Columbus }
+            ],
+            terrainShow: false,
+            transparency: false,
+            heightOrigin: 0,
+            modelHeightOriginEntries: [
+                { name: "GPS (Geodetic/Ellipsoid)", value: 0 },
+                { name: "Sea Level (Geoid)", value: 1 },
+                { name: "Ground", value: 2 }
+            ],
+            heightOriginMode: '',
+            terrainLighting: false,
+            exaggeration: 0,
+            groundBias: 0,
+            depth: false,
             displayStyles: new Map(),
             activeName: '',
             scratchViewFlags: new ViewFlags(),
@@ -292,6 +385,7 @@ export default {
             this.initEdgeDisplay();
             this.initEnvironment();
             this.initOcclusion();
+            this.initBackgroundMap();
             this.modeValue = IModelApp.viewManager.selectedView.view.viewFlags.renderMode;
         },
         async initStylePicker(){
@@ -376,8 +470,8 @@ export default {
             const hlSettings = this.is3d ? IModelApp.viewManager.selectedView.view.getDisplayStyle3d().settings.hiddenLineSettings : HiddenLine.Settings.defaults;
             this.currTransparency = hlSettings.transparencyThreshold.toString();
             this.currColor = hlSettings.visible.color ? hlSettings.visible.color.toHexString() : "#FFFFFF";
-            this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid
-            this.hiddenPattern = hlSettings.hidden.pattern ? hlSettings.hidden.pattern : LinePixels.Invalid
+            this.pattern = hlSettings.visible.pattern ? hlSettings.visible.pattern : LinePixels.Invalid;
+            this.hiddenPattern = hlSettings.hidden.pattern ? hlSettings.hidden.pattern : LinePixels.Invalid;
             this.showVisibleEdges = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags).visibleEdges;
         },
         handleVisibleEdgesCheckChange($event){
@@ -391,6 +485,58 @@ export default {
             vf.hiddenEdges = $event;
             IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
+        },
+
+        updateBackgroundMap(props) {
+            IModelApp.viewManager.selectedView.changeBackgroundMapProps(props);
+        },
+
+        // addTerrainSettings() {
+        //     const view = IModelApp.viewManager.selectedView.view;
+        //     const getTerrainSettings = (view) => view.displayStyle.settings.backgroundMap.terrainSettings;
+        //     const updateTerrainSettings = (props) => this.updateBackgroundMap({ terrainSettings: props });
+        // },
+
+        handleBackgroundMapChange(enabled){
+            const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
+            vf.backgroundMap = enabled;
+            IModelApp.viewManager.selectedView.viewFlags = vf;
+            this.sync();
+        },
+
+        handleImageryChange(select) {
+            this.updateBackgroundMap({ providerName: select });
+        },
+        handleTypeChange(select) {
+            this.updateBackgroundMap({ providerData: { mapType: Number.parseInt(select, 10) } });
+        },
+        handleGlobeChange(select) {
+            this.updateBackgroundMap({ globeMode: Number.parseInt(select, 10) });
+        },
+        handleTerrainChange(enable) {
+            this.updateBackgroundMap({ terrainSettings: { applyTerrain: enable }});
+            this.sync();
+        },
+        handleMapTransparencyChange(enabled) {
+            this.updateBackgroundMap({ transparency: enabled ? 0.5 : false })
+        },
+        handleModelHeightChange(value) {
+            this.updateBackgroundMap({terrainSettings: {heightOrigin: value }});
+        },
+        handleModelHeightOriginChange(value) {
+            this.updateBackgroundMap({terrainSettings: { heightOriginMode: value }});
+        },
+        handleTerrainLightingChange(enabled) {
+            this.updateBackgroundMap({terrainSettings: { applyLighting: enabled }});
+        },
+        handleExaggerationChange(value) {
+            this.updateBackgroundMap({terrainSettings: { exaggeration: value }});
+        },
+        handleGroundBiasChange(value) {
+            this.updateBackgroundMap({ groundBias: value });
+        },
+        handleDepthChange(enabled) {
+            this.updateBackgroundMap({ useDepthBuffer: enabled })
         },
         handleTransparencyCheckChange($event){
             this.updateEdgeDisplayItem();
@@ -569,12 +715,57 @@ export default {
         initOcclusion(){
 
         },
-        handleOcclusionCheckChange($event){
+        initBackgroundMap() {
+            const view = IModelApp.viewManager.selectedView.view;
+            
+            const visible = this.getMapSupported(view);
+            if (!visible) {
+                return;
+            }
+            this.isMapSupported = visible;
+            this.showBackgroundMap = view.viewFlags.backgroundMap;
+            const map = this.getBackgroundMap(view);
+            this.imagery = map.providerName;
+            this.type = map.mapType;
+            this.terrainShow = map.applyTerrain;
+            this.transparency = false !== map.transparency;
+            this.globe = map.globeMode;
+            this.groundBias = map.groundBias;
+            this.useDepthBuffer = map.useDepthBuffer;
+            if (map.terrainSettings) {
+                this.initTerrainSettings();
+            }
+        },
+
+
+        initTerrainSettings() {
+            const view = IModelApp.viewManager.selectedView.view;
+            const terrainSettings = view.displayStyle.settings.backgroundMap.terrainSettings;
+            this.heightOrigin = terrainSettings.heightOrigin;
+            this.heightOriginMode = terrainSettings.heightOriginMode;
+            this.terrainLighting = terrainSettings.applyLighting;
+            this.exaggeration = terrainSettings.exaggeration;
+        },
+
+        getBackgroundMap(view) {
+            return view.displayStyle.settings.backgroundMap;
+        },
+        getMapSupported (view) {
+            return view.is3d() && view.iModel.isGeoLocated;
+        },
+        enableMap(enabled) {
             const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
-            vf.ambientOcclusion = $event;
+            vf.backgroundMap = enabled;
             IModelApp.viewManager.selectedView.viewFlags = vf;
             this.sync();
         },
+        handleOcclusionCheckChange($event){
+            // const vf = IModelApp.viewManager.selectedView.viewFlags.clone(this.scratchViewFlags);
+            // vf.ambientOcclusion = $event;
+            // IModelApp.viewManager.selectedView.viewFlags = vf;
+            // this.sync();
+        },
+
         handelBiasChange($event){
             let value = $event.target.value;
             this.updateAmbientOcclusion(parseFloat(value));
@@ -674,7 +865,7 @@ export default {
                     top: -4px;
                 }
             }
-            .occlusion {
+            .occlusion, .background-map {
                 margin-left: 10px;
             }
             .occlusion-label {
