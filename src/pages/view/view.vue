@@ -1,31 +1,35 @@
 <template>
-<div class="view" v-loading="isLoading">
-    <tool-bar-component :projectId="iminfo.iModelId" :versionId="iminfo.versionId" 
-    :url="iminfo.url" 
-    :versionName="iminfo.versionName" :contextId="iminfo.contextId" 
-    :accessToken="iminfo.accessToken"
-    :openMode="iminfo.openMode">
-    </tool-bar-component>
+  <div class="view" v-loading="isLoading">
+    <tool-bar-component
+      :projectId="iminfo.iModelId"
+      :versionId="iminfo.versionId"
+      :url="iminfo.url"
+      :versionName="iminfo.versionName"
+      :contextId="iminfo.contextId"
+      :accessToken="iminfo.accessToken"
+      :openMode="iminfo.openMode"
+    ></tool-bar-component>
     <div class="imodelview" id="imodelview"></div>
     <el-dialog
-        title=""
-        width="50%"
-        :visible.sync="isLoading"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        :show-close="false"
-        center>
-        <div>
-            <el-progress :text-inside="true" :stroke-width="18" :percentage=progress status="success"></el-progress>
-        </div>
+      title
+      width="50%"
+      :visible.sync="isLoading"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      center
+    >
+      <div>
+        <el-progress :text-inside="true" :stroke-width="18" :percentage="progress" status="success"></el-progress>
+      </div>
     </el-dialog>
-</div>
+  </div>
 </template>
 
 <script>
 import { ScreenViewport} from '@bentley/imodeljs-frontend';
 import { IModelVersion } from '@bentley/imodeljs-common'
-import { AccessToken, UserInfo, ChangeSetQuery } from "@bentley/imodeljs-clients";
+import { AccessToken, UserInfo, ChangeSetQuery, IncludePrefix } from "@bentley/imodeljs-clients";
 import { IModelBankAccessContext } from "@bentley/imodeljs-clients/lib/imodelbank/IModelBankAccessContext";
 import { IModelConnection, IModelApp, ViewState, AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import toolBarComponent from './components/toolBar';
@@ -33,17 +37,30 @@ import RPC from './rpc';
 
 
 class IModelBankAuthorizationClient {
-    constructor(jsonObj) {
-        this._userInfo = UserInfo.fromJson(jsonObj);
-        this.hasSignedIn = true;//this is cheating
-    }
-    async getAccessToken(_requestContext) {
-        const userInfo = this._userInfo;
-        const foreignAccessTokenWrapper = {};
-        foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
-        const accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
-        return accessToken;
-    }
+    constructor(accessToken) {
+    this._accessToken = accessToken;
+    this.hasSignedIn = true;  // this is cheating
+    this.isAuthorized = true; // this is cheating
+    this.hasExpired = false;  // this is cheating
+  }
+
+  static createFromUserInfo(userJsonObj) {
+    const userInfo = UserInfo.fromJson(userJsonObj);
+    const foreignAccessTokenWrapper = {};
+    foreignAccessTokenWrapper[AccessToken.foreignProjectAccessTokenJsonProperty] = { userInfo };
+    const accessToken = AccessToken.fromForeignProjectAccessTokenJson(JSON.stringify(foreignAccessTokenWrapper));
+    return new IModelBankAuthorizationClient(accessToken);
+  }
+
+  static createFromCredentials(userCredentials) {
+    const tokenStr = Buffer.from(userCredentials.email + ':' + userCredentials.password).toString("base64");
+    const accessToken = AccessToken.fromBasicTokenString(tokenStr, IncludePrefix.No);
+    return new IModelBankAuthorizationClient(accessToken);
+  }
+
+  async getAccessToken(_requestContext) {
+    return this._accessToken;
+  }
 }
 class SimpleViewState {
     constructor(){};
@@ -104,22 +121,19 @@ export default {
         
         async loginAndOpenImodel(state) {
             this.progress = this.randomNum(5,20);
+
             const imbcontext = new IModelBankAccessContext(this.iminfo.iModelId, this.iminfo.url, IModelApp.hubDeploymentEnv);
-            
                      
-            IModelApp.authorizationClient = new IModelBankAuthorizationClient({
-                "sub": "userid",
-                "email": "email@organization.org",
-                "given_name": "first",
-                "family_name": "last",
-                "org": "orgid",
-                "org_name": "organization"
+            IModelApp.authorizationClient = IModelBankAuthorizationClient.createFromCredentials({
+                email: "test",
+                password: "test",
             });
             
             // Open the iModel
             state.iModel = { wsgId: this.iminfo.iModelId, ecId: this.iminfo.iModelId };
             state.project = { wsgId: "", ecId: "", name: this.iminfo.name };
             this.iminfo.contextId = imbcontext.toIModelTokenContextId();
+
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
             1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
             
@@ -187,26 +201,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    .view{
-        position: absolute;
-        top:0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        
-    }
-    .imodelview {
-        position: absolute;
-        top:82px;
-        left: 5px;
-        right: 5px;
-        bottom: 5px;
-        border-color: black;
-        border-style: solid;
-        border-width: 1px;
-        margin-left: 5px;
-        margin-bottom: 5px;
-        background-color: gray;
-    }
+.view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.imodelview {
+  position: absolute;
+  top: 82px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  background-color: gray;
+}
 </style>
 
