@@ -10,14 +10,15 @@ import {
   } from "@bentley/imodeljs-common";
 import { OpenMode } from "@bentley/bentleyjs-core";
 import SVTRpcInterface from "./components/subComponents/saveViews/SVTRpcInterface";
-import  ModelTreeRpcInterface from "./components/subComponents/modelTree/ModelTreeRpc";
+import ModelTreeRpcInterface from "./components/subComponents/modelTree/ModelTreeRpc";
+import ItemTreeRpcInterface from "./components/subComponents/itemTypeTree/ItemTreeRpcInterface"
 
 let RPC = {
     init:function() {
         let rpcConfiguration;
         RpcConfiguration.developmentMode = true;
         rpcConfiguration = BentleyCloudRpcManager.initializeClient({ info: { title: "SimpleViewApp", version: "v1.0" } },
-         [IModelTileRpcInterface, SnapshotIModelRpcInterface , IModelReadRpcInterface,IModelWriteRpcInterface,SVTRpcInterface,ModelTreeRpcInterface]);
+         [IModelTileRpcInterface, SnapshotIModelRpcInterface , IModelReadRpcInterface,IModelWriteRpcInterface,SVTRpcInterface, ModelTreeRpcInterface, ItemTreeRpcInterface]);
         
         for (const definition of rpcConfiguration.interfaces())
         RpcOperation.forEach(definition, (operation) => operation.policy.token = (request) => (request.findTokenPropsParameter() || new IModelToken("test", "test", "test", "test", OpenMode.Readonly)));

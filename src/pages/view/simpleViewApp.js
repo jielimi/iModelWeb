@@ -7,7 +7,8 @@ import { PurgeTileTreesTool } from "./components/subComponents/registerTool/Purg
 import { Notifications } from "./components/subComponents/tip/Notification"
 import { DisplayTestAppAccuSnap } from "./components/subComponents/tip/DisplayTestAppAccuSnap"
 import { MarkTool } from "./components/subComponents/redMark/markTool"
-import { GraffitiTool } from './components/subComponents/graffiti/graffitiTool'
+import { GraffitiTool } from './components/subComponents/graffiti/graffitiTool' 
+// import { WMSPlugin } from '../../../static/imjs_plugins/wmsPlugin/wmsPlugin'
 
 
 function configViewFlags()

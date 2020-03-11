@@ -171,7 +171,19 @@ export default {
         async main() {
             this.isLoading = true; 
             RPC.init();
+
             DisplayTestApp.startup({},this.iminfo.projectId, this.iminfo.url);
+          
+            // IModelApp.viewManager.onSelectedViewportChanged.addListener(() => {
+            //     const pluginName = "127.0.0.1:8000/static/wmsPlugin";
+            //     IModelApp.pluginAdmin.loadPlugin(pluginName).then(data => {
+            //         console.log(data);
+
+            //     }).catch((_err) => {
+            //         // this should happen only on completely unexpected errors.
+            //         IModelApp.notifications.outputMessage(IModelApp.i18n.translate("iModelJs:PluginErrors.UnableToLoad", { pluginName }));
+            //     });
+            // });
 
             if(this.$route.query && this.$route.query.isStandalone){
                 window.eventHub.$emit('tile_progress_init');

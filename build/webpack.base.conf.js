@@ -1,4 +1,5 @@
 'use strict'
+const webpack = require('webpack')
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
@@ -22,7 +23,8 @@ const createLintingRule = () => ({
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    './static/imjs_plugins/wmsPlugin/dev/wmsPlugin': './static/imjs_plugins/wmsplugin/wmsPlugin.js'
   },
   output: {
     path: config.build.assetsRoot,
@@ -31,6 +33,11 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common'
+    })
+  ],
   resolve: {
     extensions: ['.js', '.ts','.vue', '.json'],
     alias: {

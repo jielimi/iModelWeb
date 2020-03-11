@@ -30,6 +30,8 @@
             <markComponent></markComponent>
             <graffitiComponent></graffitiComponent>
             <elementTipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></elementTipComponent>
+            <itemtreeComponent></itemtreeComponent>
+            <miniMapComponent></miniMapComponent>
         </div>
     </div>
 </template>
@@ -62,6 +64,8 @@ import saveViewsComponent from './subComponents/saveViews'
 import markComponent from './subComponents/redMark/redMark'
 import graffitiComponent from './subComponents/graffiti/graffiti'
 import elementTipComponent from './subComponents/elementTip'
+import itemtreeComponent from './subComponents/itemTypeTree/itemTypeTree'
+import miniMapComponent from './subComponents/miniMap'
 
 
 export default {
@@ -97,7 +101,9 @@ export default {
         saveViewsComponent,
         markComponent,
         graffitiComponent,
-        elementTipComponent
+        elementTipComponent,
+        itemtreeComponent,
+        miniMapComponent
     },
     created () {
     },

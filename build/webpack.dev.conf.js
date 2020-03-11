@@ -56,6 +56,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
+      excludeChunks: ['./static/imjs_plugins/wmsPlugin/dev/wmsPlugin'],
       favicon:'./favicon.ico'//新增
     }),
     // copy custom static assets

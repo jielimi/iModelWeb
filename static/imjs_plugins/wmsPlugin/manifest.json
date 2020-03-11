@@ -1,0 +1,14 @@
+{
+  "bundleName": "wmsPlugin",
+  "devPlugin": "wmsPlugin.js",
+  "versionsRequired": {
+    "@bentley/bentleyjs-core": ">=1.10.0-dev.0",
+    "@bentley/geometry-core": ">=1.10.0-dev.0",
+    "@bentley/imodeljs-clients": ">=1.10.0-dev.0",
+    "@bentley/imodeljs-common": ">=1.10.0-dev.0",
+    "@bentley/imodeljs-i18n": ">=1.10.0-dev.0",
+    "@bentley/imodeljs-frontend": ">=1.10.0-dev.0",
+    "@bentley/imodeljs-quantity": ">=1.10.0-dev.0",
+    "@bentley/ui-abstract": ">=1.10.0-dev.0"
+  }
+}
