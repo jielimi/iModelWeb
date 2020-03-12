@@ -137,7 +137,7 @@ export default {
             this.iminfo.contextId = imbcontext.toIModelTokenContextId();
 
             state.iModelConnection = await IModelConnection.open(this.iminfo.contextId, this.iminfo.iModelId, 
-            1, this.iminfo.versionName? IModelVersion.named(this.iminfo.versionName):IModelVersion.latest());
+            1, this.iminfo.versionId? IModelVersion.asOfChangeSet(this.iminfo.versionId):IModelVersion.latest());
             
             
             this.progress = this.randomNum(40,50);

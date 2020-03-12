@@ -223,7 +223,8 @@ import {
   Viewport,
   ToolSettings,
   GLTimerResult,
-  RenderSystemDebugControl
+  RenderSystemDebugControl,
+  ScreenViewport
 } from "@bentley/imodeljs-frontend";
 import { assert, BeTimePoint,BeDuration } from "@bentley/bentleyjs-core";
 import { saveAs } from "file-saver";
@@ -273,7 +274,7 @@ export default {
             },
             toolSettings:{
                 pwuCheck:ToolSettings.preserveWorldUp,// If true, view rotation tool keeps the up vector (worldZ) aligned with screenY.
-                animationTime:ToolSettings.animationTime.milliseconds,//Duration of animations of viewing operations.you can try undo to test it
+                animationTime:ScreenViewport.animation.time.normal.milliseconds,//Duration of animations of viewing operations.you can try undo to test it
                 viewToolPickRadiusInches:ToolSettings.viewToolPickRadiusInches,//Radius in screen inches to search for elements that anchor viewing operations,you can try pan to test it (0.1 or 1000)
                 walkEnforceZUp:ToolSettings.walkEnforceZUp, //Whether the walk tool enforces worldZ be aligned with screenY
                 walkCameraAngle:ToolSettings.walkCameraAngle.degrees,//Camera angle enforced for walk tool
@@ -550,7 +551,7 @@ export default {
             IModelApp.toolAdmin.exitViewTool();
         },
         changeAnimationDuration(){
-            ToolSettings.animationTime = BeDuration.fromMilliseconds(this.toolSettings.animationTime); 
+            ScreenViewport.animation.time.normal = BeDuration.fromMilliseconds(this.toolSettings.animationTime); 
             IModelApp.toolAdmin.exitViewTool();
         },
         changePickRadius(){
