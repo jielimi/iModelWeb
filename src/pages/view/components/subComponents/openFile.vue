@@ -44,14 +44,20 @@ export default {
             this.clearViews();
             return 'tips';
         }
-        window.eventHub.$on('open_standalone',this.openFileFromProject);
+        // window.eventHub.$on('open_standalone',this.openFileFromProject);
+        this.openFileFromProject();
     },
     beforeDestroy(){
         this.clearViews()
     },
     methods: {
-        openFileFromProject(inputFileUrl){
-            this.resetStandaloneIModel(inputFileUrl)
+        openFileFromProject(){
+            if(this.$route.query.isStandalone){
+                let inputFileUrl = this.$route.query.openUrl
+                this.resetStandaloneIModel(inputFileUrl)
+            }
+            window.eventHub.$emit('tile_progress_init');
+            window.eventHub.$emit('keyin_init');
         },
         openFile(){
             if(this.inputFileUrl){

@@ -186,8 +186,6 @@ export default {
             // });
 
             if(this.$route.query && this.$route.query.isStandalone){
-                window.eventHub.$emit('tile_progress_init');
-                window.eventHub.$emit('keyin_init');
                 window.eventHub.$emit('open_standalone',this.$route.query.openUrl);
                 this.isLoading = false;
                 return;
