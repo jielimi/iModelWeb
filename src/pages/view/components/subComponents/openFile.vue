@@ -55,9 +55,9 @@ export default {
             if(this.$route.query.isStandalone){
                 let inputFileUrl = this.$route.query.openUrl
                 this.resetStandaloneIModel(inputFileUrl)
+                window.eventHub.$emit('tile_progress_init');
+                window.eventHub.$emit('keyin_init');
             }
-            window.eventHub.$emit('tile_progress_init');
-            window.eventHub.$emit('keyin_init');
         },
         openFile(){
             if(this.inputFileUrl){

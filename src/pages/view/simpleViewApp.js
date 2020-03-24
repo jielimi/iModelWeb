@@ -9,6 +9,7 @@ import { DisplayTestAppAccuSnap } from "./components/subComponents/tip/DisplayTe
 import { MarkTool } from "./components/subComponents/redMark/markTool"
 import { GraffitiTool } from './components/subComponents/graffiti/graffitiTool' 
 // import { WMSPlugin } from '../../../static/imjs_plugins/wmsPlugin/wmsPlugin'
+import { RoadRoamTool } from './components/subComponents/roadRoam/RoadRoamTool'
 
 
 function configViewFlags()
@@ -51,6 +52,7 @@ class DisplayTestApp {
         PurgeTileTreesTool.register(toolNamespace);
         IModelApp.tools.register(MarkTool, toolNamespace);
         IModelApp.tools.register(GraffitiTool, toolNamespace);
+        IModelApp.tools.register(RoadRoamTool, toolNamespace);
         return FrontendDevTools.initialize() 
        
     }

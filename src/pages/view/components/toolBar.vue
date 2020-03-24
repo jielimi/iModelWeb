@@ -32,6 +32,7 @@
             <elementTipComponent :projectId="projectId" :contextId="contextId" :accessToken="accessToken" :versionName="versionName"></elementTipComponent>
             <itemtreeComponent></itemtreeComponent>
             <miniMapComponent></miniMapComponent>
+            <roadroamComponent></roadroamComponent>
         </div>
     </div>
 </template>
@@ -66,6 +67,7 @@ import graffitiComponent from './subComponents/graffiti/graffiti'
 import elementTipComponent from './subComponents/elementTip'
 import itemtreeComponent from './subComponents/itemTypeTree/itemTypeTree'
 import miniMapComponent from './subComponents/miniMap'
+import roadroamComponent from './subComponents/roadRoam/roadRoam'
 
 
 export default {
@@ -103,7 +105,8 @@ export default {
         graffitiComponent,
         elementTipComponent,
         itemtreeComponent,
-        miniMapComponent
+        miniMapComponent,
+        roadroamComponent
     },
     created () {
     },
